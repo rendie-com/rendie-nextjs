@@ -203,7 +203,6 @@ var task = {
         let iserr = false;
         for (let i = 0; i < t.length; i++) {
             if (t[i].length != 0 && t[i][0].list[0].length != 0) {
-                Tool.pre(t[i][0].list)
                 iserr = true;
                 break;
             }
