@@ -1,5 +1,4 @@
 import { sqlite } from '../../common/db/sqlite.js'
-import { DynamoDB } from '../../common/db/DynamoDB.js'
 import { PostgreSQL } from '../../common/db/PostgreSQL.js'
 import { index } from '../../common/index.js'
 import { self_config } from '../../common/self/config.js'

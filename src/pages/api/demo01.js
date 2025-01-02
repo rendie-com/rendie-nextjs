@@ -1,16 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-export default function handler(req, res) {
+//export default function handler(req, res) {
   //引入AWS SDK
-  const AWS = require('aws-sdk');
+  //const AWS = require('aws-sdk');
   //配置AWS SDK
-  AWS.config.update({
-    region: process.env.AWS_REGION, // 替换为你的DynamoDB表区域
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID, // 你的AWS访问密钥
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY // 你的AWS秘密密钥
-  });
-  //创建DynamoDB客户端
-  const dynamodb = new AWS.DynamoDB();
+  // AWS.config.update({
+  //   region: process.env.AWS_REGION, // 替换为你的DynamoDB表区域
+  //   accessKeyId: process.env.AWS_ACCESS_KEY_ID, // 你的AWS访问密钥
+  //   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY // 你的AWS秘密密钥
+  // });
+  // //创建DynamoDB客户端
+  // const dynamodb = new AWS.DynamoDB();
   // const params = {
   //   TableName: 'table', // 替换为你的表名
   //   FilterExpression: "contains (#attrName, :attrValue)", // 使用contains函数进行筛选
@@ -150,7 +150,7 @@ export default function handler(req, res) {
   //     res.status(200).json(data);
   //   }
   // });
-}
+//}
 
 
 
