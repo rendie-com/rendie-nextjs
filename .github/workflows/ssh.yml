@@ -17,11 +17,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-
-    # - name: 运行       
-    #   run: | 
-    #     chmod +x ssh.sh
-    #     $GITHUB_WORKSPACE/ssh.sh 
           
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
@@ -31,18 +26,9 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with: 
           branch: main
-          folder: ./sqlite3/
-          target-folder: ./sqlite3/
+          folder: ./
+          target-folder: ./
           
-    # - name: 自动发布固件到 Releases
-    #   uses: softprops/action-gh-release@v2
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     name: sqlite3 文件发布
-    #     tag_name: 1
-    #     files: ./releases/* 
-        
     - name: 删除运行记录
       uses: Mattraks/delete-workflow-runs@v2
       with:
