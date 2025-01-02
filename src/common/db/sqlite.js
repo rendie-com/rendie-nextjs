@@ -34,10 +34,10 @@ export const sqlite = {
                 let randomnum = fun.getRandom(data[self_config.TablePre + "randomnum"], data[self_config.TablePre + "LastLoginTime"]);//如果有10天没有登录，则更新randomnum字段
                 let expires_in = parseInt(Date.now() / 1000 + 60 * 60 * 24);
                 let access_token = fun.sha256(fun.vStr() + headers["user-agent"] + randomnum)
-                let pre_name = data[self_config.TablePre + "username"]
+                let pre_username = data[self_config.TablePre + "username"]
                 oo = {
                     status: "success",
-                    name: pre_name,
+                    username: pre_username,
                     access_token: access_token,
                     expires_in: expires_in,//access_token不能超过1天【expires_in:为access_token的到期时间戳】
                     refresh_token: fun.sha256(access_token + expires_in)//refresh_token不能超过30天
@@ -54,7 +54,7 @@ export const sqlite = {
                     "@.loginip='" + headers["x-forwarded-for"].replace(/'/g, "''") + "'",
                     "@.randomnum='" + randomnum + "'"
                 ]
-                await this.SqliteAsync("main", "update @.manager set " + sqlArr.join(",") + " where @.username='" + pre_name.replace(/'/g, "''") + "'");
+                await this.SqliteAsync("main", "update @.manager set " + sqlArr.join(",") + " where @.username='" + pre_username.replace(/'/g, "''") + "'");
             }
             else {
                 oo = o2
