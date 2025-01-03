@@ -9,6 +9,21 @@ var fun =
     },
     a02: function () {
         let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/黑名单",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/黑名单.db"],
+                database: "shopee/黑名单",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
+        let data = [{
             action: "sqlite",
             database: "shopee/黑名单",
             sql: "select count(1) as total FROM @.table" + this.b04(),
@@ -17,10 +32,10 @@ var fun =
             database: "shopee/黑名单",
             sql: "select " + Tool.fieldAs("useraccount,reason,fromid,addtime,uptime") + " FROM @.table" + this.b04() + Tool.limit(50, obj.params.page),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
 
     },
-    a03: function (t) {
+    a04: function (t) {
         let arr1 = t[1]
         let html = ""
         for (let i = 0; i < arr1.length; i++) {
@@ -44,7 +59,6 @@ var fun =
 		</div>'
         Tool.html(null, null, html)
     },
-
     ////////////////////////////////////
     b01: function () {
         return '\

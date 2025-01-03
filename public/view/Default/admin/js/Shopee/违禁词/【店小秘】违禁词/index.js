@@ -16,7 +16,7 @@ var fun =
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/违禁词/客优云.db"],
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/违禁词/店小秘.db"],
                 database: "shopee/违禁词/店小秘",
             }]
         }]
