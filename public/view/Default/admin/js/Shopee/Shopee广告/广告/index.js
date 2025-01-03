@@ -7,13 +7,26 @@ var fun =
         obj.params.site = obj.params.site ? obj.params.site : 'tw'
         obj.params.field = obj.params.field ? obj.params.field : '1'
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
-
-
         //obj.arr[8] = obj.arr[8] ? obj.arr[8] : "-_-20";//广告状态
         //obj.arr[9] = obj.arr[9] ? obj.arr[9] : "-_-20";//版位
         this.a02()
     },
     a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/Shopee广告/广告",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/Shopee广告/广告.db"],
+                database: "shopee/Shopee广告/广告",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
         //where="'+ this.b08() + '"
         // where @.site=\''+ obj.params.site + '\' and not(@.state=\'deleted\' or @.state=\'closed\') GROUP BY @.productID HAVING COUNT(1) &gt;1//查重复用的
         let data = [{
@@ -25,9 +38,9 @@ var fun =
             database: "shopee/Shopee广告/广告",
             sql: "select "+Tool.fieldAs("fromid,start_time,end_time,daily_budget,total_budget,state,product_placement,trait_list,productID,report_impression,report_click,image,title")+" FROM @.table where @.site='"+obj.params.site+"' order by @.report_impression desc"+ Tool.limit(10, obj.params.page, "sqlite"),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (arr) {
+    a04: function (arr) {
         let t = arr[1];
         let tr = [], unit = this.b05(obj.params.site)
         for (let i = 0; i < t.length; i++) {
@@ -99,6 +112,7 @@ var fun =
         </div>'
         Tool.html(null, null, html);
     },
+    /////////////////////////////////////
     b01: function () {
         return '\
         <button title = "操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\

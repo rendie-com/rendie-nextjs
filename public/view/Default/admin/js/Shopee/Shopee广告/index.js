@@ -33,7 +33,7 @@
         case "js23": Tool.scriptArr(loginPath.concat([path + '广告/新版/创建商品广告.js'])); break;
         case "js24": Tool.scriptArr(loginPath.concat([path + '广告/新版/广告状态_执行操作.js'])); break;
         case "js25": Tool.scriptArr(loginPath.concat([path + '广告/新版/删除重复商品广告.js'])); break;
-        case "js26": Tool.scriptArr(['admin/js/Shopee/通用/把旧表复制到新表.js']); break;
+        case "js26": Tool.scriptArr(['admin/js/Shopee/通用/把一个db文件拆分成多个db文件.js']); break;
         default: Tool.scriptArr([path + "config.js", path + 'common.js', path + '广告/index.js']); break;
     }
 }();

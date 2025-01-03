@@ -13,6 +13,21 @@ var fun =
     },
     a02: function () {
         let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/Shopee广告/关键词",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/Shopee广告/关键词.db"],
+                database: "shopee/Shopee广告/关键词",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
+        let data = [{
             action: "sqlite",
             database: "shopee/Shopee广告/关键词",
             sql: "select count(1) as total FROM @.table" + this.b05(),
@@ -21,9 +36,9 @@ var fun =
             database: "shopee/Shopee广告/关键词",
             sql: "select " + Tool.fieldAs("keyword,cn_keyword,productIdArr,recommended_price,search_volume,relevance,addtime,uptime") + " FROM @.table" + this.b05() + " order by @.uptime desc" + Tool.limit(20, obj.params.page, "sqlite"),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (t) {
+    a04: function (t) {
         let html = "", arr1 = t[1];
         for (let i = 0; i < arr1.length; i++) {
             html += '\
@@ -126,7 +141,7 @@ var fun =
         <ul class="dropdown-menu">\
             <li onClick="Tool.open5(\'js06\',\''+ obj.params.site + '\')"><a class="dropdown-item pointer">*获取【店铺商品】的关键词</a></li>\
             <li onClick="Tool.open5(\'js07\',\''+ obj.params.site + '\')"><a class="dropdown-item pointer">翻译关键词</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js26&table=keyword&database=shopee_bak&newdatabase=shopee/Shopee广告/关键词\');"><a class="dropdown-item pointer">把旧表复制到新表</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js26&table=keyword&database=shopee_bak&newdatabase=shopee/Shopee广告/关键词\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
         </ul>'
     },
     b07: function (keyword, cn_keyword) {
