@@ -10,14 +10,30 @@ var fun =
         }
     },
     a02: function () {
+        //obj.params.jsFile     表示选择JS文件
         let data = [{
-            action: "sqlite",
+            action: "fs",
+            fun: "access_sqlite",
             database: "shopee/物流方式",
-            sql: "select "+Tool.fieldAs("id,name,cn_name,currency_unit,currency_symbol,description,cargo_types")+" FROM @.table"+(obj.params.site?" where @.id=" + obj.params.site:""),
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/物流方式.db"],
+                database: "shopee/物流方式"
+            }]
         }]
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
+        let data = [{
+            action: "sqlite",
+            database: "shopee/物流方式",
+            sql: "select " + Tool.fieldAs("id,name,cn_name,currency_unit,currency_symbol,description,cargo_types") + " FROM @.table" + (obj.params.site ? " where @.id=" + obj.params.site : ""),
+        }]
+        Tool.ajax.a01(data, this.a04, this);
+    },
+    a04: function (t) {
         let arr1 = t[0];
         let html = "", platform = [];
         for (let i = 0; i < arr1.length; i++) {
