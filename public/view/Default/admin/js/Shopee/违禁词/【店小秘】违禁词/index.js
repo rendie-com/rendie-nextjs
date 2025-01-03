@@ -8,6 +8,21 @@ var fun =
         this.a02();
     },
     a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/违禁词/店小秘",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/违禁词/客优云.db"],
+                database: "shopee/违禁词/店小秘",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
         let data = [
             {
                 action: "sqlite",
@@ -19,9 +34,9 @@ var fun =
                 database: "shopee/违禁词/店小秘",
                 sql: "select " + Tool.fieldAs("name,count,addtime") + " FROM @.table" + this.b04() + Tool.limit(20, obj.params.page),
             }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (t) {
+    a04: function (t) {
         let html = "", arr1 = t[1]
         for (let i = 1; i < arr1.length; i++) {
             html += '\

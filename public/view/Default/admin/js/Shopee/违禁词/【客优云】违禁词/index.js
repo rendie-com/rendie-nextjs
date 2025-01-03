@@ -8,20 +8,34 @@ var fun =
         this.a02();
     },
     a02: function () {
-        let data = [
-            {
-                action: "sqlite",
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/违禁词/客优云",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/违禁词/客优云.db"],
                 database: "shopee/违禁词/客优云",
-                sql: "select count(1) as total FROM @.table" + this.b04(),
-            },
-            {
-                action: "sqlite",
-                database: "shopee/违禁词/客优云",
-                sql: "select " + Tool.fieldAs("name,id,iswhitelist,addtime") + " FROM @.table" + this.b04() + Tool.limit(50, obj.params.page),
             }]
+        }]
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
+        let data = [{
+            action: "sqlite",
+            database: "shopee/违禁词/客优云",
+            sql: "select count(1) as total FROM @.table" + this.b04(),
+        },
+        {
+            action: "sqlite",
+            database: "shopee/违禁词/客优云",
+            sql: "select " + Tool.fieldAs("name,id,iswhitelist,addtime") + " FROM @.table" + this.b04() + Tool.limit(50, obj.params.page),
+        }]
+        Tool.ajax.a01(data, this.a04, this);
+    },
+    a04: function (t) {
         let arr1 = t[1]
         let html = ""
         for (let i = 0; i < arr1.length; i++) {
