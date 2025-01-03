@@ -74,15 +74,15 @@ var fun =
     },
     /////////////////////////////////////
     d01: function () {
-        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d02, this, null)
+        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d02, this, null);
     },
     d02: function () {
-        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d03, this, null)
+        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d03, this, null);
     },
     d03: function () {
         let Barr = this.obj.Barr[this.obj.B1 - 1];
         $("#state").html("获取订单信息");
-        Tool.get_one_order.a01(Barr.order_id, this.obj.seller, obj.params.site, this.d04, this, Barr)
+        Tool.get_one_order.a01(Barr.order_id, this.obj.seller, obj.params.site, this.d04, this, Barr);
     },
     d04: function (t, Barr) {
         Barr.order = t;

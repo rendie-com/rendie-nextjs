@@ -3,8 +3,8 @@ var fun =
 {
     obj: {}, token: "",
     a01: function () {
-        obj.arr[4] = obj.arr[4] ? obj.arr[4] : "-_-20";//返回URL
-        obj.arr[5] = obj.arr[5] ? obj.arr[5] : "-_-20";//订单编号
+        obj.arr[4] = obj.arr[4] ? obj.arr[4] : "";//返回URL
+        obj.arr[5] = obj.arr[5] ? obj.arr[5] : "";//订单编号
         this.a02();
     },
     a02: function () {

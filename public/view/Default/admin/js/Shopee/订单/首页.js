@@ -4,10 +4,25 @@ var fun =
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'
         this.a02();
     },
     a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/订单",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/订单.db"],
+                database: "shopee/订单",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
         let data = [{
             action: "sqlite",
             database: "shopee/订单",
@@ -17,9 +32,9 @@ var fun =
             database: "shopee/订单",
             sql: "select " + Tool.fieldAs("payby_date,order_sn,actual_carrier,total_price,status,auto_cancel_arrange_ship_date,escrow_release_time,payment_method,order_items,buyer_user,create_time,shipping_confirm_time") + " FROM @.table where @.site='" + obj.params.site + "' order by @.create_time desc" + Tool.limit(10, obj.params.page),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (arr) {
+    a04: function (arr) {
         let tr = [], t = arr[1]
         for (let i = 0; i < t.length; i++) {
             tr.push('\
@@ -44,6 +59,7 @@ var fun =
 		</div>'
         Tool.html(null, null, html)
     },
+    /////////////////////////////////////////
     b01: function () {
         let html = '\
         <tr>\
@@ -77,7 +93,7 @@ var fun =
             </tr>\
             <tr>\
                 <td class="right w50">编码:</td>\
-                <td class="w100">' + arr[i].item_model.sku + '</td>\
+                <td class="w120">' + arr[i].item_model.sku + '</td>\
                 <td class="right w50">数量:</td>\
                 <td class="w50">' + arr[i].amount + '</td>\
                 <td class="right w50">价格:</td>\
@@ -92,6 +108,7 @@ var fun =
     b04: function (site) {
         let unit = "未开发"
         switch (site) {
+            case "sg": unit = "$"; break;
             case "my": unit = "RM"; break;
             case "br": unit = "R$"; break;
             case "tw": unit = "NT$"; break;
@@ -105,6 +122,7 @@ var fun =
             case 6: str = "Cash on Delivery"; break;
             case 18: str = "Credit Card/Debit Card"; break;
             case 23: str = "Credit Card"; break;
+            case 24: str = "SParcelado"; break;
             case 27: str = "ShopeePay"; break;
             case 33: str = "JKO Pay"; break;
             case 4:
