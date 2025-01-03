@@ -4,6 +4,7 @@ Object.assign(Tool, {
     {
         a01: function (site, dom, next, This, t) {
             let oo = {
+                site: site,
                 dom: dom,
                 next: next,
                 This: This,
@@ -27,7 +28,7 @@ Object.assign(Tool, {
             let data = [{
                 action: "sqlite",
                 database: "shopee/物流方式",
-                sql: "select @.cargo_types as cargo_types FROM @.table where @.name='" + site.toUpperCase() + "'"
+                sql: "select @.cargo_types as cargo_types FROM @.table where @.name='" + oo.site.toUpperCase() + "'"
             }]
             Tool.ajax.a01(data, this.a03, this, oo);
         },
