@@ -10,7 +10,7 @@ var fun01 =
         this.a02(oo)
     },
     a02: function (oo) {
-        let len = $('[class="ml-[3px] align-middle"]').length, len2 = $('[data-sqe="item"]').length
+        let len = $('[class="flex items-center"]').length, len2 = $('[data-sqe="item"]').length
         $("title").html("【" + oo.num + "】商品个数：" + len + "=" + oo.count + "=" + len2);
         if (len != 60) {
             if (len >= oo.count) {

@@ -2,34 +2,39 @@
 var fun =
 {
     obj: {
-        DEFAULT_DB: "",
         size: 20
     },
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'
         obj.params.field = obj.params.field ? obj.params.field : '1'
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
-        this.a03(["sqlite"])
+        this.a02();
     },
-    // a02: function () {
-    //     let data = [{
-    //         action: "process",
-    //         fun: "env",
-    //         name: "NEXTJS_CONFIG_DEFAULT_DB"
-    //     }]
-    //     Tool.ajax.a01(data, this.a03, this);
-    // },
+    a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/采集箱/商品/" + obj.params.site,
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/商品/" + obj.params.site + ".db"],
+                database: "shopee/采集箱/商品/" + obj.params.site,
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
     a03: function (t) {
-        this.obj.DEFAULT_DB = t[0];
         let sessionObj = {}
         let str = sessionStorage.getItem(window.location.pathname + obj.params.jsFile)
         if (str) sessionObj = JSON.parse(str)
-        Tool.ajax.a01(this.b07(t[0], sessionObj[obj.params.page]), this.a04, this, sessionObj);
+        Tool.ajax.a01(this.b07(sessionObj[obj.params.page]), this.a04, this, sessionObj);
     },
     a04: function (t, sessionObj) {
-        let html1 = "", arr = Tool.getArr(t[0], this.obj.DEFAULT_DB);
+        let html1 = "", arr = Tool.getArr(t[0], "sqlite");
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
             <tr>\
@@ -49,7 +54,7 @@ var fun =
     			<thead class="table-light">'+ this.b01() + '</thead>\
     			<tbody>'+ html1 + '</tbody>\
     		</table>\
-            ' + Tool.page2(sessionObj, t[0].LastEvaluatedKey, t[1], this.obj.DEFAULT_DB, this.obj.size, obj.params.page, obj.params.jsFile) + '\
+            ' + Tool.page2(sessionObj, t[0].LastEvaluatedKey, t[1], "sqlite", this.obj.size, obj.params.page, obj.params.jsFile) + '\
     	</div>'
         Tool.html(null, null, html)
     },
@@ -120,49 +125,46 @@ var fun =
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
-    b07: function (DEFAULT_DB, ExclusiveStartKey) {
-        if (DEFAULT_DB == "dynamodb") {
-            return this.b08(this.obj.size, DEFAULT_DB, ExclusiveStartKey)
-        }
-        else {
-            return this.b09(this.obj.size, DEFAULT_DB)
-        }
+    b07: function (ExclusiveStartKey) {
+       
+            return this.b09(this.obj.size)
+       
     },
-    b08: function (size, DEFAULT_DB, ExclusiveStartKey) {
-        let TableName = Tool.getChinaAscii('shopee_采集箱_商品_' + obj.params.site + '_table')
-        let params = {
-            ProjectionExpression: 'itemid,shopid,title,image,shop_location,currency,price,addtime', // 只获取这些字段
-            Limit: size, // 每页项目数上限
-            TableName: TableName,
-        }
-        if (ExclusiveStartKey && obj.params.page != 1) {//翻页
-            params.ExclusiveStartKey = ExclusiveStartKey;
-        }
+    // b08: function (size, ExclusiveStartKey) {
+    //     let TableName = Tool.getChinaAscii('shopee_采集箱_商品_' + obj.params.site + '_table')
+    //     let params = {
+    //         ProjectionExpression: 'itemid,shopid,title,image,shop_location,currency,price,addtime', // 只获取这些字段
+    //         Limit: size, // 每页项目数上限
+    //         TableName: TableName,
+    //     }
+    //     if (ExclusiveStartKey && obj.params.page != 1) {//翻页
+    //         params.ExclusiveStartKey = ExclusiveStartKey;
+    //     }
+    //     let data = [{
+    //         action: "sqlite",
+    //         fun: "scan",
+    //         params: params,
+    //     }]
+    //     /////////////////////////////////////////////
+    //     if (obj.params.page == 1) {
+    //         data.push({
+    //             action: "sqlite",
+    //             fun: "scan",
+    //             params: {
+    //                 TableName: TableName,
+    //                 Select: 'COUNT' // 请求只返回项目总数
+    //             }
+    //         })
+    //     }
+    //     return data;
+    // },
+    b09: function (size) {
         let data = [{
-            action: DEFAULT_DB,
-            fun: "scan",
-            params: params,
-        }]
-        /////////////////////////////////////////////
-        if (obj.params.page == 1) {
-            data.push({
-                action: DEFAULT_DB,
-                fun: "scan",
-                params: {
-                    TableName: TableName,
-                    Select: 'COUNT' // 请求只返回项目总数
-                }
-            })
-        }
-        return data;
-    },
-    b09: function (size, DEFAULT_DB) {
-        let data = [{
-            action: DEFAULT_DB,
+            action: "sqlite",
             database: "shopee/采集箱/商品/" + obj.params.site,
-            sql: "select " + Tool.fieldAs("itemid,shopid,title,image,shop_location,currency,price,addtime") + " FROM @.table" + this.b03() + Tool.limit(size, obj.params.page, DEFAULT_DB),
+            sql: "select " + Tool.fieldAs("itemid,shopid,title,image,shop_location,currency,price,addtime") + " FROM @.table" + this.b03() + Tool.limit(size, obj.params.page, "sqlite"),
         }, {
-            action: DEFAULT_DB,
+            action: "sqlite",
             database: "shopee/采集箱/商品/" + obj.params.site,
             sql: "select count(1) as Count FROM @.table" + this.b03(),
         }]

@@ -3,7 +3,7 @@ var fun =
 {
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'//站点
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'//站点
         this.a02()
     },
     a02: function () {

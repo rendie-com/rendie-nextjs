@@ -25,7 +25,7 @@ var fun =
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_fans_" + obj.params.site + "_" + obj.params.dbname + ".db", "https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_fans_" + obj.params.site + "_" + obj.params.dbname + ".db"],
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/粉丝/" + obj.params.site + "/" + obj.params.dbname + ".db"],
                 database: "shopee/采集箱/粉丝/" + obj.params.site + "/" + obj.params.dbname
             }]
         }]
@@ -67,7 +67,7 @@ var fun =
         }
         let html = Tool.header2(obj.params.jsFile, obj.params.site) + '\
         <div class="p-2">\
-            '+ Tool.header4(obj.params.site,2) + this.b06() + '\
+            '+ Tool.header4(obj.params.site, 2) + this.b06() + '\
         	<table class="table align-middle table-hover center">\
         		<thead class="table-light">'+ this.b01() + '</thead>\
         		<tbody>'+ html1 + '</tbody>\

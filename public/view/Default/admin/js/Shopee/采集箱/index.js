@@ -5,12 +5,7 @@ $(function () {
     let loginPath = ["admin/js/Shopee/common.js", "admin/js/Shopee/common_login.js", "admin/js/Shopee/common_登录.js"]
     switch (obj.params.jsFile) {
         case "js01":
-            Tool.scriptArr(loginPath.concat([
-                path + 'config_tw.js',
-                path + 'config_my.js',
-                path + 'config_br.js',
-                path + '商品/采集商品.js'
-            ]));
+            Tool.scriptArr(loginPath.concat([path + '商品/采集商品.js']));
             break;
         case "js02": Tool.scriptArr([
             "admin/js/Shopee/common.js",
@@ -21,6 +16,7 @@ $(function () {
             path + 'config_tw.js',
             path + 'config_my.js',
             path + 'config_br.js',
+            path + 'config_sg.js',
             path + '店铺/采集店铺.js'
         ])); break;
         case "js04": Tool.scriptArr(["admin/js/Shopee/common.js", path + '店铺/从商品中获取店铺ID.js']); break;

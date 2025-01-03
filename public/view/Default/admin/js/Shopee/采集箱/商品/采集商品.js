@@ -7,8 +7,8 @@ var fun =
     a01: function () {
         //obj.params.jsFile         选择JS文件        
         //obj.params.site           站点
-        //obj.params.return         返回URL       
-        this.a02()
+        //obj.params.return         返回URL  
+        Tool.loadJS("/" + o.path + "admin/js/Shopee/采集箱/config_" + obj.params.site + ".js", this.a02, this)
     },
     a02: function () {
         let html = Tool.header(obj.params.return, "Shopee &gt; 采集箱 &gt; 商品 &gt; 采集商品") + '\
@@ -16,7 +16,7 @@ var fun =
             <table class="table table-hover align-middle">\
             <tbody>\
 		         <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
-                 <tr><td class="right">请选择关键词：</td><td colspan="2">'+ this.b01(obj.params.site) + '</td></tr>\
+                 <tr><td class="right">请选择关键词：</td><td colspan="2">'+ this.b01() + '</td></tr>\
 		        <tr><td class="right">关键词页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
             </tbody>\
@@ -25,24 +25,16 @@ var fun =
         Tool.html(null, null, html);
     },
     //////////////////////////////////////////////
-    b01: function (site) {
-        let arr = []
-        if (site == "my") {
-            arr = config_my
-        }
-        else if (site == "br") {
-            arr = config_br
-        }
-        else if (site == "tw") {
-            arr = config_tw
-        }
+    b01: function () {
+        let arr = config
         let str1 = ""
         for (let i = 0; i < arr.length; i++) {
             str1 += '<option value="' + arr[i][0] + '">' + (i + 1) + '.' + arr[i][0] + '(' + arr[i][2] + ')</option>'
         }
         let str2 = '\
         <select onChange="fun.c01($(this),this.options[this.selectedIndex].value)" class="form-select">\
-            <option value="-_-20">请选择关键词</option>'+ str1 + '\
+            <option value="">请选择关键词</option>\
+            '+ str1 + '\
         </select>';
         return str2;
     },
@@ -75,32 +67,26 @@ var fun =
     },
     ////////////////////////////////////////////////////
     e01: function (t) {
-        let itemidArr = Tool.StrSplits(t, "itemid=", "&")
-        let shopidArr = Tool.StrSplits(t, "shopid=", "\"")
-        let nameArr = Tool.StrSplits(t, '.webp" alt="', "\"")
-        let imageArr = Tool.StrSplits(t, '<div class="relative z-0 w-full pt-full"><img src="', "\"")
-        let priceArr = Tool.StrSplits(t, '<span class="font-medium text-base/5 truncate">', "</span>")
-        let shop_locationArr = Tool.StrSplits(t, '<span class="ml-[3px] align-middle">', "</span>")
+        let itemArr = Tool.StrSplits(t, 'data-sqe="item">', "</li>")
+        let itemidArr = [], shopidArr = [], titleArr = [], imageArr = [], priceArr = [], shop_locationArr = []
+        for (let i = 0; i < itemArr.length; i++) {
+            itemidArr.push(Tool.StrSlice(itemArr[i], "itemid=", "&"))
+            shopidArr.push(Tool.StrSlice(itemArr[i], "shopid=", "\""))
+            titleArr.push(Tool.StrSlice(itemArr[i], '.webp" alt="', "\""))
+            imageArr.push(Tool.StrSlice(itemArr[i], '<div class="relative z-0 w-full pt-full"><img src="', "\""))
+            priceArr.push(Tool.StrSlice(itemArr[i], '<span class="font-medium text-base/5 truncate">', "</span>"))
+            shop_locationArr.push(Tool.StrSlice(itemArr[i], 'class="ml-[3px] align-middle">', "</span>"))
+        }
         this.obj.A2 = Tool.int(Tool.StrSlice(t, 'class="shopee-mini-page-controller__total">', '</span>'));
-        if (itemidArr.length == shopidArr.length &&
-            shopidArr.length == nameArr.length &&
-            nameArr.length == imageArr.length &&
-            imageArr.length == priceArr.length &&
-            priceArr.length == shop_locationArr.length
-        ) {
-            this.e02(itemidArr, shopidArr, nameArr, imageArr, priceArr, shop_locationArr)
-        }
-        else {
-            Tool.at("内容出错：\n\n" + t)
-        }
+        this.e02(itemidArr, shopidArr, titleArr, imageArr, priceArr, shop_locationArr)
     },
-    e02: function (itemidArr, shopidArr, nameArr, imageArr, priceArr, shop_locationArr) {
+    e02: function (itemidArr, shopidArr, titleArr, imageArr, priceArr, shop_locationArr) {
         let data = []
         for (let i = 0; i < itemidArr.length; i++) {
             let arrL = [
                 "@.itemid",
                 "@.shopid",
-                "@.name",
+                "@.title",
                 "@.image",
                 "@.price",
                 "@.shop_location",
@@ -109,9 +95,9 @@ var fun =
             let arrR = [
                 shopidArr[i],
                 shopidArr[i],
-                Tool.rpsql(nameArr[i]),
+                Tool.rpsql(titleArr[i]),
                 Tool.rpsql(imageArr[i]),
-                priceArr[i].replace(/,/g, ""),
+                priceArr[i].replace(/,/ig, ""),
                 Tool.rpsql(shop_locationArr[i]),
                 Tool.gettime(""),
             ]
@@ -157,6 +143,6 @@ var fun =
     f03: function (t) {
         //问：为什么不直接访问下一页？答：这样会很容易出现验证码。
         gg.tabs_executeScript_indexOf(3, ["jquery"], t + "\nfun01.d01(" + this.obj.A1 + ")", ["已打开下一页。"], false, this.d04, this)
-    },   
+    },
 }
 fun.a01();

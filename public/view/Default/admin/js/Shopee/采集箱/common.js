@@ -11,6 +11,7 @@ Object.assign(Tool, {
   header4: function (site, mode) {
     let html = '\
       <ul class="makeHtmlTab">\
+          <li'+ (site == "sg" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=js05&site=sg\')">新加坡</li>\
           <li'+ (site == "tw" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=js05&site=tw\')">台湾虾皮</li>\
           <li'+ (site == "my" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=js05&site=my\')">马来西亚</li>\
           <li'+ (site == "br" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=js05&site=br\')">巴西</li>\

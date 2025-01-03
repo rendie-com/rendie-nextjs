@@ -4,7 +4,7 @@ var fun =
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'//站点
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'//站点
         obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
         this.a02();
@@ -18,7 +18,7 @@ var fun =
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_shop_" + obj.params.site + ".db","https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_shop_" + obj.params.site + ".db"],
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/店铺/" + obj.params.site + ".db"],
                 database: "shopee/采集箱/店铺/" + obj.params.site
             }]
         }]
