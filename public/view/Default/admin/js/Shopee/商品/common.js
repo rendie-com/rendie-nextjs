@@ -14,6 +14,7 @@ Object.assign(Tool, {
     tab: function (jsFile, site) {
         let html = '\
        <ul class="makeHtmlTab">\
+            <li'+ (site == "sg" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=sg\')">新加坡</li>\
             <li'+ (site == "tw" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=tw\')">台湾虾皮</li>\
             <li'+ (site == "my" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=my\')">马来西亚</li>\
             <li'+ (site == "br" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=br\')">巴西</li>\
@@ -36,7 +37,8 @@ Object.assign(Tool, {
         [12, "Product DTS value"],
         [13, "Option name length"],
         [14, "variation is out of limit7"],
-        [15, "发货天数超过4天"]
+        [15, "发货天数超过4天"],
+        [16, "图片出错"]
     ],
     penalty_type: [
         [0, "未违规"],
@@ -139,6 +141,7 @@ Object.assign(Tool, {
         [3, "货源不对"],
         [4, "需要修改"],
         [5, "货源类目不对"],
-        [6, "侵权商品"]
+        [6, "侵权商品"],
+        [7, "与其它商品重复"]
     ],
 })
