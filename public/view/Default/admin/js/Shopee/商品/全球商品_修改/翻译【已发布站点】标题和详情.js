@@ -16,7 +16,7 @@ var fun =
                     tl
                 ],
                 "te_lib"
-            ]       
+            ]
             gg.postFetch(url, JSON.stringify(data), this.a02, this, oo)
         },
         a02: function (t, oo) {
@@ -29,7 +29,7 @@ var fun =
         },
     },
     obj: {
-        A1: 1, Aarr: ["tw", "my", "br"],
+        A1: 1, Aarr: ["sg", "tw", "my", "br"],
         B1: 1, B2: 0,
     },
     a01: function () {
@@ -80,6 +80,7 @@ var fun =
     /////////////////////////////////////
     b01: function (t) {
         //处理单位，后面的括号。
+        //翻译后不是换行的，我给它换行。
         let arr1 = t.split("✅")
         let str = "✅" + arr1[1] + "\n"
         if (str.indexOf("(") != -1) {
@@ -152,7 +153,6 @@ var fun =
         oo.updateArr.push("@.en_nameLen=" + t.length)
         this.f01(oo);
     },
-
     //////////////翻译成葡萄牙语/////////////////////////////////
     f01: function (oo) {
         if (oo.pt_name) {
