@@ -4,13 +4,28 @@ var fun =
   a01: function () {
     //obj.params.jsFile     表示选择JS文件
     let data = [{
-        action: "sqlite",
-        database: "shopee/类目/类目",
-        sql: "select " + Tool.fieldAs("id,isleaf,hide,sort,count1,count2,count3,name,enname,fromid") + " FROM @.table where @.upid=0 order by @.sort asc",
+      action: "fs",
+      fun: "access_sqlite",
+      database: "shopee/类目/类目",
+      mode: 0,
+      elselist: [{
+        action: "fs",
+        fun: "download_sqlite",
+        urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/类目/类目.db"],
+        database: "shopee/类目/类目"
+      }]
     }]
     Tool.ajax.a01(data, this.a02, this);
   },
   a02: function (t) {
+    let data = [{
+      action: "sqlite",
+      database: "shopee/类目/类目",
+      sql: "select " + Tool.fieldAs("id,isleaf,hide,sort,count1,count2,count3,name,enname,fromid") + " FROM @.table where @.upid=0 order by @.sort asc",
+    }]
+    Tool.ajax.a01(data, this.a03, this);
+  },
+  a03: function (t) {
     let arr = t[0]
     let html = '', td1 = '';
     for (let i = 0; i < arr.length; i++) {
@@ -58,6 +73,7 @@ var fun =
     </div>'
     Tool.html(null, null, html);
   },
+  ///////////////////////////////////////////////
   c03: function (This, id) {
     if (This.attr("Class") == "Mo MoB") { This.attr("Class", "Mo MoA"); $(".Mo" + id).hide(); }
     else {
@@ -66,10 +82,10 @@ var fun =
       else {
         This.parent().parent().after('<tr><td class="Mo' + id + ' p-0" colspan="8"><img height="30" src="/' + o.path + 'admin/img/loading_42x42.gif"/></td></tr>');
         let data = [{
-            action: "sqlite",
-            database: "shopee/类目/类目",
-            sql: "select @.id,@.sort,@.hide,@.fromid,@.name,@.enname,@.isleaf FROM @.table where @.upid=" + id + " order by @.sort asc",
-          }]
+          action: "sqlite",
+          database: "shopee/类目/类目",
+          sql: "select @.id,@.sort,@.hide,@.fromid,@.name,@.enname,@.isleaf FROM @.table where @.upid=" + id + " order by @.sort asc",
+        }]
         let m1 = parseInt(This.css("margin-left")) + 20
         Tool.ajax.a01(data, this.c04, this, [id, m1])
       }
