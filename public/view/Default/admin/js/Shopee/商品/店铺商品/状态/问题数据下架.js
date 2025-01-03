@@ -10,7 +10,7 @@ var fun =
         //obj.params.jsFile       选择JS文件      
         //obj.params.return       返回URL
         //obj.params.site         站点
-        let html = Tool.header(obj.params.return, "Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 状态_问题数据下架") + '\
+        let html = Tool.header(obj.params.return, "Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 状态 &gt; 问题数据下架") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
@@ -18,6 +18,7 @@ var fun =
 		    <tr><td class="right w150">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">条件：</td><td id="where" colspan="2"></td></tr>\
 		    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
+		    <tr><td class="right">商品编码：</td><td id="proid" colspan="2"></td></tr>\
 		    <tr><td class="right">状态：</td><td id="state" colspan="2">正在准备账号...</td></tr>\
           </tbody>\
           </table>\
@@ -36,7 +37,7 @@ var fun =
         let arr = [
             "@.ManualReview<>9",//敦煌手动审核状态 <> 9.图片且详情审核通过
             "@.DHAfterReview<>0",//敦煌审核后本地状态 <> 0.正常
-            "@.BeforeReview<>1",//更新前本地状态 <> 1.更新成功
+            //"@.BeforeReview<>1",//更新前本地状态 <> 1.更新成功
             "@.penalty_type<>0",//更新后违规类型 <> 0.未违规
             "@.ManualReview_1688<>1",//手动审核1688状态 <> 1.使用1688属性图
             "@.ManualReview_1688_state<>0",//手动审核后1688商品状态 <> 0.正常
@@ -63,14 +64,16 @@ var fun =
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a06, this, null, t[0])
     },
     a06: function (arr) {
-        let data = []
+        let data = [],proidArr=[]
         for (let i = 0; i < arr.length; i++) {
             data.push({
                 action: "sqlite",
                 database: "shopee/商品/店铺商品/" + obj.params.site,
                 sql: "select @.fromid as fromid FROM @.table  where @.proid='" + arr[i].proid + "'",
             })
+            proidArr.push(arr[i].proid)
         }
+        $("#proid").html(proidArr.join(" , "))
         Tool.ajax.a01(data, this.a07, this);
     },
     a07: function (arr) {

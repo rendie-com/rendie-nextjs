@@ -12,13 +12,15 @@ Object.assign(Tool, {
             my: {
                 name: "🌟Unit Weight",//单位重量
                 unit: "g"
-            },
+            },           
             br: {
                 name: "🌟Unidade de peso",//单位重量
                 unit: "g"
             },
+            
         },
         a01: function (seller, site, next, This, t) {
+            this.obj.sg=this.obj.my;
             let oo = {
                 seller: seller,
                 site: site,

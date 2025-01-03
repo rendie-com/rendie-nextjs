@@ -3,7 +3,7 @@ var fun =
 {
     obj:
     {
-        type1: 0,//速卖通的一级类目
+        ManualReview_1688_categoryId1: 0,//1688的一级类目
         site: "",//站点
         mode: 0,//发布数量
     },
@@ -11,19 +11,18 @@ var fun =
         $("#state").html("正在获得配置参数");
         let data = [{
             action: "sqlite",
-            database: "aliexpress",
-            sql: "select @.fromid as fromid,@.name as name FROM @.type where @.upid=0 and @.isleaf=0 order by @.sort desc,@.id asc",
+            database: "1688/类目/现货类目",
+            sql: "select " + Tool.fieldAs("fromid,name") + " FROM @.table where @.upid=0 order by @.sort asc",
         }]
-        
         Tool.ajax.a01(data, this.a02, this)
     },
     a02: function (t) {
-        let html = Tool.header(obj.params.return,"Shopee &gt; 商品列表 &gt; 全球商品 &gt; 更多 &gt; 发布到【店铺商品】中去") + '\
+        let html = Tool.header(obj.params.return, "Shopee &gt; 商品列表 &gt; 全球商品 &gt; 更多 &gt; 发布到【店铺商品】中去") + '\
         <div class="p-2">\
              <table class="table table-hover align-middle mb-0">\
                  <tbody>\
                     <tr><td class="right w200">发布站点：</td><td colspan="2">'+ this.b01() + '</td></tr>\
-                    <tr><td class="right">发布类目：</td><td colspan="2">'+ this.b02(t[0]) + '</td></tr>\
+                    <tr><td class="right">发布前1688类目：</td><td colspan="2">'+ this.b02(t[0]) + '</td></tr>\
                     <tr><td class="right">发布数量：</td><td colspan="2">'+ this.b05() + '</td></tr>\
                     <tr><td class="right">参数：</td><td colspan="2" class="p-0" id="parameter"></td></tr>\
                     <tr><td class="right">账号：</td><td colspan="2" id="username"></td></tr>\
@@ -32,6 +31,7 @@ var fun =
                     <tr><td class="right">状态：</td><td id="state" colspan="2">正在准备账号...</td></tr>\
                     <tr><td class="right">物流方式：</td><td colspan="5" id="logistics" class="p-0"></td></tr>\
                     <tr><td class="right">不包邮定价：</td><td colspan="2" class="p-0">'+ this.b03() + '</td></tr>\
+                    <tr><td class="right">发布条件：</td><td colspan="2" class="p-0" id="where"></td></tr>\
                  </tbody>\
                  <tbody id="tbody"></tbody>\
              </table>\
@@ -45,7 +45,8 @@ var fun =
     b01: function () {
         return '\
          <select class="form-select"  onChange="fun.c01($(this),this.options[this.selectedIndex].value)">\
-             <option value="-_-20">请选择发布的站点</option>\
+             <option value="">请选择发布的站点</option>\
+             <option value="sg">新加坡</option>\
              <option value="tw">台湾虾皮</option>\
              <option value="my">马来西亚</option>\
              <option value="br">巴西</option>\
@@ -54,11 +55,11 @@ var fun =
     b02: function (typeArr) {
         let nArr = [];
         for (let i = 0; i < typeArr.length; i++) {
-            nArr.push('<option value="' + typeArr[i].fromid + '">' + (i+1) + '.' + typeArr[i].name + '</option>');
+            nArr.push('<option value="' + typeArr[i].fromid + '">' + (i + 1) + '.' + typeArr[i].name + '</option>');
         }
         return '\
          <select onChange="fun.c02($(this),this.options[this.selectedIndex].value)" class="form-select">\
-           <option value="-_-20">速卖通类目</option>\
+           <option value="">1688类目</option>\
            ' + nArr.join("") + '\
          </select>';
     },
@@ -194,7 +195,7 @@ var fun =
             <option value="">请选择发布数量</option>\
             <option value="1">不限制</option>\
             <option value="2">10条</option>\
-            <option value="3">20条</option>\
+            <option value="3">50条</option>\
         </select>';
         return str;
     },
@@ -206,7 +207,7 @@ var fun =
     },
     c02: function (This, val) {
         This.attr("disabled", "disabled")
-        this.obj.type1 = val;
+        this.obj.ManualReview_1688_categoryId1 = val;
         this.d01()
     },
     c03: function (This, val) {
@@ -216,7 +217,7 @@ var fun =
     },
     //////////////////////////////////////////////////////
     d01: function () {
-        if (this.obj.site && this.obj.type1 && this.obj.mode) {
+        if (this.obj.site && this.obj.ManualReview_1688_categoryId1 && this.obj.mode) {
             Tool.login.a01(this.d02, this);
         }
     },

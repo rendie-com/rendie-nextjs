@@ -9,13 +9,37 @@ var fun =
         obj.params.BeforeReview = obj.params.BeforeReview ? obj.params.BeforeReview : "";//更新前本地状态
         obj.params.aliexpress_type1 = obj.params.aliexpress_type1 ? obj.params.aliexpress_type1 : "";//速卖通类目
         obj.params.ManualReview_1688_state = obj.params.ManualReview_1688_state ? obj.params.ManualReview_1688_state : "";//手动审核后1688商品状态
-
-        //obj.arr[9] = obj.arr[9] ? obj.arr[9] : "-_-20";//手动审核1688状态
-        //obj.arr[11] = obj.arr[11] ? obj.arr[11] : "-_-20";//修改状态
-
+        obj.params.ManualReview_1688 = obj.params.ManualReview_1688 ? obj.params.ManualReview_1688 : "";//手动审核1688状态
+        //obj.arr[11] = obj.arr[11] ? obj.arr[11] : "";//修改状态
         this.a02();
     },
     a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/类目/类目",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/类目/类目.db"],
+                database: "shopee/类目/类目",
+            }]
+        }, {
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/商品/全球商品",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/商品/全球商品.db"],
+                database: "shopee/商品/全球商品",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
         let where = this.b17();
         let data = [{
             action: "sqlite",
@@ -30,9 +54,9 @@ var fun =
             database: "shopee/商品/全球商品",
             sql: "select " + Tool.fieldAs("proid,fromID,discount,type1,editStatus,BeforeReview,pic,err,ManualReview_1688_subject,ManualReview_1688,ManualReview_1688_fromid,ManualReview_1688_state,ManualReview_1688_unitWeight,ManualReview_1688_categoryId") + " FROM @.table" + where + Tool.limit(10, obj.params.page),
         }]
-        Tool.ajax.a01(data, this.a03, this, where);
+        Tool.ajax.a01(data, this.a04, this, where);
     },
-    a03: function (t, where) {
+    a04: function (t, where) {
         let html = "", arr1 = t[2]
         for (let i = 0; i < arr1.length; i++) {
             html += '\
@@ -56,8 +80,7 @@ var fun =
                     <tr><td class="right" style="padding-left:25px;position: relative;">'+ this.b02() + '查询条件：</td><td colspan="7" class="left">' + where + '</td></tr>\
                     ' + this.b01(t[0]) + '\
                 </thead>\
-				<tbody>\
-                '+ html + '</tbody>\
+				<tbody>'+ html + '</tbody>\
 			</table>\
             <div>' + Tool.page(t[1][0].total, 10, obj.params.page) + '</div>\
 		</div>'
@@ -72,7 +95,7 @@ var fun =
           <th class="left">标题</th>\
           <th class="p-0">'+ this.b06(obj.params.aliexpress_type1, "aliexpress_type1", config.proupdhgate_type_count, type) + '</th>\
           <th class="p-0">'+ this.b07(obj.params.BeforeReview, config.GlobalPro_BeforeReview_count) + '</th>\
-          <th class="p-0 w170">'+ this.b10("obj.arr[9]", 9, config.GlobalPro_ManualReview_1688_count) + '</th>\
+          <th class="p-0 w170">'+ this.b10(obj.params.ManualReview_1688, "ManualReview_1688", config.GlobalPro_ManualReview_1688_count) + '</th>\
           <th class="p-0">'+ this.b13(obj.params.ManualReview_1688_state, "ManualReview_1688_state", config.GlobalPro_ManualReview_1688_state_count) + '</th>\
           <th class="p-0">'+ this.b19("obj.arr[11]", 11, config.GlobalPro_editStatus_count) + '</th>\
        </tr>'
@@ -178,7 +201,7 @@ var fun =
 		                </ul>\
                     </div>'
                 }
-                else if (arr[i][0] == 1 || arr[i][0] == 2 || arr[i][0] == 8 || arr[i][0] == 9 || arr[i][0] == 12 || arr[i][0] == 13 || arr[i][0] == 15 || arr[i][0] == 14) {
+                else if (arr[i][0] == 1 || arr[i][0] == 2 || arr[i][0] == 8 || arr[i][0] == 9 || arr[i][0] == 11 || arr[i][0] == 12 || arr[i][0] == 13 || arr[i][0] == 14 || arr[i][0] == 15 || arr[i][0] == 16) {
                     str2 = '\
                     <div style="position: relative;top: -7px;left: -7px;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
@@ -193,14 +216,14 @@ var fun =
         }
         return str
     },
-    b10: function (val, I, configArr) {
+    b10: function (val, name, configArr) {
         let nArr = [], arr = Tool.ManualReview_1688;
         for (let i = 0; i < arr.length; i++) {
             nArr.push('<option value="' + i + '" ' + (arr[i][0] == val ? 'selected="selected"' : '') + '>' + i + '.' + arr[i][1] + '（' + configArr[i] + '）</option>');
         }
         return '\
-        <select onChange="fun.c04('+ I + ',this.options[this.selectedIndex].value)" class="form-select">\
-			<option value="-_-20">手动审核1688状态</option>\
+        <select onChange="fun.c04(\''+ name + '\',this.options[this.selectedIndex].value)" class="form-select">\
+			<option value="">手动审核1688状态</option>\
             <option value="-1">更新数量</option>\
             ' + nArr.join("") + '\
 		</select>'
@@ -216,7 +239,8 @@ var fun =
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
                         <ul class="dropdown-menu">\
                             <li onClick="fun.c10(1);"><a class="dropdown-item pointer">设置为【未更新】</a></li>\
-                            <li onClick="Tool.openR(\'?jsFile=js41\');"><a class="dropdown-item pointer">*上传视频到shopee</a></li>\
+                            <li onClick="Tool.openR(\'?jsFile=js41\');"><a class="dropdown-item pointer">*上传主视频到shopee</a></li>\
+                            <li onClick="Tool.openR(\'?jsFile=js66\');"><a class="dropdown-item pointer">*上传讲解视频到shopee</a></li>\
                             <li onClick="Tool.openR(\'?jsFile=js35\');"><a class="dropdown-item pointer">*重新采集1688商品状态</a></li>\
                             <li onClick="Tool.openR(\'?jsFile=js55\');"><a class="dropdown-item pointer">*重新采集1688商品</a></li>\
                             <li onClick="Tool.openR(\'?jsFile=js64\');"><a class="dropdown-item pointer">*重新采集1688商品讲解视频</a></li>\
@@ -248,7 +272,7 @@ var fun =
     b13: function (val, name, configArr) {
         let nArr = [], arr = Tool.ManualReview_1688_stateArr;
         for (let i = 0; i < arr.length; i++) {
-            nArr.push('<option value="' + i + '" ' + (""+arr[i][0] == ""+val ? 'selected="selected"' : '') + '>' + i + '.' + arr[i][1] + '（' + configArr[i] + '）</option>');
+            nArr.push('<option value="' + i + '" ' + ("" + arr[i][0] == "" + val ? 'selected="selected"' : '') + '>' + i + '.' + arr[i][1] + '（' + configArr[i] + '）</option>');
         }
         return '\
         <select onChange="fun.c06(\''+ name + '\',this.options[this.selectedIndex].value)" class="form-select">\
@@ -300,7 +324,7 @@ var fun =
         }
         // if ( obj.params.aliexpress_type1 != "-_-20") { arr.push("@.type1=" +  obj.params.aliexpress_type1); }
         if (obj.params.BeforeReview != "") { arr.push("@.BeforeReview=" + obj.params.BeforeReview); }
-        // if (obj.arr[9] != "-_-20") { arr.push("@.ManualReview_1688=" + obj.arr[9]); }
+        if (obj.params.ManualReview_1688 != "") { arr.push("@.ManualReview_1688=" + obj.params.ManualReview_1688); }
         if (obj.params.ManualReview_1688_state != "") { arr.push("@.ManualReview_1688_state=" + obj.params.ManualReview_1688_state); }
         // if (obj.arr[11] != "-_-20") { arr.push("@.editStatus=" + obj.arr[11]); }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
@@ -356,7 +380,7 @@ var fun =
     },
     c04: function (I, val) {
         if (val == "-1") {
-            Tool.open4("js27");
+            Tool.openR("?jsFile=js27");
         }
         else {
             Tool.open(I, val);

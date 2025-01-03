@@ -4,7 +4,7 @@ var fun =
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'//站点
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'//站点
         obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
         obj.params.title = obj.params.title ? obj.params.title : ""//标题
@@ -15,7 +15,33 @@ var fun =
         obj.params.info1688 = obj.params.info1688 ? obj.params.info1688 : ""//1688信息 
         Tool.logistics.a01(obj.params.site, null, this.a02, this)
     },
-    a02: function (t) {
+    a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/卖家账户",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/卖家账户.db"],
+                database: "shopee/卖家账户",
+            }]
+        }, {
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/商品/店铺商品/" + obj.params.site,
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/商品/店铺商品/" + obj.params.site + ".db"],
+                database: "shopee/商品/店铺商品/" + obj.params.site,
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function (t) {
         let where = this.b08()
         let data = [{
             action: "sqlite",
@@ -28,11 +54,11 @@ var fun =
         }, {
             action: "sqlite",
             database: "shopee/商品/店铺商品/" + obj.params.site,
-            sql: "select " + Tool.fieldAs("fromid,isUnlisted,isTrueSignUp,unitWeight,discount,newDiscount,isDiscount,isSignUp,isSeckill,promotion,status,pic,proid,MinimumOrder,name,_1688_fromid,_1688_saleNum,_1688_maxPrice,_1688_MinimumOrder,_1688_freight,input_normal_price,self_uptime,price_uptime,scale,uptime,addtime") + " FROM @.table" + where + Tool.limit(10, obj.params.page, "sqlite"),
+            sql: "select " + Tool.fieldAs("fromid,isUnlisted,isTrueSignUp,unitWeight,discount,newDiscount,isDiscount,isSignUp,isSeckill,promotion,status,pic,proid,MinimumOrder,name,_1688_fromid,_1688_saleNum,_1688_maxPrice,_1688_MinimumOrder,_1688_freight,input_normal_price,self_uptime,price_uptime,uptime,addtime,scale") + " FROM @.table" + where + Tool.limit(10, obj.params.page, "sqlite"),
         }]
-        Tool.ajax.a01(data, this.a03, this, t);
+        Tool.ajax.a01(data, this.a04, this, t);
     },
-    a03: function (t, logistics) {
+    a04: function (t, logistics) {
         let config = JSON.parse(t[0][0].config)[obj.params.site];
         let html1 = "", arr = t[2]
         for (let i = 0; i < arr.length; i++) {
@@ -71,9 +97,9 @@ var fun =
 			</table>\
             ' + Tool.page(t[1][0].total, 10, obj.params.page) + '\
 		</div>'
-        Tool.html(this.a04, this, html)
+        Tool.html(this.a05, this, html)
     },
-    a04: function () {
+    a05: function () {
         $('[data-bs-toggle="tooltip"]').tooltip({
             //帮助：https://bootstrapdoc.com/docs/5.0/components/tooltips
             //帮助：https://blog.csdn.net/m0_49017085/article/details/130595296
@@ -103,9 +129,11 @@ var fun =
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
 	        <li onClick="Tool.openR(\'?jsFile=js16&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取【店铺商品】信息</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js67&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取【店铺商品】详情信息</a></li>\
 	        <li onClick="Tool.openR(\'?jsFile=js45&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*更新【店铺商品】信息</a></li>\
 	        <li onClick="Tool.openR(\'?jsFile=js46&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为该站点图片生成水印</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js48&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为该站点首图生成关键词水印</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js48&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为该站点首图生成水印</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js69&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为没有视频的商品生成视频</a></li>\
 	        <li onClick="Tool.openR(\'?jsFile=js49&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为该站点创建类目</a></li>\
 	        <li onClick="Tool.openR(\'?jsFile=js50&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*删除该站点类目</a></li>\
 	        <li onClick="Tool.openR(\'?jsFile=js56&site='+ obj.params.site + '\');" title="怎么选？答：定价错误的选出来。"><a class="dropdown-item pointer">选出要修改价格的商品</a></li>\
@@ -335,7 +363,7 @@ var fun =
     b14: function (MinimumOrder, unitWeight, min_purchase_limit) {
         return '\
         <table class="table mb-0 table-bordered">\
-            <tr><td title="以前最低购买量 = '+ MinimumOrder + '\n现在最低购买量 = ' + min_purchase_limit + '" ' + (min_purchase_limit != MinimumOrder ? ' style="color:red;"' : '') + '>' + MinimumOrder + ' 件</td></tr>\
+            <tr><td title="以前最低购买量（MinimumOrder） = '+ MinimumOrder + '\n现在最低购买量（min_purchase_limit） = ' + min_purchase_limit + '" ' + (min_purchase_limit != MinimumOrder ? ' style="color:red;"' : '') + '>' + MinimumOrder + ' 件</td></tr>\
             <tr><td title="单位重量">'+ (unitWeight * 1000).toFixed(2) + ' 克</td></tr>\
         </table>'
     },
@@ -438,6 +466,7 @@ var fun =
           <option value="">'+ name + '</option>\
           <option value="-1">更新数量</option>\
           <option value="-2">【本地更新时间】设置为【当前时间】</option>\
+          <option value="-3">【新折扣<=8】的【本地更新时间】设置为【当前时间】</option>\
           ' + nArr.join("") + '\
         </select>';
     },
@@ -593,15 +622,28 @@ var fun =
         Tool.ajax.a01(data, Tool.reload)
     },
     c07: function (name, val) {
+        let data = []
         if (val == "-1") {
             Tool.openR("?jsFile=js57&site=" + obj.params.site);
         }
         else if (val == "-2") {
-            let data=[{
-                action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
-                sql: "update @.table set @.self_uptime="  + Tool.gettime(""),
-            }]
+            if (confirm('确定【本地更新时间】设置为【当前时间】吗?')) {
+                data = [{
+                    action: "sqlite",
+                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    sql: "update @.table set @.self_uptime=" + Tool.gettime(""),
+                }]
+                Tool.ajax.a01(data, Tool.reload)
+            }
+        }
+        else if (val == "-3") {
+            if (confirm('确定【新折扣<=8】的【本地更新时间】设置为【当前时间】吗?')) {
+                data = [{
+                    action: "sqlite",
+                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    sql: "update @.table set @.self_uptime=" + Tool.gettime("") + " where @.newDiscount<=8",
+                }]
+            }
             Tool.ajax.a01(data, Tool.reload)
         }
         else {

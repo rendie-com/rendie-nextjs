@@ -14,6 +14,7 @@ Object.assign(Tool, {
             }
         },
         a01: function (seller, site, next, This, t) {
+            this.obj.sg=this.obj.my;
             let oo = {
                 seller: seller,
                 site: site,
@@ -36,21 +37,7 @@ Object.assign(Tool, {
             let data = {
                 name: this.obj[oo.site].name//新品上市
             }
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json;charset=UTF-8'
-                },
-                //{
-                //    "name": "Origin",
-                //    "value": 'https://seller.shopee.cn'
-                //},
-                //{
-                //    "name": "Referer",
-                //    "value": 'https://seller.shopee.cn/portal/category?cnsc_shop_id=911626103'
-                //},
-            ]
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.a03, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.a03, this, oo)
         },
         a03: function (t, oo) {
             /*
@@ -91,14 +78,8 @@ Object.assign(Tool, {
                     }
                 }
             }
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json'
-                },
-            ]
             $("#state").html("正在添加商品。。。");
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.a05, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.a05, this, oo)
         },
         a05: function (t, oo) {
             /*
@@ -127,14 +108,8 @@ Object.assign(Tool, {
             let url = "https://seller.shopee.cn/api/shopcategory/v4/category/update_category/?" + arr.join("&")
             $("#url").html(url + '【post】');
             $("#state").html("正在启用shopee子类目。。。");
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json'
-                },
-            ]
             let data = { "shop_category_id": parent_shop_category_id, "status": "active" }
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.a07, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.a07, this, oo)
         },
         a07: function (t, oo) {
             if (t.message = "message") {

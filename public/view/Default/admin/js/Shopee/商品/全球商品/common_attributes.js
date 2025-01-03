@@ -87,7 +87,6 @@ Object.assign(Tool, {
                         attrNameId = attr_shopee[j].id;
                         //去绑定属性【值】
                         attrValueIdArr = this.b04(attr_shopee[j].attrName, attr_shopee[j].attrValue, attr_1688[i].values, attr_shopee[j].input_type, attr_shopee[j].input_validation_type);
-                        //console.log(attrValueIdArr,attr_shopee[j])
                         if (attrValueIdArr == false) {
                             Tool.pre([
                                 "属性名：" + attr_shopee[j].attrName,
@@ -418,6 +417,7 @@ Object.assign(Tool, {
                     case "男士女士":
                     case "情侣式":
                     case "通用":
+                    case "普通人群":
                         val = "男女皆宜";
                         break;
                 }

@@ -4,7 +4,7 @@ Object.assign(Tool, {
     {
         obj: {
             A1: 1, A2: 0,//商品页进度
-            B1: 1, B2: 0,//商品条进度
+            B1: 17, B2: 0,//商品条进度
         },
         a01: function (obj, logistics, seller, dom, next, This, t) {
             let oo = {
@@ -20,7 +20,7 @@ Object.assign(Tool, {
         },
         a02: function (oo) {
             $("#state").html("正在获取商品信息。。。");
-            let data = this.b01(oo.dom, oo.obj.mode, oo.obj.type1, oo.obj.site)
+            let data = this.b01(oo.obj.mode, oo.obj.ManualReview_1688_categoryId1, oo.obj.site)
             Tool.ajax.a01(data, this.a03, this, oo);
         },
         a03: function (t, oo) {
@@ -43,9 +43,9 @@ Object.assign(Tool, {
             Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d01, this, this.g01, oo)
         },
         ////////////////////////////////
-        b01: function (dom, mode, type1, site) {
+        b01: function (mode, ManualReview_1688_categoryId1, site) {
             let whereArr = [
-                "@.type1=" + type1,//速卖通一级类目
+                "@.ManualReview_1688_categoryId1=" + ManualReview_1688_categoryId1,//1688一级类目
                 "@.ManualReview=9",//敦煌手动审核状态【9.图片且详情审核通过】
                 "@.DHAfterReview=0",//敦煌审核后本地状态【0.正常】
                 "@.BeforeReview=1",//更新前本地状态【1.更新成功】
@@ -56,8 +56,8 @@ Object.assign(Tool, {
                 //"@.ManualReview_1688_video_status=7",//人工审核1688视频状态【7.审核通过】
                 "@.editStatus<3",//修改状态 < 3  （	0：未修改 1：第一次修改 2：第二次修改 3：货源不对）
             ]
-            //whereArr = ["@.proid='R257389'"]
-            dom.append('<tr><td class="right">发布条件：</td><td colspan="2">' + whereArr.join(" <br/> ") + '</td></tr>');
+            //whereArr = ["@.proid='R777269'"]
+            $("#where").html('<tr><td class="right">发布条件：</td><td colspan="2">' + whereArr.join(" <br/> ") + '</td></tr>');
             let data = [];
             if (mode == 1) {
                 data = [{
@@ -74,7 +74,7 @@ Object.assign(Tool, {
                 }
             }
             else if (mode == 2 || mode == 3) {
-                let size = mode == 2 ? 10 : 20;
+                let size = mode == 2 ? 10 : 50;
                 data = [{
                     action: "sqlite",
                     database: "shopee/商品/全球商品",
@@ -86,7 +86,7 @@ Object.assign(Tool, {
         /////////////////////////////////////
         d01: function (oo) {
             let GlobalPro = oo.GlobalPro[this.obj.B1 - 1]
-            oo.dom.append('<tr><td class="right">商品编码：</td><td colspan="2">' + GlobalPro.proid + '</td></tr>');
+            oo.dom.html('<tr><td class="right">商品编码：</td><td colspan="2">' + GlobalPro.proid + '</td></tr>');
             let data = [{
                 action: "sqlite",
                 database: "1688",
@@ -101,6 +101,7 @@ Object.assign(Tool, {
         d02: function (t, oo) {
             let GlobalPro = oo.GlobalPro[this.obj.B1 - 1]
             GlobalPro._1688_prodes_sku = JSON.parse(t[1][0].sku);//后面要用
+            GlobalPro._1688_prodes_sku.startAmount = GlobalPro._1688_prodes_sku.startAmount ? GlobalPro._1688_prodes_sku.startAmount : 1
             if (GlobalPro.manualreview_1688_unitweight <= 0) {
                 Tool.pre(["重量小于0，程序终止。", GlobalPro])
             }
@@ -164,23 +165,20 @@ Object.assign(Tool, {
             let pArr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
-                "shop_id=" + oo.seller[oo.obj.site].shopId,
-                "cursor=",
-                "page_size=30",
+                "page_size=12",
                 "search_type=sku",
                 "keyword=" + GlobalPro.proid,
-                "selectable=1",
                 "cnsc_shop_id=" + oo.seller[oo.obj.site].shopId,
                 "cbsc_shop_region=" + oo.obj.site
             ]
-            let url = "https://seller.shopee.cn/api/v3/mtsku/get_mtsku_list_by_selector?" + pArr.join("&")
+            let url = "https://seller.shopee.cn/api/v3/mtsku/list/search_product_list?" + pArr.join("&")
             let _1688Url = "https://detail.1688.com/offer/" + GlobalPro.manualreview_1688_fromid + ".html"
             oo.dom.append('\
                 <tr><td class="right">1688详情页地址：</td><td colspan="2"><a href="' + _1688Url + '" target="_blank">' + _1688Url + '</a></td></tr>\
                 <tr><td class="right">请求地址：</td><td colspan="2"><a href="' + url + '" target="_blank">' + url + '</a></td></tr>\
                 ');
             $("#state").html("正在【全球商品】中搜索，获取商品SKU。。。");
-            gg.getFetch(url,"json", this.d06, this, oo)
+            gg.getFetch(url, "json", this.d06, this, oo)
         },
         d06: function (o1, oo) {
             if (o1.code == 0) {
@@ -192,11 +190,11 @@ Object.assign(Tool, {
                 }
                 else {
                     //为什么是“list[0]”？答：因为只搜索一个，所以就是第一个。
-                    this.d07(o1.data.list[0], oo);
+                    this.d07(o1.data.products[0], oo);
                 }
             }
             else {
-                Tool.pre(["出错001：", oo])
+                Tool.pre(["出错0001：", oo])
             }
         },
         d07: function (search_data, oo) {
@@ -204,25 +202,25 @@ Object.assign(Tool, {
             let GlobalPro = oo.GlobalPro[this.obj.B1 - 1];
             for (let i = 0; i < search_data.model_list.length; i++) {
                 model_price_list.push({
-                    mtsku_model_id: search_data.model_list[i].mtsku_model_id,
+                    mtsku_model_id: search_data.model_list[i].id,
                     mpsku_model_price: Tool.common_price.b03(
-                        (parseFloat(search_data.model_list[i].price_info.normal_price) + GlobalPro.common_price.upPrice) * GlobalPro._1688_prodes_sku.startAmount,
+                        (parseFloat(search_data.model_list[i].price_detail.origin_price) + GlobalPro.common_price.upPrice) * GlobalPro._1688_prodes_sku.startAmount,
                         oo.seller[oo.obj.site],
                         GlobalPro.discount
                     ).toFixed(oo.seller[oo.obj.site].scale),
                 });
                 model_info_list.push({
-                    "mtsku_model_id": search_data.model_list[i].mtsku_model_id,
+                    "mtsku_model_id": search_data.model_list[i].id,
                     //库存必须大于【最小购买量】，否则不可销售。
-                    "mpsku_status": (search_data.model_list[i].stock_info.normal_stock < GlobalPro.common_price.min_purchase_limit ? 2 : 1) //1:正常销售；2：不可销售；
+                    "mpsku_status": (search_data.model_list[i].stock_detail.total_seller_stock < GlobalPro.common_price.min_purchase_limit ? 2 : 1) //1:正常销售；2：不可销售；
                 })
             }
             oo.dom.append('<tr><td class="right">【全球商品】价格：</td><td colspan="2"><textarea id="sql" rows="10" class="form-control form-control-sm">' + JSON.stringify(search_data.model_list, null, 2) + '</textarea></td></tr>');
-            this.d08(search_data.mtsku_item_id, model_price_list, model_info_list, oo)
+            this.d08(search_data.id, model_price_list, model_info_list, oo)
         },
-        d08: function (mtsku_item_id, model_price_list, model_info_list, oo) {
+        d08: function (id, model_price_list, model_info_list, oo) {
             let data = {
-                "mtsku_item_id": mtsku_item_id,
+                "mtsku_item_id": id,
                 "publish_shop_list": [
                     {
                         "shop_id": oo.seller[oo.obj.site].shopId,
@@ -292,7 +290,7 @@ Object.assign(Tool, {
             ]
             let url = "https://seller.shopee.cn/api/v3/mtsku/get_mtsku_publish_record" + pArr.join("&")
             $("#state").html("正在获取发布结果。。。");
-            gg.getFetch(url,"json", this.e06, this, oo)
+            gg.getFetch(url, "json", this.e06, this, oo)
         },
         e06: function (t, oo) {
             if (t.code == 0) {
@@ -316,13 +314,13 @@ Object.assign(Tool, {
             if (publish_result.published_count == 1) {
                 this.f02("update @.table set @.is" + oo.obj.site + "=1 where @.proid='" + oo.GlobalPro[this.obj.B1 - 1].proid + "'", oo)
             }
-            else if (publish_result.failed_count == 1) {
+            else if (publish_result.failed_count == 1) {//||publish_result.unpublished_count == 1
                 // @.penalty_type=8         更新后违规类型【8.发布商品失败】
                 this.f02("update @.table set @.penalty_type=8 where @.proid in ('" + oo.GlobalPro[this.obj.B1 - 1].proid + "')", oo)
             }
             else if (publish_result.unpublished_count == 1) {
                 $("#state").html("不能发布了。");
-                this.g02(oo);
+                //this.g02(oo);
             }
             else {
                 Tool.pre(["未知发布结果", publish_result])

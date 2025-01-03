@@ -11,13 +11,14 @@ Object.assign(Tool, {
             my: {
                 name: "⚡Price RM0-RM",//价格
                 currency: "RM",
-            },
+            },           
             br: {
                 name: "⚡Preço R$0-R$",//价格
                 currency: "R$",
             },
         },
         a01: function (seller, site, next, This, t) {
+            this.obj.sg=this.obj.my;
             let oo = {
                 seller: seller,
                 site: site,
@@ -44,13 +45,7 @@ Object.assign(Tool, {
             let data = {
                 name: this.obj[oo.site].name + oo.seller[oo.site].fullPrice
             }
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json;charset=UTF-8'
-                },
-            ]
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.a03, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.a03, this, oo)
         },
         a03: function (t, oo) {
             /*
@@ -117,13 +112,7 @@ Object.assign(Tool, {
                     }
                 }
             }
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json'
-                },
-            ]
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.d02, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.d02, this, oo)
         },
         d02: function (t, oo) {
             /*
@@ -156,14 +145,8 @@ Object.assign(Tool, {
             let url = "https://seller.shopee.cn/api/shopcategory/v4/category/update_category/?" + arr.join("&")
             $("#url").html(url + '【post】');
             $("#state").html("正在启用shopee子类目。。。");
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json'
-                },
-            ]
             let data = { "shop_category_id": sub_shop_category_id, "status": "active" }
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.d04, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.d04, this, oo)
         },
         d04: function (t, oo) {
             if (t.message = "message") {
@@ -185,14 +168,8 @@ Object.assign(Tool, {
             let url = "https://seller.shopee.cn/api/shopcategory/v4/category/update_shop_collection_sequence/?" + arr.join("&")
             $("#url").html(url + '【post】');
             $("#state").html("正在调整顺序 。。。");
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json'
-                },
-            ]
             let data = { "collection_list": oo.collection_list }
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.e02, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.e02, this, oo)
         },
         e02: function (t, oo) {
             if (t.message = "message") {

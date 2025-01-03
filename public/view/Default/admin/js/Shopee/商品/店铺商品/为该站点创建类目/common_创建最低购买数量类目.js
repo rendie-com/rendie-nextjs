@@ -17,6 +17,7 @@ Object.assign(Tool, {
             }
         },
         a01: function (seller, site, next, This, t) {
+            this.obj.sg = this.obj.my;
             let oo = {
                 seller: seller,
                 site: site,
@@ -42,22 +43,16 @@ Object.assign(Tool, {
             let data = {
                 name: this.obj[oo.site].name,//最低购买数量
             }
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json;charset=UTF-8'
-                },
-            ]
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.a03, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.a03, this, oo)
         },
         a03: function (t, oo) {
             /*
             {
-              "code": 0,
-              "message": "success",
-              "data": {
-                "draft_id": 46731
-              }
+            "code": 0,
+            "data": {
+                "draft_id": 58754
+            },
+            "message": "success"
             }
             */
             if (t.message == "success") {
@@ -71,15 +66,34 @@ Object.assign(Tool, {
         a04: function (oo) {
             Tool.x1x2("D", this.obj.D1, this.obj.D2, this.d01, this, this.f01, oo)
         },
+        /////////////////////////////////
+        b01: function (arr) {
+            let Rarr = []
+            for (let i = 0; i < arr.length; i++) {
+                Rarr.push(arr[i].fromid)
+            }
+            return Rarr;
+        },
         ////////////////////////////////////////////////
         d01: function (oo) {
-            let str = '[' + (this.obj.E2 == 0 ? '<@page/>' : '0') + '<r:shopPro_' + oo.site + ' size="10" db="sqlite.shopee" page=2 where=" where @.status=1 and @.MinimumOrder' + (this.obj.D1 == 10 ? '&gt;=10' : '=' + this.obj.D1) + '">,<:fromid/></r:shopPro_' + oo.site + '>]'
-            Tool.ajax.a01(str, this.obj.E1, this.d02, this, oo);
+            let where = " where @.status=1 and @.MinimumOrder" + (this.obj.D1 == 10 ? ">=10" : "=" + this.obj.D1)
+            let data = [{
+                action: "sqlite",
+                database: "shopee/商品/店铺商品/" + oo.site,
+                sql: "select " + Tool.fieldAs("fromid") + " FROM @.table" + where + Tool.limit(20, this.obj.E1, "sqlite"),
+            }]
+            if (this.obj.E2 == 0) {
+                data.push({
+                    action: "sqlite",
+                    database: "shopee/商品/店铺商品/" + oo.site,
+                    sql: "select count(1) as total FROM @.table" + where,
+                })
+            }
+            Tool.ajax.a01(data, this.d02, this, oo);
         },
-        d02: function (arr, oo) {
-            if (this.obj.E2 == 0) this.obj.E2 = arr[0];
-            arr.shift();
-            this.obj.Earr = this.obj.Earr.concat(arr);
+        d02: function (t, oo) {
+            if (this.obj.E2 == 0) this.obj.E2 = Math.ceil(t[1][0].total / 20);
+            this.obj.Earr = this.obj.Earr.concat(this.b01(t[0]));
             Tool.x1x2("E", this.obj.E1, this.obj.E2, this.d03, this, this.e01, oo)
         },
         d03: function (oo) {
@@ -123,17 +137,11 @@ Object.assign(Tool, {
                     }
                 }
             }
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json'
-                },
-            ]
             if (this.obj.Earr.length == 0) {
                 this.e04({ message: "success" }, oo)
             }
             else {
-                gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.e02, this, oo)
+                gg.postFetch(url, JSON.stringify(data), this.e02, this, oo)
             }
         },
         e02: function (t, oo) {
@@ -167,14 +175,8 @@ Object.assign(Tool, {
             let url = "https://seller.shopee.cn/api/shopcategory/v4/category/update_category/?" + arr.join("&")
             $("#url").html(url + '【post】');
             $("#state").html("正在启用shopee子类目。。。");
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json'
-                },
-            ]
             let data = { "shop_category_id": sub_shop_category_id, "status": "active" }
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.e04, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.e04, this, oo)
         },
         e04: function (t, oo) {
             if (t.message == "success") {
@@ -199,18 +201,12 @@ Object.assign(Tool, {
             let url = "https://seller.shopee.cn/api/shopcategory/v4/category/update_shop_collection_sequence/?" + pArr.join("&")
             $("#url").html(url + '【post】');
             $("#state").html("正在 调整顺序 。。。");
-            let headers = [
-                {
-                    "name": "Content-Type",
-                    "value": 'application/json'
-                },
-            ]
             let arr = oo.collection_list
             for (let i = 0; i < arr.length; i++) {
                 arr[i].sort_weight = arr.length - arr[i].sort_weight
             }
             let data = { "collection_list": arr }
-            gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.f02, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.f02, this, oo)
         },
         f02: function (t, oo) {
             if (t.message == "success") {

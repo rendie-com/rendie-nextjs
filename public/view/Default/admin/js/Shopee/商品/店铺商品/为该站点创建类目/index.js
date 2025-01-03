@@ -2,11 +2,12 @@
 var fun =
 {
     a01: function () {
-        let html = Tool.header("Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 为该站点创建类目") + '\
+        //obj.params.site           站点
+        let html = Tool.header(obj.params.return, "Shopee &gt; 商品 &gt; 店铺商品 &gt; 为该站点创建类目") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
-		    <tr><td class="right">获取站点：</td><td colspan="2">'+ Tool.site(obj.arr[5]) + '</td></tr>\
+		    <tr><td class="right">获取站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
 		    <tr><td class="w200 right">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">关键词进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		    <tr><td class="right">关键词类目进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
@@ -27,23 +28,23 @@ var fun =
     },
     //a03: function (t) {
     //    //common_创建单位重量类目---有很多都是我自已设置的重量，不态对的，所以这要了。
-    //    Tool.common_create_UnitWeight_category.a01(t, obj.arr[5], this.a04, this, t);
+    //    Tool.common_create_UnitWeight_category.a01(t, obj.params.site, this.a04, this, t);
     //},
     a04: function (t) {
         //common_创建最低购买数量类目
-        Tool.common_create_MinimumOrder_category.a01(t, obj.arr[5], this.a05, this, t);
+        Tool.common_create_MinimumOrder_category.a01(t, obj.params.site, this.a05, this, t);
     },
     a05: function (t) {
         //common_创建价格类目
-        Tool.common_create_price_category.a01(t, obj.arr[5], this.a06, this, t);
+        Tool.common_create_price_category.a01(t, obj.params.site, this.a06, this, t);
     },
     a06: function (t) {
         //common_创建热门关键词类目
-        Tool.common_create_key_category.a01(t, obj.arr[5], this.a07, this, t);
+        Tool.common_create_key_category.a01(t, obj.params.site, this.a07, this, t);
     },
     a07: function (t) {
         //common_创建新品类目
-        Tool.common_create_NewArrival_category.a01(t, obj.arr[5], this.a08, this, t);
+        Tool.common_create_NewArrival_category.a01(t, obj.params.site, this.a08, this, t);
     },
     a08: function (t) {
         $("#state").html("全部完成。。。")

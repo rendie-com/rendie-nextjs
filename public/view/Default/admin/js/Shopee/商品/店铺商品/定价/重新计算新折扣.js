@@ -43,18 +43,17 @@ var fun =
     },
     ////////////////////////////////////////////////////////
     d01: function () {
-        //let where=" where @.fromid=27111436319"
-        let where=""
+        let where = " where @.status<>6"//表示不等于【审查中】
         let data = [{
             action: "sqlite",
             database: "shopee/商品/店铺商品/" + obj.params.site,
-            sql: "select " + Tool.fieldAs("fromid,unitweight,scale,discount,_1688_minimumorder,_1688_maxprice,_1688_freight,input_normal_price") + " FROM @.table" +where+ Tool.limit(10, this.obj.A1, "sqlite"),
+            sql: "select " + Tool.fieldAs("fromid,unitweight,scale,discount,_1688_minimumorder,_1688_maxprice,_1688_freight,input_normal_price") + " FROM @.table" + where + Tool.limit(10, this.obj.A1, "sqlite"),
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
                 database: "shopee/商品/店铺商品/" + obj.params.site,
-                sql: "select count(1) as total FROM @.table"+where,
+                sql: "select count(1) as total FROM @.table" + where,
             })
         }
         $("#state").html("正在获取商品信息。。。")
@@ -80,13 +79,13 @@ var fun =
             /////////////////////////////////////////////////////////////////////////////
             let newDiscount = (1 - oo.discountPrice / t[i].input_normal_price) * 100
             $("#newDiscount").html(" = (1 - 打折后[含平台费] / 原价) * 100<br/>\
-            = (1 - "+ oo.discountPrice +" / "+ t[i].input_normal_price + ") * 100<br/>\
+            = (1 - "+ oo.discountPrice + " / " + t[i].input_normal_price + ") * 100<br/>\
             = (1 - "+ oo.discountPrice / t[i].input_normal_price + ") * 100<br/>\
             = " + newDiscount)
             /////////////////////////////////////////////////////////////////
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/"+obj.params.site,
+                database: "shopee/商品/店铺商品/" + obj.params.site,
                 sql: "update @.table set @.newDiscount=" + newDiscount.toFixed(4) + ",@.min_purchase_limit=" + oo.min_purchase_limit + " where @.fromid=" + t[i].fromid
             })
         }

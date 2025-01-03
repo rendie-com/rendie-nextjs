@@ -43,13 +43,13 @@ var fun =
         //where=" where @.proid=\'R222657\'"
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/"+ obj.params.site,
-            sql: "select " + Tool.fieldAs("fromid,price_uptime,unitweight,scale,newdiscount,minimumorder,_1688_maxprice,_1688_freight,input_normal_price") + " FROM @.table" + Tool.limit(10, this.obj.A1, "sqlite"),
+            database: "shopee/商品/店铺商品/" + obj.params.site,
+            sql: "select " + Tool.fieldAs("fromid,price_uptime,unitweight,scale,newdiscount,minimumorder,_1688_maxprice,_1688_freight,input_normal_price,min_purchase_limit") + " FROM @.table" + Tool.limit(10, this.obj.A1, "sqlite"),
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/"+ obj.params.site,
+                database: "shopee/商品/店铺商品/" + obj.params.site,
                 sql: "select count(1) as total FROM @.table",
             })
         }
@@ -61,16 +61,29 @@ var fun =
     },
     d03: function (t) {
         let data = [], day7 = Tool.gettime("") - 60 * 60 * 24 * 7;
+        let isDiscount, isSignUp, isSeckill
         for (let i = 0; i < t.length; i++) {
-            let discount1 = Tool.profitRate.a01(t[i].newdiscount - 6, t[i].input_normal_price, t[i].scale, t[i].minimumorder, t[i]._1688_maxprice, t[i]._1688_freight, t[i].unitweight, this.obj.logistics, this.obj.config[obj.params.site], 1);
-            let discount2 = Tool.profitRate.a01(t[i].newdiscount - 1, t[i].input_normal_price, t[i].scale, t[i].minimumorder, t[i]._1688_maxprice, t[i]._1688_freight, t[i].unitweight, this.obj.logistics, this.obj.config[obj.params.site], 1);
-            let discount3 = Tool.profitRate.a01(t[i].newdiscount, t[i].input_normal_price, t[i].scale, t[i].minimumorder, t[i]._1688_maxprice, t[i]._1688_freight, t[i].unitweight, this.obj.logistics, this.obj.config[obj.params.site], 1);
-            let isDiscount = discount1.profitRate >= 10 && t[i].price_uptime < day7 ? 1 : 0//改过价的不能打折，否则提示：【此页面上的11个规格在过去的7天内曾调涨价格。这将违反不实/误导性折扣政策，您将因此而被计分】
-            let isSignUp = discount2.profitRate >= 10 && t[i].price_uptime < day7 ? 1 : 0
-            let isSeckill = discount3.profitRate >= 10 && t[i].price_uptime < day7 ? 1 : 0
+            if (t[i].minimumorder == t[i].min_purchase_limit) {//【最低购买量_不匹配】那就设置没能做活动。
+                //为什么要减6？答：当我在报名活动的时候平台要在我的折扣上减5，所以我就减6了。           
+                let discount1 = Tool.profitRate.a01(t[i].newdiscount - 6, t[i].input_normal_price, t[i].scale, t[i].minimumorder, t[i]._1688_maxprice, t[i]._1688_freight, t[i].unitweight, this.obj.logistics, this.obj.config[obj.params.site], 1);
+                let discount2 = Tool.profitRate.a01(t[i].newdiscount - 1, t[i].input_normal_price, t[i].scale, t[i].minimumorder, t[i]._1688_maxprice, t[i]._1688_freight, t[i].unitweight, this.obj.logistics, this.obj.config[obj.params.site], 1);
+                let discount3 = Tool.profitRate.a01(t[i].newdiscount, t[i].input_normal_price, t[i].scale, t[i].minimumorder, t[i]._1688_maxprice, t[i]._1688_freight, t[i].unitweight, this.obj.logistics, this.obj.config[obj.params.site], 1);
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                isDiscount = discount1.profitRate >= 10 && t[i].price_uptime < day7 ? 1 : 0//改过价的不能打折，否则提示：【此页面上的11个规格在过去的7天内曾调涨价格。这将违反不实/误导性折扣政策，您将因此而被计分】
+                isSignUp = discount2.profitRate >= 10 && t[i].price_uptime < day7 ? 1 : 0
+                isSeckill = discount3.profitRate >= 10 && t[i].price_uptime < day7 ? 1 : 0
+            }
+            else {
+                isDiscount = 0;
+                isSignUp = 0;
+                isSeckill = 0;
+            }
+            //isDiscount       表示【能打折】
+            //isSignUp         表示【能报名】
+            //isSeckill        表示【能做秒杀】
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/"+ obj.params.site,
+                database: "shopee/商品/店铺商品/" + obj.params.site,
                 sql: "update @.table set @.isDiscount=" + isDiscount + ",@.isSignUp=" + isSignUp + ",@.isSeckill=" + isSeckill + " where @.fromid=" + t[i].fromid
             })
         }

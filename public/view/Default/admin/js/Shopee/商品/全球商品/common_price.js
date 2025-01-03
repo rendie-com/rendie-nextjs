@@ -28,7 +28,7 @@ Object.assign(Tool, {
             let min_purchase_limit = (oo.sku.startAmount > 1 ? Math.ceil(MaxCurrentPrices.beginAmount / oo.sku.startAmount) : MaxCurrentPrices.beginAmount)//最低购买数量
             if (oo._1688_freight > 0) {
                 //有运费的，就改【起订量】和【原价】，把运费要回来。
-                this.a03(min_purchase_limit,MaxCurrentPrices, oo)
+                this.a03(min_purchase_limit, MaxCurrentPrices, oo)
             }
             else {
                 //oo.sku.startAmount 是什么？答：采购时，需按这个倍数增加数量。
@@ -36,7 +36,7 @@ Object.assign(Tool, {
                 this.a04(0, min_purchase_limit, MaxCurrentPrices.price, oo)
             }
         },
-        a03: function (min_purchase_limit,MaxCurrentPrices, oo) {
+        a03: function (min_purchase_limit, MaxCurrentPrices, oo) {
             //为什么不加贴单费？答：买家下同一个订单4单内都是不要钱的，也就是说，买家可以买不同的商品
             let promote_num = this.b04(MaxCurrentPrices.price * oo.sku.startAmount, min_purchase_limit, oo._1688_freight);//提升价格来要回运费，最多提升50%
             /////////////////////////////////////////////
@@ -65,8 +65,8 @@ Object.assign(Tool, {
             //定价[不含平台费] = (全球商品价格 + 上调价格) * 件倍数 * 汇率
             let price01 = (normal_price + upPrice) * oo.sku.startAmount * oo.siteObj.exchangeRate
             let discountPrice = this.b05(price01, oo.siteObj)//打折后[含平台费]
-           let MinimumOrder = this.b02(min_purchase_limit, discountPrice, oo.siteObj.fullPrice, oo.siteObj.taxRate);//免运需要的【最低购买数量】
-          ///////////////////////////////////////////////////////
+            let MinimumOrder = this.b02(min_purchase_limit, discountPrice, oo.siteObj.fullPrice, oo.siteObj.taxRate);//免运需要的【最低购买数量】
+            ///////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////
             //为什么要“*1000”？因为是按克算的，我的是千克，所以要“*1000”。
             let Weight = oo.ManualReview_1688_unitWeight * 1000 * MinimumOrder * oo.sku.startAmount//重量
@@ -83,8 +83,9 @@ Object.assign(Tool, {
             /////////////////////////////////
             if (price05 < 10) {
                 //没有10%的利润则上调全球商品价格。
-                $("#state").html("价格上调")
-                this.a04(upPrice + 0.05, min_purchase_limit, normal_price, oo)
+                //upPrice=Math.round(upPrice * 10000) / 10000
+                $("#state").html("价格上调..." + (upPrice + 0.05))
+                this.a04((upPrice + 0.05), min_purchase_limit, normal_price, oo)
             }
             else {
                 this.a05(freight, min_purchase_limit, MinimumOrder, upPrice, normal_price, discountPrice, price01, price02, price03, price04, price05, oo);
@@ -108,7 +109,7 @@ Object.assign(Tool, {
                     <td class="right">定价[含平台费]：</td>\
                     <td colspan="2">\
                         = 定价[不含平台费] / (1 - 佣金费率 - 活动服务费率 - 交易手续费率) <br/>\
-                        = ' + price01.toFixed(4) + ' / (1 - ' + (oo.siteObj.commissionRate / 100) + ' - ' + (oo.siteObj.activityServiceRate / 100) + ' - ' + (oo.siteObj.transactionFees / 100) +') <br/>\
+                        = ' + price01.toFixed(4) + ' / (1 - ' + (oo.siteObj.commissionRate / 100) + ' - ' + (oo.siteObj.activityServiceRate / 100) + ' - ' + (oo.siteObj.transactionFees / 100) + ') <br/>\
                         = <b>' + discountPrice.toFixed(4) + '</b>（当地币）</td>\
                 </tr>\
                 <tr>\
@@ -137,7 +138,7 @@ Object.assign(Tool, {
                     <td class="right">采购成本：</td>\
                     <td colspan="2">\
                     = (采购价 * 件数 * 件倍数 + 运费 + 贴单费) * 汇率<br/>\
-                    = ('+ normal_price + ' * ' + MinimumOrder + ' * ' + oo.sku.startAmount+' + ' + oo._1688_freight + ' + 3)  * ' + oo.siteObj.exchangeRate + '<br/>\
+                    = ('+ normal_price + ' * ' + MinimumOrder + ' * ' + oo.sku.startAmount + ' + ' + oo._1688_freight + ' + 3)  * ' + oo.siteObj.exchangeRate + '<br/>\
                     = <b>' + price03.toFixed(2) + '</b>（当地币）</td></tr>\
                 <tr>\
                     <td class="right">利润：</td>\
@@ -160,7 +161,7 @@ Object.assign(Tool, {
             //算批发价
             let wholesale_list = [], len = oo.sku.currentPrices.length
             for (let i = 1; i < len; i++) {
-                if (oo.sku.currentPrices[i].beginAmount > min_purchase_limit && parseFloat(oo.sku.currentPrices[i].price)  < normal_price ) {
+                if (oo.sku.currentPrices[i].beginAmount > min_purchase_limit && parseFloat(oo.sku.currentPrices[i].price) < normal_price) {
                     let max_count = 0
                     if (i == len - 1) {
                         max_count = oo.sku.currentPrices[i].beginAmount * 2
@@ -209,7 +210,7 @@ Object.assign(Tool, {
             //scale 是什么？答：采购时，需按这个倍数增加数量。
             while (price2 * MinimumOrder < fullPrice) {
                 MinimumOrder++;
-            }                 
+            }
             return MinimumOrder;
         },
         //打折前定价
@@ -241,7 +242,7 @@ Object.assign(Tool, {
         //打折后[含平台费]
         b05: function (price, siteObj) {
             //打折后[含平台费] = 打折后[不含平台费] / (1 - 佣金费率 - 活动服务费率 - 交易手续费率)
-            let Rate = 1 - siteObj.commissionRate / 100 - siteObj.activityServiceRate / 100 - siteObj.transactionFees /100
+            let Rate = 1 - siteObj.commissionRate / 100 - siteObj.activityServiceRate / 100 - siteObj.transactionFees / 100
             let discountPrice = price / Rate//店铺商品价格
             return discountPrice
         },

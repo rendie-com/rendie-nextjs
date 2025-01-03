@@ -85,43 +85,16 @@ var fun =
         }
         return arr1
     },
-    b06: function (pic, dhpic, attrPic, dhdespic)//要9张图片
+    b06: function (pic, shopee_8pic)//要9张图片
     {
-        let rArr = [pic]
-        for (let i = 0; i < dhpic.length; i++) {
-            if (rArr.indexOf(dhpic[i].picB.shopee) == -1) {//去重
-                rArr.push(dhpic[i].picB.shopee)
-            }
+        if (shopee_8pic) {
+            shopee_8pic.unshift(pic)//数组向前添加
+            return shopee_8pic;
         }
-        //////////////////////////////////
-        if(attrPic){
-            for (let i = 0; i < attrPic.length; i++) {
-                if (rArr.length == 9) {
-                    break;
-                }
-                else {
-                    if (attrPic[i].shopee) {
-                        if (rArr.indexOf(attrPic[i].shopee) == -1) {//去重
-                            rArr.push(attrPic[i].shopee);
-                        }
-                    }
-                }
-            }
-        }        
-        //////////////////////////////////////
-        for (let i = 0; i < dhdespic.length; i++) {
-            if (rArr.length == 9) {
-                break;
-            }
-            else {
-                if (dhdespic[i].picB) {
-                    if (rArr.indexOf(dhdespic[i].picB.shopee) == -1) {//去重
-                        rArr.push(dhdespic[i].picB.shopee)
-                    }
-                }
-            }
+        else {
+            Tool.pre("必须先选放大镜图片")
+            aaaaaaaaaaaaaaa
         }
-        return rArr;
     },
     b07: function (deliverylimit)//要9张图片
     {
@@ -153,48 +126,77 @@ var fun =
         if (arr.length == 2) title = title.replace(arr[1], "");
         return title;
     },
-    b09: function (manualreview_1688_description, description, unit, scale, sellunit) {
-        let des1 = ""
+    b09: function (manualreview_1688_description, description, unit, startAmount, sellunit) {
+        //manualreview_1688_description         表示最终拼好的内容
+        //description                           表示1688接好的属性
+        //unit                                  单位：如：包
+        //startAmount                           起订量：如【按包起批1包=100个】，则表示：100个。
+        //sellunit                              如：个
+        let des1 = this.b11(startAmount, sellunit, unit);//验证并修改单位。
+        let unitStr = "";
         if (manualreview_1688_description) {
-            des1 += manualreview_1688_description
-        }
-        else {
-            //注：在1688中看到如【按包起批1包=100个】的内容时，那在个单时只能填100的倍数。
-            if (scale > 1) {
-                des1 = "✅ 单位:" + sellunit + " (1件=1" + sellunit + ",1" + sellunit + "=" + scale + unit + ") \n" + description
-
+            let arr = manualreview_1688_description.split("\n")
+            if (arr[0] + "\n" == des1) {
+                unitStr = manualreview_1688_description
             }
             else {
-                des1 = "✅ 单位:" + unit + (unit == "件" ? "" : "(1件=1" + unit + ")") + " \n" + description
+                //有数据时，单位还不一样。
+                //Tool.pre(["有数据时，单位还不一样", manualreview_1688_description, des1, startAmount])
+                arr.shift();
+                unitStr = des1 + arr.join("\n")
             }
-
         }
-        let html = '<tr><td class="right">商品描述：</td><td colspan="2">' + des1.split("\n").join("<br/>") + '</td></tr>'
+        else {
+            unitStr = des1 + description
+        }
+        let html = '<tr><td class="right">商品描述：</td><td colspan="2">' + unitStr.split("\n").join("<br/>") + '</td></tr>'
         $("#tbody").append(html);
-        let des2 = des1 + '\
+        let des2 = unitStr + '\
     \n\
     你好，谢谢你光临我们的商店！\n\
     我们确保我们的服务和产品质量良好，值得信赖。\n\
     如果您对该产品有任何疑问，请随时给我们留言！🥰 ❤️\n\
     \n\
     ♥️1.当我们收到你的订单时，我们会尽快把包裹寄出去。\n\
-    ♥️2.当你拿到包裹时，以及你对物品和服务是否满意。请给我们留下五星反馈和精美的图片。我们将不胜感激。向我们展示，赢得秘密礼物！\n\
+    ♥️2.当你拿到包裹时，以及你对物品和服务是否满意。请给我们留下五星反馈和精美的图片。我们将不胜感激。\n\
     ♥️3.如有任何问题，请在提出争议或给我们留下负面反馈之前与我们联系。我们将尽力解决问题。\n\
     ♥️4.您可以在Shopee上留言与我们联系\n\
     \n\
     ✨ 如果你喜欢我们的产品，请记得关注我们❤️'
-        return [des2, des1];
+        //向我们展示，赢得秘密礼物！
+        return [des2, unitStr];
+    },
+    b10: function (ManualReview_1688_video_status, video, ManualReview_1688_ExplanationVideo_status, ExplanationVideo) {
+        let video_list = []
+        if (video && ManualReview_1688_video_status > 5) {
+            video_list = JSON.parse(video)
+        }
+        else if (ExplanationVideo && ManualReview_1688_ExplanationVideo_status > 5) {
+            video_list = JSON.parse(ExplanationVideo)
+        }
+        return video_list;
+    },
+    b11: function (startAmount, sellunit, unit) {
+        let des1 = ""
+        //注：在1688中看到如【按包起批1包=100个】的内容时，那在个单时只能填100的倍数。
+        if (startAmount > 1) {
+            des1 = "✅ 单位:" + sellunit + " (1件=1" + sellunit + ",1" + sellunit + "=" + startAmount + unit + ") \n"
+        }
+        else {
+            des1 = "✅ 单位:" + unit + (unit == "件" ? "" : "(1件=1" + unit + ")") + " \n"
+        }
+        return des1;
     },
     /////////////////////////////////////////////
     d01: function () {
         $("#state").html("正在获取商品信息。。。");
         let where = " where @.isup=1 and @.BeforeReview=0 and @.ManualReview_1688=1 and @.ManualReview_1688_state=0"
-        //where = " where @.isup=1 and @.proid='R872'"
+        //where=" where @.isup=1 and @.proid='R428058'"
         $("#where").html(where);
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "select " + Tool.fieldAs("video,proid,pic,manualreview_1688_unitweight,manualreview_1688_subject,manualreview_1688_description,fromid,manualreview_1688_fromid") + " FROM @.table" + where + " limit 1"
+            sql: "select " + Tool.fieldAs("ManualReview_1688_video_status,video,ManualReview_1688_ExplanationVideo_status,ExplanationVideo,proid,pic,shopee_8pic,manualreview_1688_unitweight,manualreview_1688_subject,manualreview_1688_description,fromid,manualreview_1688_fromid") + " FROM @.table" + where + " limit 1"
         }, {
             action: "sqlite",
             database: "shopee/商品/全球商品",
@@ -217,11 +219,6 @@ var fun =
                 action: "sqlite",
                 database: "1688_prodes/" + Tool.remainder(oo.GlobalPro.manualreview_1688_fromid, 99),
                 sql: "select " + Tool.fieldAs("attr,sku,attrpic_shopee") + " FROM @.prodes where @.fromid=" + oo.GlobalPro.manualreview_1688_fromid
-            },
-            {
-                action: "sqlite",
-                database: "aliexpress_prodes/" + Tool.pronum(oo.GlobalPro.proid, 50),
-                sql: "select " + Tool.fieldAs("dhpic,dhdespic") + " FROM @.prodes where @.proid='" + oo.GlobalPro.proid + "'"
             }]
             Tool.ajax.a01(data, this.d03, this, oo);
         }
@@ -230,16 +227,15 @@ var fun =
     d03: function (t, oo) {
         oo._1688_proList = t[0][0];
         oo._1688_prodes = t[1][0];
-        oo.aliexpress_prodes = t[2][0];
         let data = [{
             action: "sqlite",
-            database: "1688",
-            sql: "select " + Tool.fieldAs("catnamepath,bindshopee") + " FROM @.category0 where @.fromid=" + t[0][0].categoryid
+            database: "1688/类目/现货类目",
+            sql: "select " + Tool.fieldAs("catnamepath,bindshopee") + " FROM @.table where @.fromid=" + t[0][0].categoryid
         }]
         Tool.ajax.a01(data, this.d04, this, oo);
     },
     d04: function (t, oo) {
-        oo.category = t[0][0]
+        oo.category = t[0][0];
         this.d05(oo);
     },
     d05: function (oo) {
@@ -285,16 +281,17 @@ var fun =
                 description: o1.description
             }
             let html = '\
-                <tr><td class="right">category_path：</td><td colspan="2">' + oo.post.category_path + '</td></tr>\
-                <tr><td class="right">attributes：</td><td colspan="2"><textarea id="sql" rows="10" class="form-control form-control-sm">' + JSON.stringify(oo.post.attributes, null, 2) + '</textarea></td></tr>'
+            <tr><td class="right">category_path：</td><td colspan="2">' + oo.post.category_path + '</td></tr>\
+            <tr><td class="right">attributes：</td><td colspan="2"><textarea id="sql" rows="10" class="form-control form-control-sm">' + JSON.stringify(oo.post.attributes, null, 2) + '</textarea></td></tr>'
             $("#tbody").append(html);
             this.d08(oo);
         }
     },
     d08: function (oo) {
         let o1 = oo._1688_prodes
-        if (o1.sku) {
-            let sku_shopee = Tool.sku.a01(JSON.parse(o1.sku), JSON.parse(o1.attrpic_shopee), oo._1688_proList.freight, oo.GlobalPro.proid)
+        let sku = JSON.parse(o1.sku)
+        if (sku.skuInfoMap) {
+            let sku_shopee = Tool.sku.a01(sku, JSON.parse(o1.attrpic_shopee), oo._1688_proList.freight, oo.GlobalPro.proid)
             if (sku_shopee.model_list) {
                 this.d09(sku_shopee, oo)
             }
@@ -303,8 +300,8 @@ var fun =
             }
         }
         else {
-            Tool.pre('sku格式不对')
-            //this.f01(11, 'sku格式不对', oo.proid);
+            //Tool.pre('sku格式不对')
+            this.f01(11, 'sku格式不对', oo.GlobalPro.proid);
         }
     },
     d09: function (sku_shopee, oo) {
@@ -327,8 +324,8 @@ var fun =
                 case "种类": arr[i].name = "type"; break;
                 case "层数（规格）": arr[i].name = "Specification"; break;
                 case "规格型号": arr[i].name = "models"; break;
-                case "xxxx": arr[i].name = "xxx"; break;
-                case "xxxx": arr[i].name = "xxx"; break;
+                case "规格类型": arr[i].name = "Specification type"; break;
+                case "款式": arr[i].name = "style"; break;
                 case "xxxx": arr[i].name = "xxx"; break;
                 case "xxxx": arr[i].name = "xxx"; break;
                 case "xxxx": arr[i].name = "xxx"; break;
@@ -353,7 +350,7 @@ var fun =
             oo.post.model_list = sku_shopee.model_list;
             /////////////////////////////////////////////////
             let url = "https://seller.shopee.cn/api/v3/mtsku/get_mtsku_stock/?SPC_CDS_VER=2&item_id_list=" + oo.GlobalPro.fromid
-            gg.getFetch(url,"json", this.e02, this, oo)
+            gg.getFetch(url, "json", this.e02, this, oo)
         }
         else {
             Tool.pre(["出错1111", sku_shopee])
@@ -379,10 +376,24 @@ var fun =
             name = this.b01(o2._1688_proList.subject, o2._1688_prodes.attr)
         }
         /////////////////////////////////////
-        let _1688_sku = JSON.parse(o2._1688_prodes.sku)
-        let descriptionArr = this.b09(o2.GlobalPro.manualreview_1688_description, o2.post.description, o2._1688_proList.unit, _1688_sku.startAmount, _1688_sku.sellunit)
+        let _1688_sku = JSON.parse(o2._1688_prodes.sku);
+        let descriptionArr = this.b09(
+            o2.GlobalPro.manualreview_1688_description,
+            o2.post.description,
+            o2._1688_proList.unit,
+            _1688_sku.startAmount,
+            _1688_sku.sellUnit
+        )
         ////////////////////////////////////
-        let images = this.b06(o2.GlobalPro.pic, JSON.parse(o2.aliexpress_prodes.dhpic), JSON.parse(o2._1688_prodes.attrpic_shopee), JSON.parse(o2.aliexpress_prodes.dhdespic))
+        let images = this.b06(o2.GlobalPro.pic, JSON.parse(o2.GlobalPro.shopee_8pic))
+        if (images.length == 9) {//9个放大镜图
+            this.e03(name, descriptionArr, images, o2, unitweight)
+        }
+        else {
+            Tool.pre("必须要9个放大镜图.")
+        }
+    },
+    e03: function (name, descriptionArr, images, o2, unitweight) {
         let deliverylimit = this.b07(o2._1688_proList.deliverylimit)//发货天数
         let data = {
             name: name,
@@ -390,7 +401,7 @@ var fun =
             description: descriptionArr[0],
             description_type: "normal",
             images: images,//要9张图片
-            video_list: (o2.GlobalPro.video == 0 ? [] : JSON.parse(o2.GlobalPro.video)),
+            video_list: this.b10(o2.GlobalPro.ManualReview_1688_video_status, o2.GlobalPro.video, o2.GlobalPro.ManualReview_1688_ExplanationVideo_status, o2.GlobalPro.ExplanationVideo),
             category_path: o2.post.category_path,
             attributes: o2.post.attributes,
             size_chart: "",
@@ -405,7 +416,7 @@ var fun =
             ds_cat_rcmd_id: ""
         }
         let html = '\
-            <tr><td class="right">视频：</td><td colspan="2"><textarea id="sql" rows="10" class="form-control form-control-sm">' + JSON.stringify(data.video_list, null, 2) + '</textarea></td></tr>\
+            <tr><td class="right">视频：</td><td colspan="2"><textarea id="sql" rows="10" class="form-control form-control-sm">' + (data.video_list ? JSON.stringify(data.video_list, null, 2) : '') + '</textarea></td></tr>\
             <tr><td class="right">标题：</td><td colspan="2">' + name + '</td></tr>\
             <tr><td class="right">放大镜图：</td><td colspan="2">' + images.join("<br/>") + '</td></tr>\
             <tr><td class="right">重量：</td><td colspan="2">' + unitweight + ' KG</td></tr>\
@@ -420,12 +431,12 @@ var fun =
             o2.GlobalPro._name = name
             o2.GlobalPro._unitweight = unitweight.toFixed(2)
             o2.GlobalPro._description = descriptionArr[1];
-            this.e03(data, o2.GlobalPro)
+            this.e04(data, o2.GlobalPro)
         }
     },
-    e03: function (data, GlobalPro) {
+    e04: function (data, GlobalPro) {
         let str = JSON.stringify(data), arr = this.obj.bannedWord_keyouyun, isBool = true
-        str = str.replace(/亚马逊|东南亚|进口|欧美|出口|外贸|跨境|速卖通|wish|药|哦|logo|医|amazon|非洲|分销|直销/g, "")
+        str = str.replace(/亚马逊|东南亚|进口|欧美|出口|外贸|跨境|速卖通|wish|药|哦|logo|医|amazon|非洲|分销|直销|独立站|工厂|代发|零售|加工定制|ebay|抖音同款|南美|微商|like|混批/g, "")
         for (let i = 1; i < arr.length; i++) {
             if (str.indexOf(arr[i]) != -1) {
                 Tool.pre(["有违禁词【" + arr[i]] + "】，请修改后再来。", data)
@@ -435,10 +446,10 @@ var fun =
         if (isBool) {
             let url = 'https://seller.shopee.cn/api/v3/mtsku/update_mtsku/?SPC_CDS_VER=2'
             $("#state").html("更新商品。。。")
-            gg.postFetch(url, str, this.e04, this, GlobalPro);
+            gg.postFetch(url, str, this.e05, this, GlobalPro);
         }
     },
-    e04: function (oo, GlobalPro) {
+    e05: function (oo, GlobalPro) {
         if (oo.code == 0) {
             let arr = [
                 '@.uptime=' + Tool.gettime(""),
@@ -450,6 +461,15 @@ var fun =
                 arr.push("@.manualreview_1688_unitweight=" + GlobalPro._unitweight)
                 arr.push("@.manualreview_1688_description=" + Tool.rpsql(GlobalPro._description))
             }
+            else if (GlobalPro._description.split("\n")[0] !== GlobalPro.manualreview_1688_description.split("\n")[0]) {
+                //单位不一样，也要修改一下。
+                arr.push("@.manualreview_1688_description=" + Tool.rpsql(GlobalPro._description))
+                //以前翻译的内容也要清空。
+                arr.push("@.ms_description=null")
+                arr.push("@.tw_description=null")
+                arr.push("@.en_description=null")
+                arr.push("@.pt_description=null")
+            }
             let data = [{
                 action: "sqlite",
                 database: "shopee/商品/全球商品",
@@ -460,6 +480,9 @@ var fun =
         }
         else if (oo.user_message == "There is duplicate tier option name and it cannot be duplicated") {
             this.f01(7, oo.user_message, GlobalPro.proid)
+        }
+        else if (oo.user_message == "lvs_mpsku_error_stock.mandatory_direct") {
+            this.f01(11, oo.message, GlobalPro.proid)
         }
         else if (oo.user_message == "Update product failed") {
             Tool.pre(oo)
@@ -481,6 +504,10 @@ var fun =
         }
         else if (oo.user_message == "Your attribute info is invalid. Please fill in the category related attributes with correct attribute value") {
             this.f01(9, oo.user_message, GlobalPro.proid)
+        }
+        else if (oo.code == 1000310495) {
+            //"message": "failed to update mtsku : validation: [Rule Type: media.image.exist, Detail: {\"code\":1211,\"msg\":\"image not exists: sg-11134201-7rdyu-m1bjpttmfd\"}] ",
+            this.f01(16, oo.user_message, GlobalPro.proid)
         }
         else {
             //let err = oo.message     

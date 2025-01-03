@@ -17,6 +17,7 @@ var fun =
 		    <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		    <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>\
+		    <tr><td class="right">更新字段：</td><td id="updateFields" colspan="2"></td></tr>\
 		    <tr><td class="right">状态：</td><td id="state" colspan="2"></td></tr>\
           </tbody>\
           </table>\
@@ -35,7 +36,7 @@ var fun =
             sql: "update @.table set @.is" + obj.params.site + "=0",
         }, {
             action: "sqlite",
-            database: "shopee/商品/店铺商品/"+ obj.params.site,
+            database: "shopee/商品/店铺商品/" + obj.params.site,
             sql: "update @.table set @.status=0",
         }]
         Tool.ajax.a01(data, this.a04, this);
@@ -48,7 +49,7 @@ var fun =
             Tool.pre(["出错", t])
         }
     },
-    /////////////////////
+    //////////////////////////////////////////////////////////////////////////
     b01: function (oo) {
         let isUnlisted = 1//0表示不能下架 1：可以下架
         if (oo.ongoing_campaigns) {
@@ -89,6 +90,27 @@ var fun =
         }
         return isTrueSignUp
     },
+    b03: function (arr) {
+        let Rarr = [];
+        for (let i = 0; i < arr.length; i++) {
+            switch (arr[i]) {//选择JS文件
+                case "@.fromid": Rarr.push(arr[i] + "==来源ID"); break;
+                case "@.name": Rarr.push(arr[i] + "==标题"); break;
+                case "@.status": Rarr.push(arr[i] + "==状态"); break;
+                case "@.pic": Rarr.push(arr[i] + "==首图"); break;
+                case "@.proid": Rarr.push(arr[i] + "==全球商品货号"); break;
+                case "@.addtime": Rarr.push(arr[i] + "==添加时间"); break;
+                case "@.uptime": Rarr.push(arr[i] + "==更新时间"); break;
+                case "@.input_normal_price": Rarr.push(arr[i] + "==原价"); break;
+                case "@.promotion": Rarr.push(arr[i] + "==活动信息"); break;
+                case "@.model_list": Rarr.push(arr[i] + "==价格和价格ID信息"); break;
+                case "@.isUnlisted": Rarr.push(arr[i] + "==能不能下架"); break;
+                case "@.isTrueSignUp": Rarr.push(arr[i] + "==是否已报名活动"); break;
+                default: Rarr.push(arr[i] + "==未知"); break;
+            }
+        }
+        return Rarr.join("<br/>")
+    },
     //////////////////////////////////////////   
     d01: function () {
         let arr = [
@@ -104,7 +126,7 @@ var fun =
         let url = "https://seller.shopee.cn/api/v3/mpsku/list/get_product_list?" + arr.join("&")
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
         $("#state").html("正在获取第" + this.obj.A1 + "页商品。。。");
-        gg.getFetch(url,"json", this.d02, this);
+        gg.getFetch(url, "json", this.d02, this);
     },
     d02: function (oo) {
         if (oo.code == 0) {
@@ -123,22 +145,21 @@ var fun =
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d04, this, null, products)
     },
     d04: function (products) {
-        let proidArr = [], fromidArr = [], insertObj = {}, updateObj = {};
+        let arrL = [
+            "@.fromid",//来源ID
+            "@.name",//标题
+            "@.status",//状态
+            "@.pic",//首图
+            "@.proid",//全球商品货号
+            "@.addtime",//添加时间
+            "@.uptime",//更新时间
+            "@.input_normal_price",//原价
+            "@.promotion",//活动信息
+            "@.model_list",//价格和价格ID信息
+            "@.isUnlisted",//能不能下架
+            "@.isTrueSignUp",//是否已报名活动
+        ], data = []
         for (let i = 0; i < products.length; i++) {
-            let arrL = [
-                "@.fromid",
-                "@.name",
-                "@.status",
-                "@.pic",
-                "@.proid",
-                "@.addtime",
-                "@.uptime",
-                "@.input_normal_price",//原价
-                "@.promotion",//活动信息
-                "@.model_list",//价格和价格ID信息
-                "@.isUnlisted",//能不能下架
-                "@.isTrueSignUp",//是否已报名活动
-            ]
             let arrR = [
                 products[i].id,
                 Tool.rpsql(products[i].name),
@@ -155,63 +176,44 @@ var fun =
             ]
             ////////////////////////////////////////////////////           
             //self_uptime   本地更新时间（在添加商品时，目的就是要【该时间】大于【shopee更新时间】）
-            insertObj[products[i].id] = "insert into @.table(@.self_uptime," + arrL.join(",") + ")values(" + Tool.gettime("") + "," + arrR.join(",") + ")";
             let updateArr = []
             for (let i = 0; i < arrL.length; i++) {
                 if (arrL[i] != "@.fromid") {
                     updateArr.push(arrL[i] + "=" + arrR[i]);
                 }
             }
-            updateObj[products[i].id] = "update @.table set " + updateArr.join(",") + "  where @.fromid=" + products[i].id
-            proidArr.push(Tool.rpsql(products[i].parent_sku));
-            fromidArr.push(products[i].id);
-        }
-        let data = [{
-            action: "sqlite",
-            database: "shopee/商品/店铺商品/"+ obj.params.site,
-            sql: "select @.fromid as fromid from @.table where @.fromid in(" + fromidArr.join(",") + ")",
-        }, {
-            action: "sqlite",
-            database: "shopee/商品/全球商品",
-            sql: "update @.table set @.is" + obj.params.site + "=1 where @.proid in(" + proidArr.join(",") + ")",
-        }]
-        $("#state").html("正在更新本地商品状态。。。");
-        Tool.ajax.a01(data, this.d05, this, [insertObj, updateObj]);
-    },
-    d05: function (t, sqlArr) {
-        if (t[1].length == 0) {
-            let arr = []
-            for (let i = 0; i < t[0].length; i++) {
-                arr.push(t[0][i].fromid)
-            }
-            this.d06(arr, sqlArr)
-        }
-        else {
-            Tool.pre(["出错02", t]);
-        }
-    },
-    d06: function (arr, sqlArr) {
-        let data = []
-        for (let k in sqlArr[0]) {
-            let sql = ""
-            if (arr.indexOf(Tool.int(k)) == -1) {
-                sql = sqlArr[0][k]
-            }
-            else {
-                sql = sqlArr[1][k]
-            }
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/"+ obj.params.site,
-                sql: sql,
+                database: "shopee/商品/店铺商品/" + obj.params.site,
+                sql: "select @.fromid as fromid from @.table where @.fromid=" + products[i].id,
+                list: [{
+                    action: "sqlite",
+                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    sql: "update @.table set " + updateArr.join(",") + "  where @.fromid=" + products[i].id,
+                }],
+                elselist: [{
+                    action: "sqlite",
+                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    sql: "insert into @.table(@.self_uptime," + arrL.join(",") + ")values(" + Tool.gettime("") + "," + arrR.join(",") + ")",
+                }]
+            })
+            data.push({
+                action: "sqlite",
+                database: "shopee/商品/全球商品",
+                sql: "update @.table set @.is" + obj.params.site + "=1 where @.proid=" + Tool.rpsql(products[i].parent_sku),
             })
         }
-        Tool.ajax.a01(data, this.d07, this);
+        $("#updateFields").html(this.b03(arrL));
+        $("#state").html("正在更新本地商品状态。。。");
+        Tool.ajax.a01(data, this.d05, this);
     },
-    d07: function (t) {
+    d05: function (t) {
         let iserr = false;
         for (let i = 0; i < t.length; i++) {
-            if (t[i].length != 0) { iserr = true; break; }
+            if (t[i].length != 0 && t[i][0].list[0].length != 0) {
+                iserr = true;
+                break;
+            }
         }
         if (iserr) {
             Tool.pre(["有出错", t]);
