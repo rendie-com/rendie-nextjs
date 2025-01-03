@@ -10,6 +10,21 @@ var fun =
         this.a02();
     },
     a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/商品/图片/" + obj.params.database,
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/商品/图片/" + obj.params.database + ".db"],
+                database: "shopee/商品/图片/" + obj.params.database,
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function (t) {
         let where = this.b06()
         let data = [{
             action: "sqlite",
@@ -20,9 +35,9 @@ var fun =
             database: "shopee/商品/图片/" + obj.params.database,
             sql: "select " + Tool.fieldAs("id,fromid,hash,width,height,size,addtime,src,tw_watermark,my_watermark,br_watermark") + " FROM @.table" + where + Tool.limit(10, obj.params.page),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (t) {
+    a04: function (t) {
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
