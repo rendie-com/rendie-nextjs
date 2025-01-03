@@ -13,7 +13,7 @@ var fun =
     },
     a01: function () {
         //obj.params.return         返回URL  
-        let html = Tool.header(obj.params.return, "Shopee &gt; 商品列表 &gt; 违规或删除 &gt; 获取【违规或删除】信息") + '\
+        let html = Tool.header(obj.params.return, "Shopee &gt; 商品 &gt; 违规或删除 &gt; 获取【违规或删除】信息") + '\
         <div class="p-2">\
             <table class="table table-hover align-middle mb-0">\
                 <tbody>\
