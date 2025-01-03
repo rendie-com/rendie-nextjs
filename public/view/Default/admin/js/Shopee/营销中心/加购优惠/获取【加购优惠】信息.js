@@ -48,7 +48,12 @@ var fun =
     a05: function (oo) {
         if (oo.message == "success") {
             this.obj.A2 = oo.data.has_more ? this.obj.A1 + 1 : this.obj.A1
-            this.a06(oo.data.add_on_deal_list)
+            if(oo.data.add_on_deal_list){
+                this.a06(oo.data.add_on_deal_list)
+            }
+            else{
+                $("#state").html("没有【加购优惠】信息。");
+            }            
         }
         else {
             Tool.pre(["出错", oo])

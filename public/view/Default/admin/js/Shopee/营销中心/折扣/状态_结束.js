@@ -35,23 +35,23 @@ var fun =
         let where = " where @.status=" + obj.params.status + " and @.site='" + obj.params.site + "'"
         let data = [{
             action: "sqlite",
-            database: "shopee",
-            sql: "select @.promotion_id as promotion_id FROM @.discount" + where + " limit 1",
+            database: "shopee/营销中心/折扣",
+            sql: "select @.promotion_id as promotion_id FROM @.table" + where + " limit 1",
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee",
-                sql: "select count(1) as total FROM @.discount" + where,
+                database: "shopee/营销中心/折扣",
+                sql: "select count(1) as total FROM @.table" + where,
             })
         }
         Tool.ajax.a01(data, this.a05, this);
     },
     a05: function (t) {
         if (this.obj.A2 == 0) { this.obj.A2 = t[1][0].total; }
-        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a06, this, null, t[0][0].promotion_id)
+        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a06, this, null, t[0][0])
     },
-    a06: function (promotion_id) {
+    a06: function (oo) {
         let arr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
@@ -59,10 +59,10 @@ var fun =
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v4/discount/delete_stop_discount/?" + arr.join("&")
-        let data = '{"promotion_id":' + promotion_id + ',"action":2}'
+        let data = '{"promotion_id":' + oo.promotion_id + ',"action":2}'
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
         $("#state").html("正在结束。。。");
-        gg.postFetch(url, data, this.a07, this, promotion_id)
+        gg.postFetch(url, data, this.a07, this, oo.promotion_id)
     },
     a07: function (t, promotion_id) {
         if (t.error == 0) {
@@ -80,8 +80,8 @@ var fun =
     a08: function (promotion_id) {
         let data = [{
             action: "sqlite",
-            database: "shopee",
-            sql: "update @.discount set @.status=3 where @.promotion_id=" + promotion_id,
+            database: "shopee/营销中心/折扣",
+            sql: "update @.table set @.status=3 where @.promotion_id=" + promotion_id,
         }]
         Tool.ajax.a01(data, this.a09, this);
     },

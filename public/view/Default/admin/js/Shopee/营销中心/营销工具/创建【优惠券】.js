@@ -12,7 +12,7 @@ var fun =
         //obj.params.jsFile         选择JS文件        
         //obj.params.site           站点
         //obj.params.return         返回URL 
-        let html = Tool.header(obj.params.return,"SHOPEE &gt; 营销中心 &gt; 营销工具 &gt; 创建【优惠券】") + '\
+        let html = Tool.header(obj.params.return, "SHOPEE &gt; 营销中心 &gt; 营销工具 &gt; 创建【优惠券】") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
@@ -324,7 +324,7 @@ var fun =
             //请在现有的第二张订单凭证过期后创建新的第二个订单凭证
             this.g02(["写入成功"])
         }
-        else {            
+        else {
             Tool.pre(["出错222：", oo]);
             this.g01()
         }
@@ -332,16 +332,16 @@ var fun =
     //////////////////////////////////////////////////////////
     e01: function () {
         //@.status=1        表示【上架商品】
-        let data=[{
+        let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/"+ obj.params.site,
+            database: "shopee/商品/店铺商品/" + obj.params.site,
             sql: "select @.fromid as itemid from @.table where @.status=1 order by @._1688_saleNum desc limit 100",
-        }]          
-        $("#state").html("正在获取本地商品。。。");        
+        }]
+        $("#state").html("正在获取本地商品。。。");
         Tool.ajax.a01(data, this.e02, this);
     },
-    e02: function (t) {   
-        let items=t[0]
+    e02: function (t) {
+        let items = t[0]
         // for(let i=0;i<t[0].length;i++){
         //     items.push(t[0][i].fromid)
         // }
@@ -393,7 +393,7 @@ var fun =
             "end_time=" + this.obj.end_time
         ]
         let url = "https://seller.shopee.cn/api/marketing/v4/follow_prize/overlap/?" + pArr.join("&")
-        gg.getFetch(url,"json", this.f02, this);
+        gg.getFetch(url, "json", this.f02, this);
     },
     f02: function (t) {
         if (t.code == 0) {
@@ -421,25 +421,19 @@ var fun =
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v4/follow_prize/create/?" + pArr.join("&");
-        let headers = [
-            {
-                "name": "content-type",
-                "value": "application/json;charset=UTF-8"
-            },
-        ]
-        gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.d04, this)
+        gg.postFetch(url, JSON.stringify(data), this.d04, this)
     },
 
     ///////////////////////////////////////////////////
     g01: function () {
         $("#state").html("正在更新活动时间。")
-        config[obj.params.site].coupon_time[this.obj.A1 - 1] = this.obj.end_time + 1;       
+        config[obj.params.site].coupon_time[this.obj.A1 - 1] = this.obj.end_time + 1;
         let data = [{
             action: "fs",
             fun: "writeFile",
             path: "public/" + o.path + "admin/js/Shopee/营销中心/config.js",
             data: "let config=" + JSON.stringify(config, null, 2),
-        }]       
+        }]
         Tool.ajax.a01(data, this.g02, this);
     },
     g02: function (t) {

@@ -10,6 +10,21 @@ var fun =
     },
     a02: function () {
         let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/营销中心/加购优惠",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/加购优惠.db"],
+                database: "shopee/营销中心/加购优惠",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
+        let data = [{
             action: "sqlite",
             database: "shopee/营销中心/加购优惠",
             sql: "select count(1) as total FROM @.table" + this.b03(),
@@ -18,9 +33,9 @@ var fun =
             database: "shopee/营销中心/加购优惠",
             sql: "select " + Tool.fieldAs("add_on_deal_id,add_on_deal_name,status,addtime,start_time,end_time") + " FROM @.table" + this.b03() + " order by @.addtime desc " + Tool.limit(10, obj.params.page),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (t) {
+    a04: function (t) {
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -31,13 +46,8 @@ var fun =
                 <td>'+ Tool.js_date_time2(arr[i].addtime) + '</td>\
            </tr>'
         }
-        let html = Tool.header(obj.params.jsFile,obj.params.site) + '\
-        <div class="p-2">\
-            <ul class="makeHtmlTab">\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=tw\')"' + (obj.params.site == "tw" ? ' class="hover"' : '') + '>台湾虾皮</li>\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=my\')"' + (obj.params.site == "my" ? ' class="hover"' : '') + '>马来西亚</li>\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=br\')"' + (obj.params.site == "br" ? ' class="hover"' : '') + '>巴西</li>\
-            </ul>\
+        let html = Tool.header(obj.params.jsFile, obj.params.site) + '\
+        <div class="p-2">'+ Tool.header3(obj.params.jsFile, obj.params.site) + '\
            <table class="table align-middle table-hover">\
   			    <thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\

@@ -3,7 +3,7 @@ var fun =
 {
     a01: function () {
         //obj.params.jsFile        选择JS文件
-        obj.params.site = obj.params.site ? obj.params.site : "tw";//站点
+        obj.params.site = obj.params.site ? obj.params.site : "sg";//站点
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页
         obj.params.field = obj.params.field ? obj.params.field : "1";//搜索字段
         obj.params.searchword = obj.params.searchword ? obj.params.searchword : "";//搜索关键词
@@ -11,6 +11,21 @@ var fun =
         this.a02();
     },
     a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/营销中心/折扣",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/折扣.db"],
+                database: "shopee/营销中心/折扣",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
         let data = [{
             action: "sqlite",
             database: "shopee/营销中心/折扣",
@@ -20,9 +35,9 @@ var fun =
             database: "shopee/营销中心/折扣",
             sql: "select " + Tool.fieldAs("title,status,images,start_time,end_time,addtime") + " FROM @.table" + this.b03() + " order by @.addtime desc " + Tool.limit(10, obj.params.page),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (t) {
+    a04: function (t) {
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -33,14 +48,9 @@ var fun =
                 <td class="p-0">'+ this.b05(arr[i].start_time, arr[i].end_time, arr[i].addtime) + '</td>\
            </tr>'
         }
-        let html = Tool.header(obj.params.jsFile,obj.params.site) + '\
+        let html = Tool.header(obj.params.jsFile, obj.params.site) + '\
         <div class="p-2">\
-            <ul class="makeHtmlTab">\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=tw\')"' + (obj.params.site == "tw" ? ' class="hover"' : '') + '>台湾虾皮</li>\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=my\')"' + (obj.params.site == "my" ? ' class="hover"' : '') + '>马来西亚</li>\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=br\')"' + (obj.params.site == "br" ? ' class="hover"' : '') + '>巴西</li>\
-            </ul>\
- 			'+ this.b06() + '\
+            '+ Tool.header3(obj.params.jsFile, obj.params.site) + this.b06() + '\
            <table class="table align-middle table-hover">\
   			    <thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\

@@ -10,7 +10,7 @@ var fun =
         //obj.params.return         返回URL
         //obj.params.site            站点
         //obj.params.status          状态
-        let html = Tool.header(obj.params.return, "Shopee &gt; 营销中心 &gt; 折扣列表 &gt; 状态_删除") + '\
+        let html = Tool.header(obj.params.return, "Shopee &gt; 营销中心 &gt; 折扣 &gt; 状态_删除") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
@@ -35,14 +35,14 @@ var fun =
         let where = " where @.status=" + obj.params.status + " and @.site='" + obj.params.site + "'"
         let data = [{
             action: "sqlite",
-            database: "shopee",
-            sql: "select @.promotion_id as promotion_id FROM @.discount" + where + " limit 1",
+            database: "shopee/营销中心/折扣",
+            sql: "select @.promotion_id as promotion_id FROM @.table" + where + " limit 1",
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee",
-                sql: "select count(1) as total FROM @.discount" + where,
+                database: "shopee/营销中心/折扣",
+                sql: "select count(1) as total FROM @.table" + where,
             })
         }
         Tool.ajax.a01(data, this.a05, this);
@@ -70,7 +70,7 @@ var fun =
             $("#state").html("删除成功。");
             this.d03(promotion_id)
         }
-        else if (t.bff_meta==null) {
+        else if (t.bff_meta == null) {
             $("#state").html("这个不给删除。【无效的活动期间，结束时间需晚于开始时间1小时以上】");
             this.d03(promotion_id)
         }
@@ -85,8 +85,8 @@ var fun =
     d03: function (promotion_id) {
         let data = [{
             action: "sqlite",
-            database: "shopee",
-            sql: "delete from @.discount where @.promotion_id=" + promotion_id,
+            database: "shopee/营销中心/折扣",
+            sql: "delete from @.table where @.promotion_id=" + promotion_id,
         }]
         Tool.ajax.a01(data, this.d04, this);
     },

@@ -3,7 +3,7 @@ var fun =
 {
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ''//择JS文件        
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'
         let html = Tool.header(obj.params.jsFile,obj.params.site) + '\
         <div class="p-2">\
             '+Tool.header3(obj.params.jsFile,obj.params.site)+'\
