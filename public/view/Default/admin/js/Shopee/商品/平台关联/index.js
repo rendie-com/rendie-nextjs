@@ -2,10 +2,11 @@
 var fun =
 {
     a01: function () {
-        obj.params.jsFile=obj.params.jsFile?obj.params.jsFile:""//选择JS文件
+        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页   
         obj.params.field = obj.params.field ? obj.params.field : "1";//搜索字段
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        obj.params.ManualReview_1688_video_status = obj.params.ManualReview_1688_video_status ? obj.params.ManualReview_1688_video_status : "";//人工审核1688视频状态
         //obj.params.manualReview               敦煌手动审核状态
         //obj.params.penalty_type               更新后违规类型
         // obj.arr[7] = obj.arr[7] ? obj.arr[7] : "-_-20";//速卖通类目
@@ -16,10 +17,24 @@ var fun =
         // obj.arr[12] = obj.arr[12] ? obj.arr[12] : "-_-20";//手动审核1688状态
         // obj.arr[13] = obj.arr[13] ? obj.arr[13] : "-_-20";//手动审核后1688商品状态
         // obj.arr[14] = obj.arr[14] ? obj.arr[14] : "-_-20";//时间
-        // obj.arr[15] = obj.arr[15] ? obj.arr[15] : "-_-20";//人工审核1688视频状态
         this.a02();
     },
     a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/商品/全球商品",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/商品/全球商品.db"],
+                database: "shopee/商品/全球商品",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function (t) {
         let where = this.b05()
         let data = [{
             action: "sqlite",
@@ -30,9 +45,9 @@ var fun =
             database: "shopee/商品/全球商品",
             sql: "select " + Tool.fieldAs("pic,video,proid,fromID,ManualReview,DHAfterReview,isup,penalty_type,ManualReview_1688_video_status,addtime,uptime") + " FROM @.table" + where + Tool.limit(10, obj.params.page, "sqlite"),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (t) {
+    a04: function (t) {
         let arr1 = t[1];
         let html = ""
         for (let i = 0; i < arr1.length; i++) {
@@ -66,7 +81,7 @@ var fun =
           <th class="p-0">'+ this.b02(obj.params.manualReview, config.proupdhgate_ManualReview_count) + '</th>\
           <th class="p-0">'+ this.b03("", config.proupdhgate_AfterReview_count) + '</th>\
           <th class="p-0">'+ this.b15("") + '</th>\
-          <th class="p-0">'+ this.b17("", config.product_ManualReview_video_status_count) + '</th>\
+          <th class="p-0">'+ this.b17(obj.params.ManualReview_1688_video_status, config.product_ManualReview_video_status_count) + '</th>\
           <th class="p-0 w170">'+ this.b16(0) + '</th>\
         </tr>'
         return html;
@@ -121,7 +136,7 @@ var fun =
         if (obj.params.penalty_type) { arr.push("@.penalty_type=" + obj.params.penalty_type); }
         // if (obj.arr[12] != "-_-20") { arr.push("@.ManualReview_1688=" + obj.arr[12]); }
         // if (obj.arr[13] != "-_-20") { arr.push("@.ManualReview_1688_state=" + obj.arr[13]); }
-        // if (obj.arr[15] != "-_-20") { arr.push("@.ManualReview_1688_video_status=" + obj.arr[15]); }
+        if (obj.params.ManualReview_1688_video_status != "") { arr.push("@.ManualReview_1688_video_status=" + obj.params.ManualReview_1688_video_status); }
         // let str = ""
         // switch (obj.arr[14]) {
         //     case "1": str = " order by @.addtime desc,@.id desc"; break;//【上传时间】倒序
@@ -169,7 +184,7 @@ var fun =
         for (let i = 0; i < arr.length; i++) {
             if (penalty_type == arr[i][0]) {
                 let str2 = ""
-                if (penalty_type == 8 || penalty_type == 5) {
+                if (penalty_type == 8 || penalty_type == 5 || penalty_type == 3 || penalty_type == 7) {
                     str2 = '\
                     <div style="position: relative;top: -7px;left: -7px;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
@@ -194,7 +209,7 @@ var fun =
             <li onClick="Tool.open4(\'js06\');"><a class="dropdown-item pointer">*将【未上传】的商品上传到【Shopee全球商品】</a></li>\
             <li onClick="Tool.open4(\'js02\');" title="当你上传商品时，出现错误，上传了，没被记录，就要用到该功能。"><a class="dropdown-item pointer">*删除【Shopee全球商品】中【没被记录】的商品</a></li>\
             <li onClick="Tool.open4(\'js09\');" title="当你直接在【Shopee全球商品】删除商品时，但记录的信息还在，就要用到该功能。"><a class="dropdown-item pointer">*重新记录【已上传】的商品</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js63&table=GlobalPro&database=shopee_bak&newdatabase=shopee/商品/全球商品\');"><a class="dropdown-item pointer">把旧表复制到新表</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js63&table=GlobalPro&database=shopee_bak&newdatabase=shopee/商品/全球商品\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
 		</ul>'
     },
     b11: function (addtime, uptime, isup) {
@@ -236,7 +251,7 @@ var fun =
             nArr.push('<option value="' + i + '" ' + ("" + arr[i][0] == "" + val ? 'selected="selected"' : '') + '>' + i + '.' + arr[i][1] + '（' + configArr[i] + '）</option>');
         }
         return '\
-        <select onChange=" fun.c12(this.options[this.selectedIndex].value)" class="form-select">\
+        <select onChange="fun.c12(this.options[this.selectedIndex].value)" class="form-select">\
             <option value="">人工审核1688视频状态</option>\
             <option value="-1">更新数量</option>\
             ' + nArr.join("") + '\
@@ -308,7 +323,7 @@ var fun =
             Tool.openR("?jsFile=js42");
         }
         else {
-            Tool.open(15, val);
+            Tool.open("ManualReview_1688_video_status", val);
         }
     },
 }

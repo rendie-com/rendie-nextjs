@@ -4,7 +4,7 @@ var fun =
         A1: 1, A2: 15, Aarr: [],
     },
     a01: function () {
-        let html = Tool.header(obj.params.return, '1688 &gt; 采集箱 &gt; 主商品列表 &gt; 人工审核1688视频状态_更新数量') + '\
+        let html = Tool.header(obj.params.return, 'Shopee &gt; 商品 &gt; 平台关联 &gt; 人工审核1688视频状态_更新数量') + '\
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\
@@ -37,7 +37,7 @@ var fun =
         let data = [{
             action: "fs",
             fun: "writeFile",
-            path: "public/" + o.path + "admin/js/Shopee/商品列表/全球商品/config.js",
+            path: "public/" + o.path + "admin/js/Shopee/商品/平台关联/config.js",
             data: "let config=" + JSON.stringify(config, null, 2),
         }]
         Tool.ajax.a01(data, this.a06, this);
