@@ -14,17 +14,32 @@ var fun =
     },
     a02: function () {
         let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/品牌",
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/品牌.db"],
+                database: "shopee/品牌",
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function (t) {
+        let data = [{
             action: "sqlite",
             database: "shopee/品牌",
             sql: "select count(1) as total FROM @.table" + this.b03(),
         }, {
             action: "sqlite",
             database: "shopee/品牌",
-            sql: "select "+Tool.fieldAs("brand_id,name,category_ids,addtime")+" FROM @.table" + this.b03() + Tool.limit(20, obj.params.page),
+            sql: "select " + Tool.fieldAs("brand_id,name,category_ids,addtime") + " FROM @.table" + this.b03() + Tool.limit(20, obj.params.page),
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a03: function (t) {
+    a04: function (t) {
         let arr = t[1]
         let html2 = "";
         for (let i = 0; i < arr.length; i++) {
@@ -54,6 +69,7 @@ var fun =
         </div>'
         Tool.html(null, null, html);
     },
+    /////////////////////////////////////////
     b01: function (id) {
         return '\
         <button title = "操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
