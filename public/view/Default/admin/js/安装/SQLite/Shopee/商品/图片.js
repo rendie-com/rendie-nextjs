@@ -58,6 +58,18 @@ mssql = mssql.concat([
                 des: "【新加坡】水印图片地址"
             },
             {
+                name: "mx_watermark",
+                type: "varchar(50)",
+                default: "",
+                des: "【墨西哥】水印图片地址"
+            },
+            {
+                name: "sg_video",
+                type: "text",
+                default: "",
+                des: "【新加坡】水印图片地址"
+            },
+            {
                 name: "tw_video",
                 type: "text",
                 default: "",
@@ -76,10 +88,10 @@ mssql = mssql.concat([
                 des: "【巴西站点】上传后的shopee视频。json格式"
             },
             {
-                name: "sg_video",
+                name: "mx_video",
                 type: "text",
                 default: "",
-                des: "【新加坡】水印图片地址"
+                des: "【墨西哥】水印图片地址"
             },
             {
                 name: "width",
@@ -165,6 +177,12 @@ mssql = mssql.concat([
                 des: "水印图片地址"
             },
             {
+                name: "mx_watermark",
+                type: "varchar(50)",
+                default: "",
+                des: "水印图片地址"
+            },
+            {
                 name: "width",
                 type: "integer",
                 default: "0",
@@ -243,6 +261,12 @@ mssql = mssql.concat([
             },
             {
                 name: "br_watermark",
+                type: "varchar(50)",
+                default: "",
+                des: "水印图片地址"
+            },
+            {
+                name: "mx_watermark",
                 type: "varchar(50)",
                 default: "",
                 des: "水印图片地址"

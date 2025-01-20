@@ -180,7 +180,7 @@ let mssql = [
     //             des: "索引"
     //         },
     //         {
-    //             name: "name",
+    //             name: "username",
     //             type: "varchar(20)",
     //             default: "",
     //             des: "名称"
@@ -210,7 +210,7 @@ let mssql = [
     //             des: "refresh_token不能超过30天"
     //         },
     //         {
-    //             name: "state",
+    //             name: "islocked",
     //             type: "smallint",
     //             default: "0",
     //             des: "是否锁定"
@@ -238,6 +238,12 @@ let mssql = [
     //             type: "integer",
     //             default: "0",
     //             des: "所属用户组ID"
+    //         },
+    //         {
+    //             name: "groupname",
+    //             type: "varchar(64)",
+    //             default: "",
+    //             des: "所属用户组"
     //         },
     //         {
     //             name: "RealName",
@@ -358,7 +364,7 @@ let mssql = [
     //             des: "索引"
     //         },
     //         {
-    //             name: "Name",
+    //             name: "groupname",
     //             type: "varchar(100)",
     //             default: "",
     //             des: "会员组名称"
