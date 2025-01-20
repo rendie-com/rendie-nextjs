@@ -60,8 +60,11 @@ Object.assign(Tool, {
             else if (oo.site == "sg") {
                 Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.sg/accessory.sg", oo.key, this.a05, this, oo)
             }
+            else if (oo.site == "mx") {
+                Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.com.mx/coupons.mx", oo.key, this.a05, this, oo)
+            }
             else {
-                Tool.pre("还没开发。。。")
+                Tool.pre("还没开发2025.1.13。。。")
             }
         },
         a05: function (blob, oo) {

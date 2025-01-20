@@ -105,8 +105,12 @@ var fun =
                 //正在翻译成葡萄牙语。。。
                 Tool.translate_name.a01(typeName, "zh-CN", "pt", this.d03, this, oo)
             }
+            else if (obj.params.site == "mx") {
+                //正在翻译成葡萄牙语。。。
+                Tool.translate_name.a01(typeName, "zh-CN", "es", this.d03, this, oo)
+            }
             else {
-                Tool.pre("还没开发。。。。")
+                Tool.pre("还没开发2025.1.13:20:52。。。。")
             }
         }
         else {

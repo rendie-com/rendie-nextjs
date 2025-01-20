@@ -138,6 +138,7 @@ var fun =
 	        <li onClick="Tool.openR(\'?jsFile=js50&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*删除该站点类目</a></li>\
 	        <li onClick="Tool.openR(\'?jsFile=js56&site='+ obj.params.site + '\');" title="怎么选？答：定价错误的选出来。"><a class="dropdown-item pointer">选出要修改价格的商品</a></li>\
             <li onClick="Tool.openR(\'?jsFile=js62&table=shopPro_' + obj.params.site + '&database=shopee\');"><a class="dropdown-item pointer">*把该表同步到【PostgreSQL】数据库</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js70&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*修改出货天数</a></li>\
         </ul>'
     },
     b03: function (pic) {
@@ -534,12 +535,13 @@ var fun =
         let str2 = str1 + '\n旧折扣 = -' + discount + '%\n旧折扣价[税前] = ' + siteObj.currency_symbol + ' ' + price1 + '\n税率 = ' + siteObj.taxRate + '%\n旧折扣价[税后] = ' + siteObj.currency_symbol + ' ' + price2
         let price3 = Tool.fomatFloat(input_normal_price * (1 - newDiscount / 100), siteObj.scale)
         let str3 = '新折扣价 = ' + price3 + '\n新折扣 = -' + newDiscount + '%\n\n';
+        //input_normal_price   表示【最终定价】
         return '\
         <table class="table mb-0 table-bordered left">\
             <tr><td title="'+ str1 + '"><s style="color:#929292">' + siteObj.currency_symbol + " " + input_normal_price + '</s></td></tr>\
             <tr><td title="'+ str2 + '">' + siteObj.currency_symbol + ' ' + price1 + '<sup>-' + discount + '%</sup></td></tr>\
             <tr'+ (newDiscount <= 8 || newDiscount >= 80 ? ' style="background-color:#ffc63d;"' : '') + '>\
-                <td class="nowrap" data-bs-toggle="tooltip" data-bs-placement="right"data-bs-title="'+ str3 + oo.str + '" ' + (input_normal_price == oo.price ? '' : 'style="color:red;"') + '>\
+                <td class="nowrap" data-bs-toggle="tooltip" data-bs-placement="right"data-bs-title="'+ str3 + oo.str + '" ' + (input_normal_price == oo.price ? '' : 'style="color:red;" ') + '>\
                    ' + siteObj.currency_symbol + ' ' + price3 + '<sup>-' + newDiscount + '%</sup>\
                </td>\
             </tr>\

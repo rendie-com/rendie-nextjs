@@ -120,7 +120,11 @@
                 path + '全球商品_修改/common/详情.js',
                 path + '全球商品_修改/index.js'
             ]); break;
-        case "js44": Tool.scriptArr(["admin/js/Shopee/common.js", path + '全球商品_修改/翻译【已发布站点】标题和详情.js']); break;
+        case "js44": Tool.scriptArr([
+            "admin/js/Shopee/common.js",
+            path + '全球商品_修改/已发布站点/common.js',
+            path + '全球商品_修改/已发布站点/翻译【已发布站点】标题和详情.js'
+        ]); break;
         case "js45": Tool.scriptArr(loginPath.concat([
             path + 'common_logistics.js',
             path + '全球商品/common_price.js',
@@ -237,6 +241,7 @@
             'admin/js/common_img/index.js',
             path + '店铺商品/更多/为没有视频的商品生成视频.js'
         ])); break;
+        case "js70": Tool.scriptArr(loginPath.concat([path + '店铺商品/更多/修改出货天数.js'])); break;
         default: Tool.scriptArr([
             'admin/js/敦煌网/已上传商品/商品/common.js',
             path + '平台关联/config.js',

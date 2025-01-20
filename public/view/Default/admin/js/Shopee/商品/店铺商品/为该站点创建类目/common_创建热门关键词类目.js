@@ -5,25 +5,17 @@ Object.assign(Tool, {
         obj: {
             A1: 1, A2: 0,
             B1: 1, B2: 10,//“关键词类目进度”shopee只能创建10个子类目
-            tw: {
-                name: "🔥熱門關鍵字"//热门关键词
-            },
-            my: {
-                name: "🔥Hot Keywords"//热门关键词
-            },
-            br: {
-                name: "🔥Palavras-chave quentes"//热门关键词
-            }
+
         },
         a01: function (seller, site, next, This, t) {
-            this.obj.sg=this.obj.my;
             let oo = {
                 seller: seller,
                 site: site,
                 next: next,
                 This: This,
                 t: t,
-                keys: {},
+                language: "",//表示要翻译的语言
+                keys: {},//关键词
                 draft_id: 0,//空父类目ID（首次创建子类目要用）
                 keyObj: {},//关键词类目ID（判断是否重复用，和添加商品用的）
                 keyArr: [],//已处理的关键词
@@ -36,7 +28,7 @@ Object.assign(Tool, {
             let where = " where @.status=1"
             let data = [{
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + oo.site,
                 //“fromid”有什么用？答：创建子类目后放商品用的。
                 sql: "select " + Tool.fieldAs("_1688_fromid,fromid") + " FROM @.table" + where + Tool.limit(10, this.obj.A1, "sqlite"),
                 list: [{
@@ -53,10 +45,11 @@ Object.assign(Tool, {
             if (this.obj.A2 == 0) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    database: "shopee/商品/店铺商品/" + oo.site,
                     sql: "select count(1) as Count FROM @.table" + where,
                 })
             }
+            $("#state").html("正在取出店铺商品的所有在1688的类目。。。");
             Tool.ajax.a01(data, this.a03, this, oo);
         },
         a03: function (t, oo) {
@@ -71,13 +64,27 @@ Object.assign(Tool, {
                     oo.keys[typeName] = [t[0][i].fromid]
                 }
             }
+            $("#state").html("给【oo.keys】添加数据。。。");
             Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a04, this, this.d01, oo)
         },
         a04: function (oo) {
             this.obj.A1++;
             this.a02(oo);
         },
-        ///////////////////////
+        /////////////////////////////////////////
+        b01: function (site) {
+            let language
+            switch (site) {
+                case "tw": language = "zh-TW"; break;
+                case "sg":
+                case "my":
+                    language = "en"; break;
+                case "br": language = "pt"; break;
+                case "mx": language = "es"; break;
+            }
+            return language
+        },
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
         d01: function (oo) {
             let arr = []
             $("#state").html("排序一下");
@@ -86,35 +93,26 @@ Object.assign(Tool, {
             }
             if (arr.length == 0) {
                 $("#state").html("没有关键词跳出。");
-                //this.f03(oo)
             }
             else {
                 arr.sort(function (A, B) {
                     return B[2] - A[2]
                 })
-                this.d02(arr, oo)
+                oo.keyArr = arr;//后面会用到。
+                this.d02(oo)
             }
         },
-        d02: function (config, oo) {
-            //采集商品要用，采集店铺要用，生成首图水印，所以就保存到那里去了。
-            oo.keyArr = config;//后面会用到。
-            let data = [{
-                action: "fs",
-                fun: "writeFile",
-                path: "public/" + o.path + "admin/js/Shopee/采集箱/config_" + oo.site + ".js",
-                data: "let config=" + JSON.stringify(config, null, 2),
-            }]
-            Tool.ajax.a01(data, this.d03, this, oo);
-        },
-        d03: function (t, oo) {
-            if (t[0] == "写入成功") {
-                this.d04(oo);
+        d02: function (oo) {
+            $("#state").html("正在翻译。。。（需要开代理）");
+            oo.language = this.b01(oo.site)
+            if (oo.language) {
+                Tool.translate_name.a01("热门关键词", "zh-CN", oo.language, this.d03, this, oo);
             }
             else {
-                Tool.pre(["出错", t]);
+                Tool.pre("未知的翻译语言。。。还没开发2025.1.19。。。")
             }
         },
-        d04: function (oo) {
+        d03: function (t, oo) {
             let arr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
@@ -123,13 +121,13 @@ Object.assign(Tool, {
             ]
             let url = "https://seller.shopee.cn/api/shopcategory/v4/category/create_collection_draft/?" + arr.join("&")
             $("#url").html(url + '【post】');
-            $("#state").html("正在创建shopee类目00000。。。");
+            $("#state").html("正在创建shopee主类目。。。");
             let data = {
-                name: this.obj[oo.site].name//热门关键词
+                name: "🔥" + t//热门关键词
             }
-            gg.postFetch(url, JSON.stringify(data), this.d05, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.d04, this, oo)
         },
-        d05: function (t, oo) {
+        d04: function (t, oo) {
             /*
             {
               "code": 0,
@@ -142,7 +140,7 @@ Object.assign(Tool, {
             if (t.message == "success") {
                 oo.draft_id = t.data.draft_id
                 if (oo.keyArr.length < this.obj.B2) { this.obj.B2 = oo.keyArr.length }//确保“关键词类目”个数不出错。
-                this.d06(oo);
+                this.e01(oo);
             }
             else if (t.code == 340007) {
                 Tool.at("类目已存在，请手动删除类目，再来。")
@@ -151,28 +149,16 @@ Object.assign(Tool, {
                 Tool.pre(["出错", t])
             }
         },
-        d06: function (oo) {
-            Tool.x1x2("B", this.obj.B1, this.obj.B2, this.e01, this, this.f01, oo)
-        },
-        /////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
         e01: function (oo) {
-            if (oo.site == "tw") {
-                $("#state").html("正在翻译成台湾语。。。（需要开代理）");
-                Tool.translate_name.a01(oo.keyArr[this.obj.B1 - 1][0], "zh-CN", "zh-TW", this.e02, this, oo)
-            }
-            else if (oo.site == "my"||oo.site == "sg") {
-                //正在翻译成英语。。。
-                Tool.translate_name.a01(oo.keyArr[this.obj.B1 - 1][0], "zh-CN", "en", this.e02, this, oo)
-            }
-            else if (oo.site == "br") {
-                //正在翻译成葡萄牙语。。。
-                Tool.translate_name.a01(oo.keyArr[this.obj.B1 - 1][0], "zh-CN", "pt", this.e02, this, oo)
-            }
-            else {
-                Tool.pre("还没开发。。。。")
-            }
+            Tool.x1x2("B", this.obj.B1, this.obj.B2, this.e02, this, this.f01, oo)
         },
-        e02: function (t, oo) {
+        e02: function (oo) {
+            $("#state").html("正在翻译。。。（需要开代理）");
+            Tool.translate_name.a01(oo.keyArr[this.obj.B1 - 1][0], "zh-CN", oo.language, this.e03, this, oo)
+        },
+        e03: function (name, oo) {
+            oo.keyArr[this.obj.B1 - 1][3] = name//保存用，到时后采集商品的时间要用。
             let arr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
@@ -182,12 +168,15 @@ Object.assign(Tool, {
             let url = "https://seller.shopee.cn/api/shopcategory/v4/category/create_parent_or_sub_category/?" + arr.join("&")
             $("#url").html(url + '【post】');
             $("#state").html("正在创建shopee子类目。。。");
+            this.e04(name, url, oo)
+        },
+        e04: function (name, url, oo) {
             let data
             if (oo.parent_shop_category_id) {
                 //俩次次上创建子类目
                 data = {
                     "sub_shop_category": {
-                        "name": Tool.titleCase(t),
+                        "name": Tool.titleCase(name),
                         "collection_type": "customized",
                         "parent_shop_category_id": oo.parent_shop_category_id,
                         "product_id_list": oo.keyArr[this.obj.B1 - 1][1]
@@ -199,18 +188,18 @@ Object.assign(Tool, {
                 data = {
                     "sub_shop_category":
                     {
-                        "name": Tool.titleCase(t),
+                        "name": Tool.titleCase(name),
                         "collection_type": "customized",
                         "to_delete_draft_id": oo.draft_id,
-                        "parent_shop_category_name": this.obj[oo.site].name,//热门关键词
+                        "parent_shop_category_name": name,//热门关键词
                         "cover_image": "",
                         "product_id_list": oo.keyArr[this.obj.B1 - 1][1]
                     }
                 }
             }
-            gg.postFetch(url, JSON.stringify(data), this.e03, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.e05, this, oo)
         },
-        e03: function (t, oo) {
+        e05: function (t, oo) {
             /*
            {
              "code": 0,
@@ -223,7 +212,7 @@ Object.assign(Tool, {
            */
             if (t.message == "success") {
                 oo.parent_shop_category_id = t.data.parent_shop_category_id;//父类目ID（俩次以上，创建子类目要用）
-                this.e04(t.data.sub_shop_category_id, oo);
+                this.e06(t.data.sub_shop_category_id, oo);
             }
             else if (t.code == 140000) {
                 Tool.at("无法创建子类目，请重新【*获取【全部广告】信息】")
@@ -237,13 +226,14 @@ Object.assign(Tool, {
                 "message": "subCategoryNameDup"
                 }
                 */
-                this.e04({ message: "message" }, oo)
+                //Tool.pre(["还不知道哪里出错了。", t])
+                this.e07({ message: "message" }, oo)
             }
             else {
                 Tool.pre(["出错01", t, oo.keyArr[this.obj.B1 - 1]])
             }
         },
-        e04: function (sub_shop_category_id, oo) {
+        e06: function (sub_shop_category_id, oo) {
             oo.collection_list.push({ "id": sub_shop_category_id, "sort_weight": this.obj.B2 + 1 - this.obj.B1 });
             //////////////////////////////////////////////////////////////////////////////
             let arr = [
@@ -256,12 +246,12 @@ Object.assign(Tool, {
             $("#url").html(url + '【post】');
             $("#state").html("正在启用shopee子类目。。。");
             let data = { "shop_category_id": sub_shop_category_id, "status": "active" }
-            gg.postFetch(url, JSON.stringify(data), this.e05, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.e07, this, oo)
         },
-        e05: function (t, oo) {
+        e07: function (t, oo) {
             if (t.message = "message") {
                 this.obj.B1++;
-                this.d06(oo);
+                this.e01(oo);
             }
             else {
                 Tool.pre(["出错", t])
@@ -291,9 +281,33 @@ Object.assign(Tool, {
             }
         },
         f03: function (oo) {
+            //采集商品要用，采集店铺要用，生成首图水印，所以就保存到那里去了。
+            let data = [{
+                action: "fs",
+                fun: "writeFile",
+                path: "public/" + o.path + "admin/js/Shopee/采集箱/config_" + oo.site + ".js",
+                data: "let config=" + JSON.stringify(oo.keyArr, null, 2),
+            }]
+            Tool.ajax.a01(data, this.f04, this, oo);
+        },
+        f04: function (t, oo) {
+            if (t[0] == "写入成功") {
+                this.f05(oo);
+            }
+            else {
+                Tool.pre(["出错", t]);
+            }
+        },
+        f05: function (oo) {
             this.obj.A1 = 1; this.obj.A2 = 0;
             this.obj.B1 = 1;
             oo.next.apply(oo.This, [oo.t])
         },
     }
 })
+
+
+
+
+
+

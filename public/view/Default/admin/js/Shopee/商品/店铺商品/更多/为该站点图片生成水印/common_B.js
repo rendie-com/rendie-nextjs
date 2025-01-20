@@ -121,8 +121,12 @@ Object.assign(Tool, {
                 objmsg.str = ["https://shopee.tw/discount.tw"]
                 Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo)
             }
-             else if (oo.site == "sg") {
+            else if (oo.site == "sg") {
                 objmsg.str = ["https://shopee.sg/accessory.sg"]
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo)
+            }
+            else if (oo.site == "mx") {
+                objmsg.str = ["https://shopee.com.mx/coupons.mx"]
                 Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo)
             }
             else {

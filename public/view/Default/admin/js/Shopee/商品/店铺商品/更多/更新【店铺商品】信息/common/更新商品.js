@@ -24,39 +24,34 @@ Object.assign(Tool, {
                 This: This,
                 t: t
             }
-            let logistics_channels = this.b01(site)//shopee的物流方式
-            if (logistics_channels) {
-                this.a02(oo)
-            }
-            else {
-                Tool.pre(["运费出错", logistics_channels])
-            }
+            oo.logistics_channels = this.b01(site)//shopee的物流方式
+            this.a02(oo);
         },
         a02: function (oo) {
             //总结经验：修改价格，容易被冻结店铺。
             //修改商品都会被审核，要少修改。
             let data = {
-                "product_id": oo.shop_product_fromid,//店铺商品ID
-                "product_info": {
-                    "logistics_channels": oo.logistics_channels,//运费
-                    "name": oo.name,//标题
-                    "description_info": {
-                        "description": (oo.description + this.b02(oo.site)).substring(0, 3000),//详情
-                        "description_type": "normal"
+                product_id: oo.shop_product_fromid,//店铺商品ID
+                product_info: {
+                    name: oo.name,//标题
+                    description_info: {
+                        description: (oo.description + this.b02(oo.site)).substring(0, 3000),//详情
+                        description_type: "normal"
                     },
-                    "min_purchase_limit": oo.min_purchase_limit,//最低购买数量
-                    "max_purchase_limit": {//最高购买数量
-                        "type": 1,//依订单
-                        "purchase_limit": oo.min_purchase_limit * 100//最低购买数量 * 100
+                    min_purchase_limit: oo.min_purchase_limit,//最低购买数量
+                    max_purchase_limit: {//最高购买数量
+                        type: 1,//依订单
+                        purchase_limit: oo.min_purchase_limit * 100//最低购买数量 * 100
                     },
-                    "images": oo.images,//放大镜
-                    "std_tier_variation_list": oo.std_tier_variation_list,//属性和属性图
-                    "model_list": oo.model_list,//价格
-                    "wholesale_list": oo.wholesale_list,//批发
-                    "video_list": oo.video//视频
+                    images: oo.images,//放大镜
+                    std_tier_variation_list: oo.std_tier_variation_list,//属性和属性图
+                    model_list: oo.model_list,//价格
+                    wholesale_list: oo.wholesale_list,//批发
+                    video_list: oo.video//视频
                 },
-                "is_draft": false
+                is_draft: false
             }
+            if (oo.logistics_channels) { data.product_info.logistics_channels = oo.logistics_channels; }//运费
             this.a03(data, oo)
         },
         a03: function (data, oo) {
@@ -114,9 +109,10 @@ Object.assign(Tool, {
             let logistics_channels = false;
             if (site == "my") {
                 logistics_channels = [
-                    { "size": 0, "price": "4.90", "cover_shipping_fee": false, "enabled": true, "channelid": 28016, "sizeid": 0 },//Standard Delivery (最大 30公斤)
-                    { "size": 0, "price": "0.00", "cover_shipping_fee": false, "enabled": false, "channelid": 28052, "sizeid": 0 },//Economy Delivery (Sea Shipping)(最大 100公斤)
-                    { "size": 0, "price": "3.50", "cover_shipping_fee": false, "enabled": false, "channelid": 28056, "sizeid": 0 }//Self Collection (Shopee Xpress)(最大 12公斤)
+                    { "size": 0, "price": "2.00", "cover_shipping_fee": false, "enabled": true, "channelid": 28056, "sizeid": 0 },
+                    { "size": 0, "price": "4.90", "cover_shipping_fee": false, "enabled": true, "channelid": 28059, "sizeid": 0 },
+                    { "size": 0, "price": "4.90", "cover_shipping_fee": false, "enabled": true, "channelid": 28063, "sizeid": 0 },
+                    { "size": 0, "price": "4.90", "cover_shipping_fee": false, "enabled": true, "channelid": 28016, "sizeid": 0 }
                 ]
             }
             else if (site == "tw") {
@@ -140,11 +136,15 @@ Object.assign(Tool, {
                     { "size": 0, "price": "1.49", "cover_shipping_fee": false, "enabled": true, "channelid": 18025, "sizeid": 0 }//Doorstep Delivery (Overseas)(最大 20公斤)    
                 ]
             }
+            else if (site == "mx") {
+                logistics_channels = false;
+            }
             return logistics_channels;
         },
-        b02: function () {
-            //马来语
-            let ms = '\n\n\
+        b02: function (site) {
+            let oo = {
+                //马来语
+                ms: '\n\n\
 Hello dan terima kasih kerana melawat kedai kami!\n\
 Kami memastikan perkhidmatan dan produk kami adalah berkualiti dan boleh dipercayai.\n\
 Jika anda mempunyai sebarang pertanyaan tentang produk ini, sila tinggalkan mesej kepada kami! 🥰 ❤️\n\
@@ -154,9 +154,9 @@ Jika anda mempunyai sebarang pertanyaan tentang produk ini, sila tinggalkan mese
 ♥️3 Jika anda mempunyai sebarang pertanyaan, sila hubungi kami sebelum membangkitkan pertikaian atau meninggalkan maklum balas negatif kepada kami. Kami akan cuba sedaya upaya untuk menyelesaikan masalah tersebut.\n\
 ♥️4 Anda boleh tinggalkan mesej di Shopee untuk menghubungi kami\n\
 \n\
-        ✨ Jika anda menyukai produk kami, sila ingat untuk mengikuti kami❤️'
-            //台湾
-            let tw = '\n\n\
+ ✨ Jika anda menyukai produk kami, sila ingat untuk mengikuti kami❤️',
+                //台湾
+                tw: '\n\n\
 你好，謝謝你光臨我們的商店！\n\
 我們確保我們的服務和產品品質良好，值得信賴。\n\
 如果您對該產品有任何疑問，請隨時給我們留言！ 🥰 ❤️\n\
@@ -166,9 +166,9 @@ Jika anda mempunyai sebarang pertanyaan tentang produk ini, sila tinggalkan mese
 ♥️3.如有任何問題，請在提出爭議或給我們留下負面反饋之前與我們聯繫。我們將盡力解決問題。\n\
 ♥️4.您可以在Shopee上留言與我們聯繫\n\
 \n\
-✨ 如果你喜歡我們的產品，請記得關注我們❤️'
-            //英语
-            let en = '\n\n\
+✨ 如果你喜歡我們的產品，請記得關注我們❤️',
+                //英语
+                en: '\n\n\
 Hello and thank you for visiting our store!\n\
 We ensure that our services and products are of good quality and trustworthy.\n\
 If you have any questions about this product, please feel free to leave us a message! 🥰 ❤️\n\
@@ -178,31 +178,46 @@ If you have any questions about this product, please feel free to leave us a mes
 ♥️3. If you have any questions, please contact us before raising a dispute or leaving us negative feedback.We will try our best to solve the problem.\n\
 ♥️4. You can leave a message on Shopee to contact us\n\
 \n﻿\
-✨ If you like our products, please remember to follow us❤️';
-            //巴西站点，不可以说“礼物”。
-            let pt = '\n\n\
+✨ If you like our products, please remember to follow us❤️',
+                //巴西站点，不可以说“礼物”。
+                pt: '\n\n\
 Olá e obrigado por visitar nossa loja!\n\
 Garantimos que nossos serviços e produtos sejam de boa qualidade e confiáveis.\n\
 Se você tiver alguma dúvida sobre este produto, sinta - se à vontade para nos deixar uma mensagem! 🥰 ❤️\n\
 \n\
-✨ Se você gosta de nossos produtos, lembre - se de nos seguir❤️'
-            return this.b03(tw, ms, en, pt);
+✨ Se você gosta de nossos produtos, lembre - se de nos seguir❤️',
+                es: 'Hola, ¡gracias por visitar nuestra tienda!\n\
+Aseguramos que nuestros servicios y productos sean de alta calidad y confiables.\n\
+Si tiene alguna pregunta sobre este producto, ¡no dude en enviarnos un mensaje! 🥰❤️\n\
+\n\
+♥️1. Cuando recibamos tu pedido, te enviaremos el paquete lo antes posible.\n\
+♥️2. Cuando recibas el paquete, si estás satisfecho con los artículos y el servicio. Déjanos una reseña de cinco estrellas y excelentes fotografías. Cualquier ayuda sería muy apreciada.\n\
+♥️3. Si tiene alguna pregunta, comuníquese con nosotros antes de abrir una disputa o dejarnos un comentario negativo. Haremos todo lo posible para resolver este problema.\n\
+♥️4. Puedes contactarnos a través del mensaje de Shopee.\n\
+\n\
+✨Si te gustan nuestros productos, recuerda seguirnos❤️'
+            }
+            return oo[this.b03(site)];
         },
-        b03: function (tw, ms, en, pt) {
-            let name = "";
-            if (obj.params.site == "my") {
-                name = en;
+        b03: function (site) {
+            let language
+            switch (site) {//选择JS文件
+                case "tw": language = "tw"; break;
+                case "sg":
+                case "my":
+                    language = "en"; break;
+                case "br": language = "pt"; break;
+                case "mx": language = "es"; break;
             }
-            else if (obj.params.site == "br") {
-                name = pt;
-            }
-            else if (obj.params.site == "tw") {
-                name = tw;
-            }
-            return name;
+            return language
         },
     }
 })
+
+
+
+
+
 // e02: function (sku, freight, oo) {
 //     let o2 = {
 //         shopPro_fromid: oo.tmpObj.shopPro_fromid,//店铺商品ID

@@ -14,6 +14,9 @@ Object.assign(Tool, {
             },
             br: {
                 name: "✨Mínimo de Unidades",//最低购买数量
+            },
+            mx: {
+                name: "✨Cantidad mínima de compra"
             }
         },
         a01: function (seller, site, next, This, t) {

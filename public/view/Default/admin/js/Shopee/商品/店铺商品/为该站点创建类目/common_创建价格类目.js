@@ -16,6 +16,10 @@ Object.assign(Tool, {
                 name: "⚡Preço R$0-R$",//价格
                 currency: "R$",
             },
+            mx: {
+                name: "⚡precio $0-$",//价格
+                currency: "$",
+            },
         },
         a01: function (seller, site, next, This, t) {
             this.obj.sg=this.obj.my;

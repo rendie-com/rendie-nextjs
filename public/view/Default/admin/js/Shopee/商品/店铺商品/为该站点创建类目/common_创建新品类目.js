@@ -11,6 +11,9 @@ Object.assign(Tool, {
             },
             br: {
                 name: "🍃Lançamento de novo produto",//新品上市
+            },
+            mx: {
+                name: "🍃Nuevas llegadas",//新品上市
             }
         },
         a01: function (seller, site, next, This, t) {

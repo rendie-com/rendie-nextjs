@@ -2,9 +2,11 @@
 Object.assign(Tool, {
     global_product_and_1688_product:
     {
-        a01: function (proid, next, This, t) {
+        a01: function (proid, site, next, This, t) {
             let oo = {
                 proid: proid,
+                language1: this.b01(site),
+                language2: this.b02(site),
                 next: next,
                 This: This,
                 t: t
@@ -15,7 +17,7 @@ Object.assign(Tool, {
             let data = [{
                 action: "sqlite",
                 database: "shopee/商品/全球商品",
-                sql: "select " + Tool.fieldAs("pic,shopee_8pic,manualreview_1688_fromid,manualreview_1688_unitweight,tw_2_name,ms_name,en_name,pt_name,tw_description,ms_description,en_description,pt_description,fromid,discount,proid") + " FROM @.table where @.proid='" + oo.proid + "'",
+                sql: "select " + Tool.fieldAs("pic,shopee_8pic,manualreview_1688_fromid,manualreview_1688_unitweight," + oo.language1 + "_name," + oo.language2 + "_description,fromid,discount,proid") + " FROM @.table where @.proid='" + oo.proid + "'",
             }]
             //获取全球商品信息
             Tool.ajax.a01(data, this.a03, this, oo);
@@ -25,15 +27,15 @@ Object.assign(Tool, {
             let url1 = 'https://seller.shopee.cn/portal/product/mtsku/' + global_product.fromid
             let url2 = 'https://detail.1688.com/offer/' + global_product.manualreview_1688_fromid + '.html';
             ////////////////////////////////////////
-            global_product.name = this.b01(global_product.tw_2_name, global_product.ms_name, global_product.en_name, global_product.pt_name)
-            global_product.tw_2_name = null; global_product.ms_name = null; global_product.en_name = null; global_product.pt_name = null;
-            global_product.description = this.b01(global_product.tw_description, global_product.ms_description, global_product.en_description, global_product.pt_description)
-            global_product.tw_description = null; global_product.ms_description = null; global_product.en_description = null; global_product.pt_description = null;
+            global_product.name = global_product[oo.language1 + "_name"]
+            global_product[oo.language1 + "_name"] = null;
+            global_product.description = global_product[oo.language2 + "_description"];
+            global_product[oo.language2 + "_description"] = null;
             ////////////////////////////////////
             let html = '\
             <tr><td class="right">1688详情页地址：</td><td colspan="2"><a href="' + url2 + '" target="_blank">' + url2 + '</a></td></tr>\
             <tr><td class="right">全球商品ID：</td><td colspan="2"><a href="' + url1 + '" target="_blank">' + global_product.fromid + '</a></td></tr>\
-            <tr><td class="right">标题：</td><td colspan="2">' + name + '</td></tr>\
+            <tr><td class="right">标题：</td><td colspan="2">' + global_product.name + '</td></tr>\
             <tr><td class="right">折扣：</td><td colspan="2">-' + global_product.discount + '%</td></tr>\
             <tr><td class="right">详情：</td><td colspan="2"><textarea rows="10" class="form-control form-control-sm">' + global_product.description + '</textarea></td></tr>'
             $("#tbody").append(html);
@@ -53,18 +55,29 @@ Object.assign(Tool, {
             }
         },
         ////////////////////////////////////////////////////////////
-        b01: function (tw, ms, en, pt) {
-            let name = "";
-            if (obj.params.site == "my"||obj.params.site == "sg") {
-                name = en;
+        b01: function (site) {
+            let language
+            switch (site) {//选择JS文件
+                case "tw": language = "tw_2"; break;
+                case "sg":
+                case "my":
+                    language = "en"; break;
+                case "br": language = "pt"; break;
+                case "mx": language = "es"; break;
             }
-            else if (obj.params.site == "br") {
-                name = pt;
+            return language
+        },
+        b02: function (site) {
+            let language
+            switch (site) {//选择JS文件
+                case "tw": language = "tw"; break;
+                case "sg":
+                case "my":
+                    language = "en"; break;
+                case "br": language = "pt"; break;
+                case "mx": language = "es"; break;
             }
-            else if (obj.params.site == "tw") {
-                name = tw;
-            }
-            return name;
+            return language
         },
         /////////////////////////////////////////////////////////
         d01: function (global_product, oo) {

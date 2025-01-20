@@ -42,7 +42,7 @@ Object.assign(Tool, {
             <tr><td class="right">商品编码：</td><td colspan="2">' + oo.shop_product.proid + '</td></tr>'
             $("#tbody").html(html);
             //获取全球商品和1688信息
-            Tool.global_product_and_1688_product.a01(oo.shop_product.proid, this.a05, this, oo)
+            Tool.global_product_and_1688_product.a01(oo.shop_product.proid, oo.site, this.a05, this, oo)
         },
         a05: function (t, oo) {
             oo.global_product_and_1688_product = t;
