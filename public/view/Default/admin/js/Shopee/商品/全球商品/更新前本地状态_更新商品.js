@@ -36,7 +36,7 @@ var fun =
         $("#state").html("正在获禁限词。。。");
         let data = [{
             action: "sqlite",
-            database: "shopee/违禁词/客优云",
+            database: "shopee/客优云/违禁词",
             sql: "select @.name as name FROM @.table where @.isWhitelist=0",
         }]
         Tool.ajax.a01(data, this.a04, this)

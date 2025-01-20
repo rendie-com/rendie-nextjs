@@ -42,10 +42,12 @@ var fun =
     b01: function () {
         return '\
         <select onChange="fun.c01($(this),this.options[this.selectedIndex].value)" class="form-select">\
-            <option value="-_-20">请选择获取的站点</option>\
+            <option value="">请选择获取的站点</option>\
+            <option value="sg">新加坡</option>\
             <option value="tw">台湾虾皮</option>\
             <option value="my">马来西亚</option>\
             <option value="br">巴西</option>\
+            <option value="mx">墨西哥</option>\
         </select>';
     },
     b02: function (id, arr) {

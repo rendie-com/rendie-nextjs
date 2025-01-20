@@ -61,7 +61,7 @@ var fun =
         }, {
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "select " + Tool.fieldAs("video,ExplanationVideo,proid,id,ManualReview_1688_video_status,ManualReview_1688_ExplanationVideo_status,discount,editStatus,ms_nameLen,tw_nameLen,tw_2_nameLen,en_nameLen,pt_nameLen,tw_name,tw_1_name,tw_2_name,ms_name,en_name,pt_name,fromID,manualreview_1688_fromid,ManualReview_1688_description,tw_description,ms_description,en_description,pt_description,BeforeReview,pic,ManualReview_1688_subject,ManualReview_1688_unitWeight,tw_ads_key,my_ads_key,br_ads_key,ManualReview_1688_categoryId,shopee_8pic") + " FROM @.table" + where + Tool.limit(1, obj.params.page),
+            sql: "select " + Tool.fieldAs("video,ExplanationVideo,proid,id,ManualReview_1688_video_status,ManualReview_1688_ExplanationVideo_status,discount,editStatus,ms_nameLen,tw_nameLen,tw_2_nameLen,en_nameLen,pt_nameLen,es_nameLen,tw_name,tw_1_name,tw_2_name,ms_name,en_name,pt_name,es_name,fromID,manualreview_1688_fromid,ManualReview_1688_description,tw_description,ms_description,en_description,pt_description,es_description,BeforeReview,pic,ManualReview_1688_subject,ManualReview_1688_unitWeight,tw_ads_key,my_ads_key,br_ads_key,ManualReview_1688_categoryId,shopee_8pic") + " FROM @.table" + where + Tool.limit(1, obj.params.page),
             list: [{
                 action: "sqlite",
                 database: "1688",
@@ -205,6 +205,7 @@ var fun =
                 case "3": arr.push("(@.en_nameLen<25 or @.en_nameLen>100)"); break;
                 case "4": arr.push("(@.pt_nameLen<25 or @.pt_nameLen>100)"); break;
                 case "5": arr.push("@.ManualReview_1688_unitWeight<=0"); break;
+                case "6": arr.push("(@.es_nameLen<25 or @.es_nameLen>100)"); break;//西班牙语
             }
         }
         if (obj.params.editStatus != "") { arr.push("@.editStatus=" + obj.params.editStatus); }
@@ -239,7 +240,7 @@ var fun =
         }
         return '\
         <select onChange="fun.c03(\''+ name + '\',this.options[this.selectedIndex].value)" class="form-select">\
-            <option value="">请选择【更新前本地状态】</option>\
+            <option value="">更新前本地状态</option>\
             <option value="-1">更新数量</option>\
             ' + nArr.join("") + '\
         </select>'
@@ -276,6 +277,7 @@ var fun =
             <option value="3" ' + ("3" == val ? 'selected="selected"' : '') + '>25 &gt; 英语标题长度 &gt;100</option>\
             <option value="4" ' + ("4" == val ? 'selected="selected"' : '') + '>25 &gt; 葡萄牙语标题长度 &gt;100</option>\
             <option value="5" ' + ("5" == val ? 'selected="selected"' : '') + '>手动审核1688后单位重量&lt;=0</option>\
+            <option value="6" ' + ("6" == val ? 'selected="selected"' : '') + ' title="西班牙语的国家有：墨西哥">25 &gt; 西班牙语标题长度 &gt;100</option>\
         </select>'
     },
     b09: function (name, val, configArr) {
@@ -295,14 +297,15 @@ var fun =
             ["sg", "新加坡"],
             ["tw", "台湾虾皮"],
             ["my", "马来西亚"],
-            ["br", "巴西"]
+            ["br", "巴西"],
+            ["mx", "墨西哥"]
         ];
         for (let i = 0; i < arr.length; i++) {
             nArr.push('<option value="' + arr[i][0] + '" ' + (arr[i][0] == val ? 'selected="selected"' : '') + '>' + arr[i][1] + '</option>');
         }
         return '\
         <select onChange="fun.c08(\''+ name + '\',this.options[this.selectedIndex].value)" class="form-select">\
-            <option value="">请选择【已发布站点】</option>\
+            <option value="">已发布站点</option>\
             <option value="-1">翻译【已发布站点】标题和详情</option>\
             ' + nArr.join("") + '\
         </select>'
@@ -386,6 +389,11 @@ var fun =
             }, {
                 action: "sqlite",
                 database: "shopee/商品/店铺商品/br",
+                //@.self_uptime        表示【本地更新时间】
+                sql: "update @.table set @.self_uptime=" + Tool.gettime("") + " where @.proid='" + proid + "'",
+            }, {
+                action: "sqlite",
+                database: "shopee/商品/店铺商品/mx",
                 //@.self_uptime        表示【本地更新时间】
                 sql: "update @.table set @.self_uptime=" + Tool.gettime("") + " where @.proid='" + proid + "'",
             }]

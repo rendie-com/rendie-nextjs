@@ -173,6 +173,8 @@ var fun =
             case "tw": name = "台湾虾皮"; break;
             case "my": name = "马来西亚"; break;
             case "br": name = "巴西"; break;
+            case "mx": name = "墨西哥"; break;
+            case "sg": name = "新加坡"; break;
         }
         return name
     },

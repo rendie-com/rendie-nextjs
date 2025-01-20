@@ -7,10 +7,11 @@ Object.assign(Tool, {
                 oo.tw_description,
                 oo.ms_description,
                 oo.en_description,
-                oo.pt_description
+                oo.pt_description,
+                oo.es_description
             ) : '') + '</td></tr>'
         },
-        b17: function (id, ManualReview_1688_description, tw_description, ms_description, en_description, pt_description) {
+        b17: function (id, ManualReview_1688_description, tw_description, ms_description, en_description, pt_description, es_description) {
             let str = '\
             <ul class="makeHtmlTab">\
                 <li onclick="Tool.common4.c15($(this),1)" class="hover">中文（简体）</li>\
@@ -18,12 +19,14 @@ Object.assign(Tool, {
                 <li onclick="Tool.common4.c15($(this),3)">马来语</li>\
                 <li onclick="Tool.common4.c15($(this),4)">英语</li>\
                 <li onclick="Tool.common4.c15($(this),5)">葡萄牙语</li>\
+                <li onclick="Tool.common4.c15($(this),6)">西班牙语</li>\
             </ul>\
             <textarea id="description1" rows="10" class="form-control form-control" onblur="fun.c06($(this),' + id + ',\'ManualReview_1688_description\')">' + ManualReview_1688_description + '</textarea>\
             <textarea id="description2" rows="10" class="form-control form-control hide" onblur="fun.c06($(this),' + id + ',\'tw_description\')">' + tw_description + '</textarea>\
             <textarea id="description3" rows="10" class="form-control form-control hide" onblur="fun.c06($(this),' + id + ',\'ms_description\')">' + ms_description + '</textarea>\
             <textarea id="description4" rows="10" class="form-control form-control hide" onblur="fun.c06($(this),' + id + ',\'en_description\')">' + en_description + '</textarea>\
-            <textarea id="description5" rows="10" class="form-control form-control hide" onblur="fun.c06($(this),' + id + ',\'pt_description\')">' + pt_description + '</textarea>'
+            <textarea id="description5" rows="10" class="form-control form-control hide" onblur="fun.c06($(this),' + id + ',\'pt_description\')">' + pt_description + '</textarea>\
+            <textarea id="description6" rows="10" class="form-control form-control hide" onblur="fun.c06($(this),' + id + ',\'es_description\')">' + es_description + '</textarea>'
             return str;
         },
         ////////////////////////////////////////
@@ -40,7 +43,7 @@ Object.assign(Tool, {
                 This.attr("disabled", false);
             }
             else { alert("出错：" + t); }
-        },        
+        },
         c15: function (This, id) {
             This.parent().find('li').attr("class", "");
             This.attr("class", "hover")

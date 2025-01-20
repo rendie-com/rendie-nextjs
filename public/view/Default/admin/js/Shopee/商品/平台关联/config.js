@@ -51,15 +51,15 @@ let config={
     3
   ],
   "GlobalPro_penalty_type_count": [
-    7556,
-    22,
+    7565,
+    88,
     0,
     26,
     0,
-    1,
     0,
-    10,
-    70,
+    0,
+    6,
+    0,
     0
   ],
   "proupdhgate_AfterReview_count": [

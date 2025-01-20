@@ -50,6 +50,7 @@ var fun =
              <option value="tw">台湾虾皮</option>\
              <option value="my">马来西亚</option>\
              <option value="br">巴西</option>\
+             <option value="mx">墨西哥</option>\
          </select>'
     },
     b02: function (typeArr) {

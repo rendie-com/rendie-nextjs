@@ -4,7 +4,7 @@ Object.assign(Tool, {
     {
         obj: {
             A1: 1, A2: 0,//商品页进度
-            B1: 17, B2: 0,//商品条进度
+            B1: 1, B2: 0,//商品条进度
         },
         a01: function (obj, logistics, seller, dom, next, This, t) {
             let oo = {
@@ -318,8 +318,19 @@ Object.assign(Tool, {
                 // @.penalty_type=8         更新后违规类型【8.发布商品失败】
                 this.f02("update @.table set @.penalty_type=8 where @.proid in ('" + oo.GlobalPro[this.obj.B1 - 1].proid + "')", oo)
             }
-            else if (publish_result.unpublished_count == 1) {
+            else if (publish_result.unpublished_count == 1 && publish_result.status == 1) {
+                /*
+                {
+                "progress": 100,
+                "published_count": 0,
+                "unpublished_count": 1,
+                "failed_count": 0,
+                "status": 1
+                }
+                */
                 $("#state").html("不能发布了。");
+                Tool.pre(t)
+                //this.f02("update @.table set @.penalty_type=8 where @.proid in ('" + oo.GlobalPro[this.obj.B1 - 1].proid + "')", oo)
                 //this.g02(oo);
             }
             else {

@@ -14,12 +14,14 @@ Object.assign(Tool, {
                     oo.ms_nameLen,
                     oo.en_nameLen,
                     oo.pt_nameLen,
+                    oo.es_nameLen,
                     oo.tw_name,
                     oo.tw_1_name,
                     oo.tw_2_name,
                     oo.ms_name,
                     oo.en_name,
                     oo.pt_name,
+                    oo.es_name,
                     (oo.list[0][0] ? oo.list[0][0].subject : ""),
                     oo.tw_ads_key,
                     oo.my_ads_key,
@@ -63,11 +65,33 @@ Object.assign(Tool, {
             </tr>'
         },
         ///////////////////////////////////////////////////////////////////////////
-        b01: function (pic, ManualReview_1688_subject, id, proid, tw_nameLen, tw_2_nameLen, ms_nameLen, en_nameLen, pt_nameLen, tw_name, tw_1_name, tw_2_name, ms_name, en_name, pt_name, _1688_subject, tw_ads_key, my_ads_key, br_ads_key, tw_keyword_cn_keyword, my_keyword_cn_keyword, br_keyword_cn_keyword) {
+        b01: function (pic,
+            ManualReview_1688_subject,
+            id, proid,
+            tw_nameLen,
+            tw_2_nameLen,
+            ms_nameLen,
+            en_nameLen,
+            pt_nameLen,
+            es_nameLen,
+            tw_name,
+            tw_1_name,
+            tw_2_name,
+            ms_name,
+            en_name,
+            pt_name,
+            es_name,
+            _1688_subject,
+            tw_ads_key,
+            my_ads_key,
+            br_ads_key,
+            tw_keyword_cn_keyword,
+            my_keyword_cn_keyword,
+            br_keyword_cn_keyword) {
             return '\
             <table class="table table-bordered mb-0 align-middle">\
                 <tr>\
-                    <td rowspan="6" class="w270 p-0" title="首图">\
+                    <td rowspan="7" class="w270 p-0" title="首图">\
                         <div class="easyzoom easyzoom--overlay">\
                             <a href=\"https://s-cf-sg.shopeesz.com/file/' + pic + '\">\
                                 <img src="https://s-cf-sg.shopeesz.com/file/'+ pic + '_tn"  class="figure-img img-fluid mb-0 rounded w270">\
@@ -78,7 +102,7 @@ Object.assign(Tool, {
                         <div style="color:#999;">原标题：'+ (_1688_subject ? _1688_subject : '') + '</div>\
                         <input type="text" value="'+ ManualReview_1688_subject + '" class="form-control" onblur="Tool.common1.c13($(this),' + id + ')" title="品牌名称 + 商品类型 + 主要特点（材质、颜色、尺寸、型号）">\
                     </td>\
-            </tr>\
+                </tr>\
                 <tr class="table-light center">\
                     <th class="w100">站点</th>\
                     <th class="w100">语言</th>\
@@ -113,6 +137,13 @@ Object.assign(Tool, {
                     <td class="center">'+ (br_ads_key ? br_ads_key + '（' + br_keyword_cn_keyword.br_keyword_cn_keyword + '）' : '') + '</td>\
                     <td id="pt_nameLen" class="center" title="商品名称的建议字数为 25~100">'+ (pt_nameLen < 25 || pt_nameLen > 100 ? '<font color=red>' + pt_nameLen + '</font>' : pt_nameLen) + '</td>\
                     <td id="pt_name">'+ pt_name + '</td>\
+                </tr>\
+                <tr>\
+                    <td class="center">墨西哥</td>\
+                    <td class="center">西班牙语</td>\
+                    <td class="center">-</td>\
+                    <td id="pt_nameLen" class="center" title="商品名称的建议字数为 25~100">'+ (es_nameLen < 25 || es_nameLen > 100 ? '<font color=red>' + es_nameLen + '</font>' : es_nameLen) + '</td>\
+                    <td id="pt_name">'+ es_name + '</td>\
                 </tr>\
             </table>'
             //说明：pt表示葡萄牙语。
@@ -171,7 +202,7 @@ Object.assign(Tool, {
                 <td class="center" title="商品名称的建议字数为 25~100" id="tw_2_nameLen">\
                     ' + (tw_2_nameLen < 25 || tw_2_nameLen > 100 ? '<font color=red>' + tw_2_nameLen + '</font>' : tw_2_nameLen) + '\
                 </td>\
-                <td id="tw_2_name">'+ (tw_2_name?tw_2_name:'') + '</td>\
+                <td id="tw_2_name">'+ (tw_2_name ? tw_2_name : '') + '</td>\
             </tr>\
             </table>'
         },
