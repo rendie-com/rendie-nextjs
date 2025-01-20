@@ -5,7 +5,10 @@ $(function () {
     let loginPath = ["admin/js/Shopee/common.js", "admin/js/Shopee/common_login.js", "admin/js/Shopee/common_登录.js"]
     switch (obj.params.jsFile) {
         case "js01":
-            Tool.scriptArr(loginPath.concat([path + '商品/采集商品.js']));
+            Tool.scriptArr(loginPath.concat([
+                'admin/js/Shopee/商品/全球商品_修改/已发布站点/common.js',
+                path + '商品/采集商品.js'
+            ]));
             break;
         case "js02": Tool.scriptArr([
             "admin/js/Shopee/common.js",
@@ -21,7 +24,11 @@ $(function () {
         ])); break;
         case "js04": Tool.scriptArr(["admin/js/Shopee/common.js", path + '店铺/从商品中获取店铺ID.js']); break;
         case "js05": Tool.scriptArr(["admin/js/Shopee/common.js", path + '粉丝/config.js', path + 'common.js', path + '粉丝/粉丝统计.js']); break;
-        case "js06": Tool.scriptArr(["admin/js/Shopee/common.js", path + '粉丝/common_accounts.js', path + '粉丝/从店铺中获取粉丝.js']); break;
+        case "js06": Tool.scriptArr([
+            "admin/js/Shopee/common.js",
+            'admin/js/Shopee/任务/定时任务/启动定时任务/所有任务/采集箱/粉丝/common_accounts.js',
+            path + '粉丝/从店铺中获取粉丝.js'
+        ]); break;
         case "js07": Tool.scriptArr(loginPath.concat([
             'admin/js/Shopee/任务/定时任务/启动定时任务/所有任务/采集箱/粉丝/common_follow_user.js',
             path + '粉丝/取消关注和关注.js'
@@ -48,6 +55,6 @@ $(function () {
             "admin/js/Shopee/common.js",
             path + 'common.js',
             path + '商品/index.js'
-        ]);
+        ]); break
     }
 });

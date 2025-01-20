@@ -28,6 +28,10 @@ var fun01 =
                 this.Time("time", 100, this.a02, this, oo)
             }
         }
+        else if (len == 60 && len2 == 60) {
+            $("title").html("【" + oo.num + "】商品个数：60=60=60");
+        }
+
     },
     ///////////////////////////////////////////////
     c01: function (oo, value) {
@@ -64,7 +68,8 @@ var fun01 =
     },
     d03: function (page) {
         let curren = $('.shopee-mini-page-controller__current').text()
-        if (curren == "" + page) {
+        if (curren == "" + page || page == 10) {
+            // page == 10  不写这个第9页就不出来。
             $("title").html("已打开下一页。");
         }
         else {

@@ -89,7 +89,7 @@
         let url = "https://" + (obj.params.site == "tw" ? "xiapi" : obj.params.site) + ".xiapibuy.com/api/v4/pages/get_follower_list?limit=20&offset=" + ((this.obj.B1 - 1) * 20) + "&shopid=" + this.obj.Aobj.shopid
         $("#url").html(url);
         $("#state").html("正在获取店铺的粉丝。。。")
-        gg.getFetch(url,"json", this.d03, this)
+        gg.getFetch(url, "json", this.d03, this)
     },
     d03: function (t) {
         if (t.data) {
@@ -101,7 +101,7 @@
                 }
                 else {
                     if (!t.data.nomore) { this.obj.B2++; }
-                    Tool.accounts.a01(t.data.accounts,{}, false, obj.params.site, this.d04, this);
+                    Tool.accounts.a01(t.data.accounts, {}, false, obj.params.site, this.d04, this);
                 }
             }
             else {

@@ -125,6 +125,8 @@ var fun =
             case 24: str = "SParcelado"; break;
             case 27: str = "ShopeePay"; break;
             case 33: str = "JKO Pay"; break;
+            case 51: str = "PayNow"; break;
+            case 66: str = "DBS PayLah!"; break;
             case 4:
             case 37:
                 str = "网上银行"; break;

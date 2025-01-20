@@ -6,6 +6,7 @@
             case "tw": name = "【台湾虾皮】站点"; break;
             case "my": name = "【马来西亚】站点"; break;
             case "br": name = "【巴西】站点"; break;
+            case "mx": name = "【墨西哥】站点"; break;
         }
         return name
     },
@@ -16,6 +17,7 @@
               <li'+ (site == "tw" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=tw\')">台湾虾皮</li>\
               <li'+ (site == "my" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=my\')">马来西亚</li>\
               <li'+ (site == "br" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=br\')">巴西</li>\
+              <li'+ (site == "mx" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=mx\')">墨西哥</li>\
           </ul>'
         return html;
     },
