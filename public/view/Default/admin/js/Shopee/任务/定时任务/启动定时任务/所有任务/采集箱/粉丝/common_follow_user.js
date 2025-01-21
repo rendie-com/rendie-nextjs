@@ -1,41 +1,52 @@
 Object.assign(Tool, {
     follow_user: {
         a01: function (target_user_id, dbname, is_follow, seller, site, next, This, t) {
-            let pArr = [
-                "SPC_CDS=" + seller.SPC_CDS,
-                "SPC_CDS_VER=2",
-                "cnsc_shop_id=" + seller[site].shopId,
-                "cbsc_shop_region=" + site
-            ]
-            let url = "https://seller.shopee.cn/api/v3/order/follow_user?" + pArr.join("&")
-            let data = {
-                "target_user_id": target_user_id,
-                "is_follow": is_follow
-            }
             let oo = {
+                target_user_id: target_user_id,
                 dbname: dbname,
                 is_follow: is_follow,
+                seller: seller,
                 site: site,
-                target_user_id: target_user_id,
                 next: next,
                 This: This,
                 t: t
             }
-            this.a02(url, data, oo)
+            this.a02(oo)
         },
-        a02: function (url, data, oo) {
+        a02: function (oo) {
+            let pArr = [
+                "SPC_CDS=" + oo.seller.SPC_CDS,
+                "SPC_CDS_VER=2",
+                "cnsc_shop_id=" + oo.seller[oo.site].shopId,
+                "cbsc_shop_region=" + oo.site
+            ]
+            let url = "https://seller.shopee.cn/api/v3/order/follow_user?" + pArr.join("&")
+            let data = {
+                "target_user_id": oo.target_user_id,
+                "is_follow": oo.is_follow
+            }
+            this.a03(url, data, oo)
+        },
+        a03: function (url, data, oo) {
             $("#state").html("正在" + (oo.is_follow ? '' : '取消') + "关注粉丝。。。")
-            gg.postFetch(url, JSON.stringify(data), this.a03, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.a04, this, oo)
         },
-        a03: function (t, oo) {
+        a04: function (t, oo) {
             if (t.message == "success") {
-                this.a04(oo);
+                this.d01(oo);
+            }
+            else if (t.error == "error_bad_gateway") {
+                Tool.Time("name", 200, this.a02, this, oo)
+            }
+            else if (t.message == "current shop can not access the current api") {
+                Tool.Time("name", 200, this.a02, this, oo)
             }
             else {
-                Tool.pre(["出错2024.12.21", t])
+                Tool.pre(["出错2025.1.16", t])
             }
         },
-        a04: function (oo) {
+        //////////////////////////////////////
+        d01: function (oo) {
             let setField
             if (oo.is_follow) {
                 //o.is_follow=true          表示要关注用户
@@ -49,18 +60,18 @@ Object.assign(Tool, {
                 //@.is_my_following=0           表示没被我关注的用户
                 setField = "@.notFollow_count=@.notFollow_count+1,@.is_my_following=0"
             }
-            this.a05(setField, oo)
+            this.d02(setField, oo)
         },
-        a05: function (setField, oo) {
+        d02: function (setField, oo) {
             let data = [{
                 action: "sqlite",
                 database: "shopee/采集箱/粉丝/" + oo.site + "/" + oo.dbname,
                 sql: "update @.table set " + setField + ' where @.userid=' + oo.target_user_id,
             }]
             $("#state").html("正在更新数据。。。")
-            Tool.ajax.a01(data, this.a06, this, oo);
+            Tool.ajax.a01(data, this.d03, this, oo);
         },
-        a06: function (t, oo) {
+        d03: function (t, oo) {
             if (t[0].length == 0) {
                 oo.next.apply(oo.This, [oo.t])
             }

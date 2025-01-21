@@ -50,6 +50,7 @@ var task = {
             }
             else {
                 $("#state").html("店铺的粉丝隐藏了，跳过。。。")
+                this.e01(oo)
             }
         }
         else {

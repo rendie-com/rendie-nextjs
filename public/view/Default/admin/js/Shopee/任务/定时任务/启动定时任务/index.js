@@ -3,7 +3,7 @@ var fun =
     obj:
     {
         A1: 1, A2: 0, Aobj: {},
-        B1: 1, B2: 0, Barr: [],
+        B1: 5, B2: 0, Barr: [],
         seller: {},
         runtime: 0,//运行时时间
         stop: false,

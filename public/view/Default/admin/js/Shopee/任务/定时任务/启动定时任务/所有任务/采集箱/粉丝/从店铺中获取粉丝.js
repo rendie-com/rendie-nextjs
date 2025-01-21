@@ -7,7 +7,7 @@ var task = {
             get_follower_time: 0,//上次的获取粉丝时间
             new_get_follower_time: 0,//这次的获取粉丝时间            
         },
-        dbnameObj:{},//用到的粉丝数据库计数,关注粉丝要用。
+        dbnameObj: {},//用到的粉丝数据库计数,关注粉丝要用。
         D1: 1, D2: 1,
     },
     a01: function (seller, site, next, This, t) {
@@ -45,7 +45,7 @@ var task = {
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_shop_" + oo.site + ".db","https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_shop_" + oo.site + ".db"],
+                urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_shop_" + oo.site + ".db", "https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_shop_" + oo.site + ".db"],
                 database: "shopee/采集箱/店铺/" + oo.site
             }]
         }]
@@ -53,7 +53,7 @@ var task = {
     },
     a03: function (t, oo) {
         $("#state").html("正在获取店铺信息。。。");
-        let where = this.b01(oo.site)
+        let where = this.b01()
         let data = [{
             action: "sqlite",
             database: "shopee/采集箱/店铺/" + oo.site,
@@ -70,9 +70,9 @@ var task = {
     },
     a04: function (t, oo) {
         //一次执行只获取前5个店铺的粉丝
-        if (this.obj.C2 == 0) { 
+        if (this.obj.C2 == 0) {
             this.obj.C2 = t[1][0].total > 5 ? 5 : t[1][0].total;
-         }
+        }
         this.obj.Cobj = t[0][0];
         Tool.x1x2("C", this.obj.C1, this.obj.C2, this.a05, this, this.e03, oo)
     },
@@ -84,23 +84,10 @@ var task = {
         this.d01(oo);
     },
     ////////////////////////////////
-    b01: function (site) {
+    b01: function () {
         let time24H = Tool.gettime("") - 60 * 60 * 24
-        let arr = []
-        if (site == "tw") {
-            arr = ["'中国大陆'", "'中國大陸'", "'Mainland China'"]
-        }
-        else if (site = "my") {
-            arr = ["'中国大陆'", "'Mainland China'"]
-        }
-        else if (site = "br") {
-            arr = ["'Mainland China'", "'China Continental'"]
-        }
-        else if (site = "sg") {
-            arr = ["'中国大陆'"]
-        }
         //@.get_follower_time           获取粉丝时间
-        return " where @.shop_location in(" + arr.join(",") + ") and @.get_follower_time<" + time24H
+        return " where  @.get_follower_time<" + time24H
     },
     ///////////////////////////////////////////////////////////
     d01: function (oo) {
@@ -122,7 +109,7 @@ var task = {
                 else {
                     if (!t.data.nomore) { this.obj.D2++; }
 
-                    Tool.accounts.a01(t.data.accounts,this.obj.dbnameObj, false, oo.site, this.d04, this, oo);
+                    Tool.accounts.a01(t.data.accounts, this.obj.dbnameObj, false, oo.site, this.d04, this, oo);
                 }
             }
             else {
@@ -134,8 +121,8 @@ var task = {
             Tool.pre(["出错222", t])
         }
     },
-    d04: function (t,oo) {
-        $("#dbnameObj").html(JSON.stringify(this.obj.dbnameObj,null,2))
+    d04: function (t, oo) {
+        $("#dbnameObj").html(JSON.stringify(this.obj.dbnameObj, null, 2))
         this.obj.D1++;
         this.d01(oo);
     },
@@ -154,14 +141,14 @@ var task = {
         if (t[0].length == 0) {
             this.obj.C1++; this.obj.Cobj = {};
             this.obj.D1 = 1; this.obj.D2 = 1;
-            this.a03("",oo);
+            this.a03("", oo);
         }
         else {
             Tool.pre(["出错11", t])
         }
     },
     e03: function (oo) {
-        let dbnameObj=this.obj.dbnameObj
+        let dbnameObj = this.obj.dbnameObj
         this.obj = {
             C1: 1, C2: 0,
             Cobj: {
@@ -169,9 +156,9 @@ var task = {
                 get_follower_time: 0,//上次的获取粉丝时间
                 new_get_follower_time: 0,//这次的获取粉丝时间
             },
-            dbnameObj:{},//用到的粉丝数据库计数,关注粉丝要用。
+            dbnameObj: {},//用到的粉丝数据库计数,关注粉丝要用。
             D1: 1, D2: 1,
-        }        
-        Tool.common_following.a01(dbnameObj,oo);       
+        }
+        Tool.common_following.a01(dbnameObj, oo);
     },
 }
