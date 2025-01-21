@@ -126,8 +126,13 @@ var task = {
         }
         else if (o1.code == 429) {
             $("#state").html("请不要要求太频繁");
-            Tool.Time("1", 500, this.d03, this,);
+            Tool.Time("name", 500, this.d03, this,);
         }
+        else if (o1.error == 90309999) {
+            $("#state").html("访问不了,重式看行不行。");
+            Tool.Time("name", 1000, this.d03, this,);
+        }
+
         else {
             Tool.pre(["出错：2025/1/21", o1])
         }

@@ -32,8 +32,13 @@ var task = {
     },
     a03: function (t, oo) {
         if (this.obj.C2 == 0) { this.obj.C2 = t[1][0].total }
-        oo.fromid = t[0][0].fromid
-        Tool.x1x2("C", this.obj.C1, this.obj.C2, this.a04, this, this.d01, oo)
+        if (t[0][0]) {
+            oo.fromid = t[0][0].fromid
+            Tool.x1x2("C", this.obj.C1, this.obj.C2, this.a04, this, this.d01, oo)
+        }
+        else {
+            Tool.pre("异常，怎么会没有上架的商品。")
+        }
     },
     a04: function (oo) {
         let pArr = [
@@ -58,9 +63,9 @@ var task = {
             this.a06(oo)
         }
         else if (t.message == "reached shop's bump slot limit") {
-            $("#state").html("已经【超限】了。");
-            this.a06(oo)
-        }       
+            $("#state").html("已达到商店的凹凸槽限制。");
+            this.d01(oo)
+        }
         else if (t.code == 1000100217) {
             $("#state").html("置顶完成。");
             this.d01(oo)
