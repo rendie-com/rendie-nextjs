@@ -126,10 +126,10 @@ var task = {
         }
         else if (o1.code == 429) {
             $("#state").html("请不要要求太频繁");
-            //Tool.Time("1" 500,,this.d03, this,);
+            Tool.Time("1", 500, this.d03, this,);
         }
         else {
-            Tool.pre(["出错001", o1])
+            Tool.pre(["出错：2025/1/21", o1])
         }
     },
     d03: function (oo) {
