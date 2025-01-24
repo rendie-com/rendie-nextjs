@@ -118,7 +118,9 @@ var task = {
             }
         }
         else {
-            Tool.pre(["出错222", t])
+            $("#state").html("可能是没有粉丝，跳过。。。")
+            this.e01(oo);
+            //Tool.pre(["出错222", t])
         }
     },
     d04: function (t, oo) {
