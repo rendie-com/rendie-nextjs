@@ -41,7 +41,7 @@ var fun =
         let url = "https://seller.shopee.cn/api/marketing/v3/voucher/list/?" + arr.join("&")
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
         $("#state").html("正在获取第" + this.obj.A1 + "页【优惠券】信息。。。");
-        gg.getFetch(url,"json", this.a05, this);
+        gg.getFetch(url, "json", this.a05, this);
     },
     a05: function (oo) {
         if (oo.code == 0) {
@@ -59,13 +59,13 @@ var fun =
         let voucher_idArr = [], insertArr = [], updateArr = [];
         for (let i = 0; i < voucher_list.length; i++) {
             voucher_idArr.push(voucher_list[i].voucher_id)
-            insertArr.push("insert into @.table(@.voucher_id,@.name,@.voucher_code,@.start_time,@.end_time,@.discount,@.usage_quantity,@.min_price,@.max_value,@.value,@.site,@.addtime,@.uptime,@.fe_display_coin_amount,@.rule,@.fe_status)values(" + voucher_list[i].voucher_id + "," + Tool.rpsql(voucher_list[i].name) + "," + Tool.rpsql(voucher_list[i].voucher_code) + "," + voucher_list[i].start_time + "," + voucher_list[i].end_time + "," + voucher_list[i].discount + "," + voucher_list[i].usage_quantity + "," + voucher_list[i].min_price + "," + voucher_list[i].max_value + "," + voucher_list[i].value + ",'" + obj.params.site + "'," + voucher_list[i].ctime + "," + voucher_list[i].mtime + "," + (voucher_list[i].fe_display_coin_amount ? voucher_list[i].fe_display_coin_amount : 0) + "," + Tool.rpsql(JSON.stringify(voucher_list[i].rule)) + "," + voucher_list[i].fe_status + ")")
+            insertArr.push("insert into @.table(@.voucher_id,@.name,@.voucher_code,@.start_time,@.end_time,@.discount,@.usage_quantity,@.min_price,@.max_value,@.value,@.addtime,@.uptime,@.fe_display_coin_amount,@.rule,@.fe_status)values(" + voucher_list[i].voucher_id + "," + Tool.rpsql(voucher_list[i].name) + "," + Tool.rpsql(voucher_list[i].voucher_code) + "," + voucher_list[i].start_time + "," + voucher_list[i].end_time + "," + voucher_list[i].discount + "," + voucher_list[i].usage_quantity + "," + voucher_list[i].min_price + "," + voucher_list[i].max_value + "," + voucher_list[i].value + "," + voucher_list[i].ctime + "," + voucher_list[i].mtime + "," + (voucher_list[i].fe_display_coin_amount ? voucher_list[i].fe_display_coin_amount : 0) + "," + Tool.rpsql(JSON.stringify(voucher_list[i].rule)) + "," + voucher_list[i].fe_status + ")")
             updateArr.push("update @.table set @.uptime=" + voucher_list[i].mtime + ",@.fe_status=" + voucher_list[i].fe_status + "  where @.voucher_id=" + voucher_list[i].voucher_id)
         }
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/优惠券",
-            sql: "select @.voucher_id as voucher_id from @.table where @.voucher_id in(" + voucher_idArr.join(",") + ") and @.site='" + obj.params.site + "'",
+            database: "shopee/营销中心/优惠券/" + obj.params.site,
+            sql: "select @.voucher_id as voucher_id from @.table where @.voucher_id in(" + voucher_idArr.join(",") + ")",
         }]
         let oo = {
             voucher_idArr: voucher_idArr,
@@ -88,14 +88,14 @@ var fun =
             if (arr1.indexOf(arr2[i]) == -1) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/优惠券",
+                    database: "shopee/营销中心/优惠券/" + obj.params.site,
                     sql: oo.insertArr[i],
                 })
             }
             else {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/优惠券",
+                    database: "shopee/营销中心/优惠券/" + obj.params.site,
                     sql: oo.updateArr[i],
                 })
             }
@@ -103,21 +103,9 @@ var fun =
         Tool.ajax.a01(data, this.a10, this)
     },
     a10: function (t) {
-        let isErr = false;
-        for (let i = 0; i < t.length; i++) {
-            if (t[i].length != 0) {
-                isErr = true;
-                break;
-            }
-        }
-        if (isErr) {
-            Tool.pre(["有错误", t])
-        }
-        else {
-            this.obj.A1++;
-            $("#state").html("正在进入第" + this.obj.A1 + "页。。。");
-            this.a04();
-        }
+        this.obj.A1++;
+        $("#state").html("正在进入第" + this.obj.A1 + "页。。。");
+        this.a04();
     },
 }
 fun.a01();

@@ -69,8 +69,8 @@ var fun =
         let promotion_idArr = [], insertArr = [], updateArr = [];
         for (let i = 0; i < discount_list.length; i++) {
             promotion_idArr.push(discount_list[i].promotion_id)
-            let ins1 = "@.promotion_id,@.title,@.status,@.start_time,@.end_time,@.site,@.addtime,@.images,@.total_product"
-            let ins2 = discount_list[i].promotion_id + "," + Tool.rpsql(discount_list[i].title) + "," + this.obj.A1 + "," + discount_list[i].start_time + "," + discount_list[i].end_time + ",'" + obj.params.site + "'," + Tool.gettime("") + "," + Tool.rpsql(JSON.stringify(discount_list[i].images)) + "," + discount_list[i].total_product
+            let ins1 = "@.promotion_id,@.title,@.status,@.start_time,@.end_time,@.addtime,@.images,@.total_product"
+            let ins2 = discount_list[i].promotion_id + "," + Tool.rpsql(discount_list[i].title) + "," + this.obj.A1 + "," + discount_list[i].start_time + "," + discount_list[i].end_time + "," + Tool.gettime("") + "," + Tool.rpsql(JSON.stringify(discount_list[i].images)) + "," + discount_list[i].total_product
             insertArr.push("insert into @.table(" + ins1 + ")values(" + ins2 + ")")
             updateArr.push("update @.table set @.status=" + this.obj.A1 + ",@.images=" + Tool.rpsql(JSON.stringify(discount_list[i].images)) + "  where @.promotion_id=" + discount_list[i].promotion_id)
         }
@@ -81,8 +81,8 @@ var fun =
         }
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/折扣",
-            sql: "select @.promotion_id as promotion_id from @.table where @.promotion_id in(" + promotion_idArr.join(",") + ") and @.site='" + obj.params.site + "'",
+            database: "shopee/营销中心/折扣/" + obj.params.site,
+            sql: "select @.promotion_id as promotion_id from @.table where @.promotion_id in(" + promotion_idArr.join(",") + ")",
         }]
         Tool.ajax.a01(data, this.d05, this, oo)
     },
@@ -99,14 +99,14 @@ var fun =
             if (arr1.indexOf(arr2[i]) == -1) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/折扣",
+                    database: "shopee/营销中心/折扣/" + obj.params.site,
                     sql: oo.insertArr[i],
                 })
             }
             else {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/折扣",
+                    database: "shopee/营销中心/折扣/" + obj.params.site,
                     sql: oo.updateArr[i],
                 })
             }
@@ -132,7 +132,7 @@ var fun =
         }
     },
     e01: function () {
-        this.obj.B1 = 1;this.obj.B2 = 0;
+        this.obj.B1 = 1; this.obj.B2 = 0;
         $("#B1").css("width", "0%"); $("#B1,#B2").html("");
         this.obj.A1++;
         this.a04();

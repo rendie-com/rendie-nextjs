@@ -43,17 +43,17 @@ var fun =
         let url = "https://seller.shopee.cn/api/marketing/v3/add_on_deal/list/?" + arr.join("&")
         $("#url").html(url);
         $("#state").html("正在获取第" + this.obj.A1 + "页【加购优惠】信息。。。");
-        gg.getFetch(url,"json", this.a05, this);
+        gg.getFetch(url, "json", this.a05, this);
     },
     a05: function (oo) {
         if (oo.message == "success") {
             this.obj.A2 = oo.data.has_more ? this.obj.A1 + 1 : this.obj.A1
-            if(oo.data.add_on_deal_list){
+            if (oo.data.add_on_deal_list) {
                 this.a06(oo.data.add_on_deal_list)
             }
-            else{
+            else {
                 $("#state").html("没有【加购优惠】信息。");
-            }            
+            }
         }
         else {
             Tool.pre(["出错", oo])
@@ -79,8 +79,7 @@ var fun =
                 "@.purchase_min_spend",
                 "@.per_gift_num",
                 "@.source",
-                "@.status",
-                "@.site"
+                "@.status"
             ]
             let arrR = [
                 add_on_deal_list[i].add_on_deal_id,
@@ -95,9 +94,8 @@ var fun =
                 add_on_deal_list[i].per_gift_num,
                 add_on_deal_list[i].source,
                 add_on_deal_list[i].status,
-                "'" + obj.params.site + "'"
             ]
-            updateArr.push("update @.table set @.status=" + add_on_deal_list[i].status + " where @.add_on_deal_id=" + add_on_deal_list[i].add_on_deal_id + " and @.site='" + obj.params.site + "'");
+            updateArr.push("update @.table set @.status=" + add_on_deal_list[i].status + " where @.add_on_deal_id=" + add_on_deal_list[i].add_on_deal_id);
             insertArr.push("insert into @.table(" + arrL.join(",") + ")values(" + arrR.join(",") + ")")
         }
         let oo = {
@@ -107,8 +105,8 @@ var fun =
         }
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/加购优惠",
-            sql: "select @.add_on_deal_id as add_on_deal_id from @.table where @.add_on_deal_id in(" + add_on_deal_idArr.join(",") + ") and @.site='" + obj.params.site + "'",
+            database: "shopee/营销中心/加购优惠/" + obj.params.site,
+            sql: "select @.add_on_deal_id as add_on_deal_id from @.table where @.add_on_deal_id in(" + add_on_deal_idArr.join(",") + ")",
         }]
         $("#state").html("正在更新本地商品状态。。。");
         Tool.ajax.a01(data, this.d02, this, oo)
@@ -126,36 +124,21 @@ var fun =
             if (arr1.indexOf(arr2[i]) == -1) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/加购优惠",
+                    database: "shopee/营销中心/加购优惠/" + obj.params.site,
                     sql: oo.insertArr[i],
                 })
             }
             else {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/加购优惠",
+                    database: "shopee/营销中心/加购优惠/" + obj.params.site,
                     sql: oo.updateArr[i],
                 })
             }
         }
         Tool.ajax.a01(data, this.d04, this)
     },
-    d04: function (t) {
-        let isErr = false;
-        for (let i = 0; i < t.length; i++) {
-            if (t[i].length != 0) {
-                isErr = true;
-                break;
-            }
-        }
-        if (isErr) {
-            Tool.pre(["有错误", t])
-        }
-        else {
-            this.d05()
-        }
-    },
-    d05: function (t) {
+    d04: function () {
         this.obj.A1++;
         if (this.obj.A1 <= this.obj.A2) {
             $("#state").html("正在进入第" + this.obj.A1 + "页。。。");

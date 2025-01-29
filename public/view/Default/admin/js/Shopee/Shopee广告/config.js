@@ -1,4 +1,34 @@
-let config={
+let config = {
+  "sg": {
+    "ads_state_count": [
+      0,
+      39,
+      150,
+      0,
+      0,
+      315,
+      0,
+      0
+    ],
+    "ads_type_count": [
+      504,
+      0,
+      0
+    ],
+    "ads_keyword_editStatus_count": [
+      39,
+      464,
+      0,
+      1,
+      0,
+      0
+    ],
+    "ads_keyword_key_uptime_count": [
+      0,
+      0,
+      0
+    ]
+  },
   "tw": {
     "ads_state_count": [
       0,

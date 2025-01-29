@@ -3,7 +3,7 @@ var fun =
 {
     a01: function () {
         //obj.params.jsFile        选择JS文件
-        obj.params.site = obj.params.site ? obj.params.site : "tw";//站点
+        obj.params.site = obj.params.site ? obj.params.site : "sg";//站点
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页
         obj.params.field = obj.params.field ? obj.params.field : "1";//搜索字段
         obj.params.searchword = obj.params.searchword ? obj.params.searchword : "";//搜索关键词
@@ -14,13 +14,13 @@ var fun =
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/营销中心/优惠券",
+            database: "shopee/营销中心/优惠券/" + obj.params.site,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/优惠券.db"],
-                database: "shopee/营销中心/优惠券",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/优惠券/" + obj.params.site + ".db"],
+                database: "shopee/营销中心/优惠券/" + obj.params.site,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -28,11 +28,11 @@ var fun =
     a03: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/优惠券",
+            database: "shopee/营销中心/优惠券/" + obj.params.site,
             sql: "select count(1) as total FROM @.table" + this.b11(),
         }, {
             action: "sqlite",
-            database: "shopee/营销中心/优惠券",
+            database: "shopee/营销中心/优惠券/" + obj.params.site,
             sql: "select " + Tool.fieldAs("rule,name,voucher_code,fe_display_coin_amount,value,discount,usage_quantity,fe_status,start_time,end_time,uptime,addtime") + " FROM @.table" + this.b11() + Tool.limit(10, obj.params.page),
         }]
         Tool.ajax.a01(data, this.a04, this);
@@ -240,7 +240,7 @@ var fun =
         return name
     },
     b11: function () {
-        let arr = ["@.site='" + obj.params.site + "'"];
+        let arr = [];
         if (obj.params.searchword) {
             switch (obj.params.field) {
                 case "1": arr.push("@.name like '%" + obj.params.searchword + "%'"); break;//优惠券名

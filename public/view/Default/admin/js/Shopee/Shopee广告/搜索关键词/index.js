@@ -4,7 +4,7 @@ var fun =
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
         // obj.arr[7] = obj.arr[7] ? obj.arr[7] : "-_-20";//品质分数
         // obj.arr[8] = obj.arr[8] ? obj.arr[8] : "-_-20";//搜索量
@@ -15,13 +15,13 @@ var fun =
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/Shopee广告/关键词",
+            database: "shopee/Shopee广告/关键词/" + obj.params.site,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/Shopee广告/关键词.db"],
-                database: "shopee/Shopee广告/关键词",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/Shopee广告/关键词/" + obj.params.site + ".db"],
+                database: "shopee/Shopee广告/关键词/" + obj.params.site,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -29,11 +29,11 @@ var fun =
     a03: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/Shopee广告/关键词",
+            database: "shopee/Shopee广告/关键词/" + obj.params.site,
             sql: "select count(1) as total FROM @.table" + this.b05(),
         }, {
             action: "sqlite",
-            database: "shopee/Shopee广告/关键词",
+            database: "shopee/Shopee广告/关键词/" + obj.params.site,
             sql: "select " + Tool.fieldAs("keyword,cn_keyword,productIdArr,recommended_price,search_volume,relevance,addtime,uptime") + " FROM @.table" + this.b05() + " order by @.uptime desc" + Tool.limit(20, obj.params.page, "sqlite"),
         }]
         Tool.ajax.a01(data, this.a04, this);
@@ -103,9 +103,7 @@ var fun =
         </select>'
     },
     b05: function () {
-        let arr = [
-            "@.site='" + obj.params.site + "'"
-        ];
+        let arr = [];
         if (obj.params.searchword) { arr.push("@.keyword like '%" + Tool.unescape(obj.params.searchword) + "%'"); }
         // if (obj.arr[7] != "-_-20") {
         //     if (obj.arr[7] == "asc") {

@@ -42,7 +42,7 @@ var fun =
         let url = "https://seller.shopee.cn/api/marketing/v4/shop_flash_sale/list/?" + arr.join("&")
         $("#url").html(url);
         $("#state").html("正在获取第" + this.obj.A1 + "页【店内秒杀】信息。。。");
-        gg.getFetch(url,"json", this.a05, this);
+        gg.getFetch(url, "json", this.a05, this);
     },
     a05: function (oo) {
         if (oo.message == "success") {
@@ -61,10 +61,10 @@ var fun =
         let flash_sale_idArr = [], insertArr = [], updateArr = [];
         for (let i = 0; i < flash_sale_list.length; i++) {
             flash_sale_idArr.push(flash_sale_list[i].flash_sale_id)
-            let ins1 = "@.flash_sale_id,@.addtime,@.start_time,@.end_time,@.item_count,@.uptime,@.status,@.site,@.timeslot_id,@.type"
-            let ins2 = flash_sale_list[i].flash_sale_id + "," + flash_sale_list[i].ctime + "," + flash_sale_list[i].start_time + "," + flash_sale_list[i].end_time + "," + flash_sale_list[i].item_count + "," + flash_sale_list[i].mtime + "," + flash_sale_list[i].status + " ,'" + obj.params.site + "'," + flash_sale_list[i].timeslot_id + "," + flash_sale_list[i].type
+            let ins1 = "@.flash_sale_id,@.addtime,@.start_time,@.end_time,@.item_count,@.uptime,@.status,@.timeslot_id,@.type"
+            let ins2 = flash_sale_list[i].flash_sale_id + "," + flash_sale_list[i].ctime + "," + flash_sale_list[i].start_time + "," + flash_sale_list[i].end_time + "," + flash_sale_list[i].item_count + "," + flash_sale_list[i].mtime + "," + flash_sale_list[i].status + "," + flash_sale_list[i].timeslot_id + "," + flash_sale_list[i].type
             insertArr.push("insert into @.table(" + ins1 + ")values(" + ins2 + ")");
-            updateArr.push("update @.table set @.uptime=" + flash_sale_list[i].mtime + ", @.status=" + flash_sale_list[i].status + ", @.type=" + flash_sale_list[i].type + "  where @.flash_sale_id=" + flash_sale_list[i].flash_sale_id + " and @.site='" + obj.params.site + "'");
+            updateArr.push("update @.table set @.uptime=" + flash_sale_list[i].mtime + ", @.status=" + flash_sale_list[i].status + ", @.type=" + flash_sale_list[i].type + "  where @.flash_sale_id=" + flash_sale_list[i].flash_sale_id);
         }
         let oo = {
             flash_sale_idArr: flash_sale_idArr,
@@ -73,8 +73,8 @@ var fun =
         }
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/店内秒杀",
-            sql: "select @.flash_sale_id as flash_sale_id from @.table where @.flash_sale_id in(" + flash_sale_idArr.join(",") + ") and @.site='" + obj.params.site + "'",
+            database: "shopee/营销中心/店内秒杀/" + obj.params.site,
+            sql: "select @.flash_sale_id as flash_sale_id from @.table where @.flash_sale_id in(" + flash_sale_idArr.join(",") + ")",
         }]
         $("#state").html("正在更新本地商品状态。。。");
         Tool.ajax.a01(data, this.d02, this, oo);
@@ -92,14 +92,14 @@ var fun =
             if (arr1.indexOf(arr2[i]) == -1) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/店内秒杀",
+                    database: "shopee/营销中心/店内秒杀/" + obj.params.site,
                     sql: oo.insertArr[i],
                 })
             }
             else {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/店内秒杀",
+                    database: "shopee/营销中心/店内秒杀/" + obj.params.site,
                     sql: oo.updateArr[i],
                 })
             }

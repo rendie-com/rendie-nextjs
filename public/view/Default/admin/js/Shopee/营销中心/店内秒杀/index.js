@@ -12,26 +12,27 @@ var fun =
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/营销中心/店内秒杀",
+            database: "shopee/营销中心/店内秒杀/" + obj.params.site,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/店内秒杀.db"],
-                database: "shopee/营销中心/店内秒杀",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/店内秒杀/" + obj.params.site + ".db"],
+                database: "shopee/营销中心/店内秒杀/" + obj.params.site,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function () {
+        let where = this.b03();
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/店内秒杀",
-            sql: "select count(1) as total FROM @.table" + this.b03(),
+            database: "shopee/营销中心/店内秒杀/" + obj.params.site,
+            sql: "select count(1) as total FROM @.table" + where,
         }, {
             action: "sqlite",
-            database: "shopee/营销中心/店内秒杀",
-            sql: "select " + Tool.fieldAs("type,item_count,status,start_time,end_time,addtime,uptime") + " FROM @.table" + this.b03() + " order by @.addtime desc " + Tool.limit(10, obj.params.page),
+            database: "shopee/营销中心/店内秒杀/" + obj.params.site,
+            sql: "select " + Tool.fieldAs("type,item_count,status,start_time,end_time,addtime,uptime") + " FROM @.table" + where + " order by @.addtime desc " + Tool.limit(10, obj.params.page),
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
@@ -83,7 +84,7 @@ var fun =
         </ul>'
     },
     b03: function () {
-        let arr = ["@.site='" + obj.params.site + "'"];
+        let arr = [];
         if (obj.params.status) { arr.push("@.type=" + obj.params.status); }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
     },

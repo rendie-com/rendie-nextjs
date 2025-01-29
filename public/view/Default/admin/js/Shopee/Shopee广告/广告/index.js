@@ -4,7 +4,7 @@ var fun =
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'
         obj.params.field = obj.params.field ? obj.params.field : '1'
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
         //obj.arr[8] = obj.arr[8] ? obj.arr[8] : "-_-20";//广告状态
@@ -15,13 +15,13 @@ var fun =
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/Shopee广告/广告",
+            database: "shopee/Shopee广告/广告/" + obj.params.site,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
                 urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/Shopee广告/广告.db"],
-                database: "shopee/Shopee广告/广告",
+                database: "shopee/Shopee广告/广告/" + obj.params.site,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -31,12 +31,12 @@ var fun =
         // where @.site=\''+ obj.params.site + '\' and not(@.state=\'deleted\' or @.state=\'closed\') GROUP BY @.productID HAVING COUNT(1) &gt;1//查重复用的
         let data = [{
             action: "sqlite",
-            database: "shopee/Shopee广告/广告",
-            sql: "select count(1) as total FROM @.table where @.site='"+obj.params.site+"'",
+            database: "shopee/Shopee广告/广告/" + obj.params.site,
+            sql: "select count(1) as total FROM @.table",
         }, {
             action: "sqlite",
-            database: "shopee/Shopee广告/广告",
-            sql: "select "+Tool.fieldAs("fromid,start_time,end_time,daily_budget,total_budget,state,product_placement,trait_list,productID,report_impression,report_click,image,title")+" FROM @.table where @.site='"+obj.params.site+"' order by @.report_impression desc"+ Tool.limit(10, obj.params.page, "sqlite"),
+            database: "shopee/Shopee广告/广告/" + obj.params.site,
+            sql: "select " + Tool.fieldAs("fromid,start_time,end_time,daily_budget,total_budget,state,product_placement,trait_list,productID,report_impression,report_click,image,title") + " FROM @.table order by @.report_impression desc" + Tool.limit(10, obj.params.page, "sqlite"),
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
@@ -46,11 +46,11 @@ var fun =
         for (let i = 0; i < t.length; i++) {
             tr.push('\
             <tr>\
-                <td><img src="https://s-cf-sg.shopeesz.com/file/'+ t[i].image+ '_tn" class="w100"></td>\
+                <td><img src="https://s-cf-sg.shopeesz.com/file/'+ t[i].image + '_tn" class="w100"></td>\
                 <td class="p-0">'+ this.b02(t[i].productID, t[i].title, t[i].trait_list, t[i].state, t[i].start_time, t[i].end_time, t[i].fromid) + '</td>\
                 <td>'+ this.b03(t[i].product_placement) + '</td>\
                 <td>'+ this.b04(unit, t[i].daily_budget, t[i].total_budget) + '</td>\
-                <td>'+ t[i].report_impression+ '</td>\
+                <td>'+ t[i].report_impression + '</td>\
                 <td>'+ t[i].report_click + '</td>\
                 <td>--</td>\
                 <td>---</td>\
@@ -73,8 +73,8 @@ var fun =
         let html = Tool.header2(obj.params.jsFile) + '\
         <div class="p-2">\
             <ul class="makeHtmlTab">\
-                <li onclick="Tool.main(\'?jsFile='+obj.params.jsFile+'&site=tw\')"'+ (obj.params.site == "tw" ? ' class="hover"' : '') + '>台湾虾皮</li>\
-                <li onclick="Tool.main(\'?jsFile='+obj.params.jsFile+'&site=my\')"'+ (obj.params.site == "my" ? ' class="hover"' : '') + '>马来西亚</li>\
+                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=tw\')"' + (obj.params.site == "tw" ? ' class="hover"' : '') + '>台湾虾皮</li>\
+                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=my\')"' + (obj.params.site == "my" ? ' class="hover"' : '') + '>马来西亚</li>\
                 <li onclick="Tool.main(\'?jsFile=js19&site=br\')"'+ (obj.params.site == "br" ? ' class="hover"' : '') + '>巴西</li>\
             </ul>\
             <div style="overflow-x:auto;white-space:nowrap;min-height:600px;">\

@@ -14,26 +14,27 @@ var fun =
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/营销中心/折扣",
+            database: "shopee/营销中心/折扣/" + obj.params.site,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/折扣.db"],
-                database: "shopee/营销中心/折扣",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/折扣/" + obj.params.site + ".db"],
+                database: "shopee/营销中心/折扣/" + obj.params.site,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function () {
+        let where = this.b03()
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/折扣",
-            sql: "select count(1) as total FROM @.table" + this.b03(),
+            database: "shopee/营销中心/折扣/" + obj.params.site,
+            sql: "select count(1) as total FROM @.table" + where,
         }, {
             action: "sqlite",
-            database: "shopee/营销中心/折扣",
-            sql: "select " + Tool.fieldAs("title,status,images,start_time,end_time,addtime") + " FROM @.table" + this.b03() + " order by @.addtime desc " + Tool.limit(10, obj.params.page),
+            database: "shopee/营销中心/折扣/" + obj.params.site,
+            sql: "select " + Tool.fieldAs("title,status,images,start_time,end_time,addtime") + " FROM @.table" + where + " order by @.addtime desc " + Tool.limit(10, obj.params.page),
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
@@ -84,7 +85,7 @@ var fun =
         </ul>'
     },
     b03: function () {
-        let arr = ["@.site='" + obj.params.site + "'"];
+        let arr = [];
         if (obj.params.searchword) {
             switch (obj.params.field) {
                 case "1": arr.push("@.title like '%" + obj.params.searchword + "%'"); break;//优惠券名
@@ -111,14 +112,14 @@ var fun =
     },
     b06: function () {
         return '\
-          <div class="input-group w-50 m-2">\
-              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b04(obj.params.field) + '</button>\
-              <ul class="dropdown-menu">\
-                  <li class="dropdown-item pointer" onclick="fun.c01(1)">促销名称</li>\
-              </ul>\
-              <input type="text" class="form-control" id="searchword" value="'+ Tool.Trim(obj.params.searchword) + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
-              <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
-          </div>'
+        <div class="input-group w-50 m-2">\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b04(obj.params.field) + '</button>\
+            <ul class="dropdown-menu">\
+                <li class="dropdown-item pointer" onclick="fun.c01(1)">促销名称</li>\
+            </ul>\
+            <input type="text" class="form-control" id="searchword" value="'+ Tool.Trim(obj.params.searchword) + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
+        </div>'
     },
     b07: function (val) {
         let str = ""
