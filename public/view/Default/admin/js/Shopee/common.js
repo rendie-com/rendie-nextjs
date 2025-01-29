@@ -4,9 +4,14 @@
         switch (val) {
             case "sg": name = "【新加坡】站点"; break;
             case "tw": name = "【台湾虾皮】站点"; break;
+            case "th": name = "【泰国】站点"; break;
             case "my": name = "【马来西亚】站点"; break;
+            case "vn": name = "【越南】站点"; break;
+            case "ph": name = "【菲律宾】站点"; break;
             case "br": name = "【巴西】站点"; break;
             case "mx": name = "【墨西哥】站点"; break;
+            case "co": name = "【哥伦比亚】站点"; break;
+            case "cl": name = "【智利】站点"; break;
         }
         return name
     },
@@ -15,9 +20,14 @@
           <ul class="makeHtmlTab">\
               <li'+ (site == "sg" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=sg\')">新加坡</li>\
               <li'+ (site == "tw" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=tw\')">台湾虾皮</li>\
+              <li'+ (site == "th" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=th\')">泰国</li>\
               <li'+ (site == "my" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=my\')">马来西亚</li>\
+              <li'+ (site == "vn" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=vn\')">越南</li>\
+              <li'+ (site == "ph" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=ph\')">菲律宾</li>\
               <li'+ (site == "br" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=br\')">巴西</li>\
               <li'+ (site == "mx" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=mx\')">墨西哥</li>\
+              <li'+ (site == "co" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=co\')">哥伦比亚</li>\
+              <li'+ (site == "cl" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=cl\')">智利</li>\
           </ul>'
         return html;
     },
@@ -133,7 +143,7 @@
     fixedPrice: {
         //已知1688的信息开始定价
         a01: function (_1688_maxPrice, scale, _1688_MinimumOrder, _1688_freight, siteObj, unitWeight, logistics, discount) {
-        let oo = {}
+            let oo = {}
             if (unitWeight) {
                 let str = "1688最高单价 = " + _1688_maxPrice + "（人民币）\n\
 1688单件够买量 = " + scale + "（件倍数）\n\
@@ -284,7 +294,7 @@
             //打折后[含平台费] = 打折后[不含平台费] / (1 - 佣金费率 - 活动服务费率 - 交易手续费率)
             let Rate = 1 - siteObj.commissionRate / 100 - siteObj.activityServiceRate / 100 - siteObj.transactionFees / 100
             let discountPrice = price2 / Rate//店铺商品价格
-            if(discountPrice<0.01)discountPrice=0.01
+            if (discountPrice < 0.01) discountPrice = 0.01
             return discountPrice
         },
         //算计买家满多少的【最低购买量】
