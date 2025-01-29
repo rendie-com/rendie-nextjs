@@ -20,6 +20,9 @@
             path + 'common.js',
             path + '订单详情/index.js'
         ])); break;
-        default: Tool.scriptArr(["admin/js/Shopee/common.js", path + 'common.js', path + '首页.js']);
+        case "js03": Tool.scriptArr(loginPath.concat([path + '更多/从客优云和1688获取采购信息.js'])); break;
+        case "js04": Tool.scriptArr(loginPath.concat([path + 'config.js', path + '状态_更新数量.js'])); break;
+        case "js05": Tool.scriptArr(loginPath.concat([path + 'config.js', path + 'common.js', path + '采购状态_更新数量.js'])); break;
+        default: Tool.scriptArr(["admin/js/Shopee/common.js", path + 'config.js', path + 'common.js', path + '首页.js']);
     }
 }();

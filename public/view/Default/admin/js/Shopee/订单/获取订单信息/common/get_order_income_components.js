@@ -20,14 +20,14 @@
             let data = {
                 "order_id": order_id,
                 "components": [2, 3, 4, 5]
-            }          
+            }
             gg.postFetch(url, JSON.stringify(data), this.a03, this, oo)
         },
         a03: function (t, oo) {
             if (t.message == "success") {
                 let data = {
                     seller_income_breakdown: t.data.seller_income_breakdown.breakdown,//卖家价格明细
-                    buyer_payment_breakdown: t.data.buyer_payment_breakdown.breakdown,//买家价格明细
+                    buyer_payment_breakdown: (t.data.buyer_payment_breakdown ? t.data.buyer_payment_breakdown.breakdown : null),//买家价格明细(注：SIP店铺就没有这个。)
                 }
                 Tool.apply(data, oo.next, oo.This, oo.t)
             }

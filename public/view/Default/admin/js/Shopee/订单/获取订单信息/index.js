@@ -50,7 +50,7 @@ var fun =
             },
             "pagination": {
                 "from_page_number": 1,
-                "page_number": 1,
+                "page_number": this.obj.A1,
                 "page_size": 40
             }, "sort": {
                 "sort_type": 3,
@@ -77,7 +77,7 @@ var fun =
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d02, this, null);
     },
     d02: function () {
-        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d03, this, null);
+        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d03, this, this.e01);
     },
     d03: function () {
         let Barr = this.obj.Barr[this.obj.B1 - 1];
@@ -104,13 +104,19 @@ var fun =
     d07: function (t, Barr) {
         $("#state").html("更新或添加订单信息");
         Barr.order["@.DomesticWaybill"] = Tool.rpsql(JSON.stringify(t))//国内运单号（如：json）
-        Barr.order["@.site"] = "'" + obj.params.site + "'",//站点（如：my）
-            Tool.updateOrInsert_orders.a01(Barr.order, this.d08, this)
+        Tool.updateOrInsert_orders.a01(Barr.order, obj.params.site, this.d08, this)
     },
     d08: function () {
         this.obj.B1++;
         $("#state").html("正在进入第" + this.obj.B1 + "条。。。");
         this.d02()
+    },
+    e01: function () {
+        this.obj.B1 = 1
+        this.obj.B2 = 0
+        this.obj.Barr = [];
+        this.obj.A1++;
+        this.a04();
     },
 }
 fun.a01();

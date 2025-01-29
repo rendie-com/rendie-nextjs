@@ -37,7 +37,8 @@ var task = {
             Tool.x1x2("C", this.obj.C1, this.obj.C2, this.a04, this, this.d01, oo)
         }
         else {
-            Tool.pre("异常，怎么会没有上架的商品。")
+            $("#state").html("没有上架的商品。跳过。");
+            this.d01(oo)
         }
     },
     a04: function (oo) {

@@ -15,7 +15,7 @@
                 This: This,
                 t: t
             }
-            gg.getFetch(url,"json", this.a02, this, oo);
+            gg.getFetch(url, "json", this.a02, this, oo);
         },
         a02: function (t, oo) {
             if (t.message == "success") {
@@ -41,19 +41,23 @@
                 "@.payment_method_name": Tool.rpsql(o1.payment_method_name),//付款方式名称（如：Online Banking）
                 "@.remark": Tool.rpsql(o1.remark),//买家备注
                 "@.status": o1.status,//状态（如：2）
+                "@.status_ext": o1.status_ext,//状态（如：15）
+                "@.cancel_reason_ext": o1.cancel_reason_ext,//订单取消原因（如：701）
+                "@.rate_by_date": o1.rate_by_date,//拨款金额已入账，但买家可于2025/02/03前提出退货/退款申请。。（如：1718524995）
+                "@.logistics_status": o1.logistics_status,//物流_状态（如：5）
                 "@.create_time": o1.create_time,//创建时间（如：1718503395）
-                "@.delivery_time": o1.delivery_time?o1.delivery_time:0,//交货_时间（如：0）
+                "@.delivery_time": o1.delivery_time ? o1.delivery_time : 0,//交货_时间（如：0）
                 "@.complete_time": o1.complete_time,//完成时间（如：0）
                 "@.pickup_time": o1.pickup_time,//拾取时间（如：0）
                 "@.shipping_confirm_time": o1.shipping_confirm_time,//发货_确认_时间（如：1718503456）
                 "@.arrange_pickup_by_date": o1.arrange_pickup_by_date,//安排提货日期（如：0）
                 "@.auto_cancel_3pl_ack_date": o1.auto_cancel_3pl_ack_date,//订单自动取消的时间---填了发货预报的取消的时间（如：1718983800）
                 "@.auto_cancel_arrange_ship_date": o1.auto_cancel_arrange_ship_date,//自动取消安排发货日期---没填发货预报的取消的时间（如：1718724600）
-                "@.buyer_is_rated": o1.buyer_is_rated?o1.buyer_is_rated:0,//买方报价（如：0）
+                "@.buyer_is_rated": o1.buyer_is_rated ? o1.buyer_is_rated : 0,//买方报价（如：0）
                 "@.buyer_last_change_address_time": o1.buyer_last_change_address_time,//购买者最后更改地址时间（如：0）
-                "@.buyer_txn_fee": o1.buyer_txn_fee?o1.buyer_txn_fee:0,//买方txn费用（如：0.00）
+                "@.buyer_txn_fee": o1.buyer_txn_fee ? o1.buyer_txn_fee : 0,//买方txn费用（如：0.00）
                 "@.buyer_cancel_reason": o1.buyer_cancel_reason,//购买者取消原因（如：0）
-                "@.cancel_userid": o1.cancel_time?o1.cancel_time:0,//取消用户ID（如：0）
+                "@.cancel_userid": o1.cancel_time ? o1.cancel_time : 0,//取消用户ID（如：0）
                 "@.escrow_release_time": o1.escrow_release_time,//托管释放时间---超过迟发货时间（如：1719329400）
                 "@.pickup_cutoff_time": o1.pickup_cutoff_time,//拾取截止时间（如：0）
                 "@.shipping_proof": Tool.rpsql(o1.shipping_proof),//装运证明（如：）
