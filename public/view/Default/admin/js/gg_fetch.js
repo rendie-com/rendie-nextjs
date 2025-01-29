@@ -30,8 +30,15 @@ Object.assign(gg, {
     },
     ///////////////////////////////////////////////////////////////
     //gg.getFetch("https://www.aliexpress.com/item/1005002156462954.html","text",this.c01,this,t)
+    //gg.getFetch(url, "gbk", this.a04, this)
+    //gg.getFetch(url, "json", this.a04, this)
     getFetch: function (url, type, next, This, t) {
         let oo = { action: "getFetch", type: type, url: url }
+        this.postMessage(next, This, t, oo)
+    },
+    //gg.getHeadersFetch(url,{"Authorization":"xxxxx"}, "json", this.xxxx, this)
+    getHeadersFetch: function (url, headersObj, type, next, This, t) {
+        let oo = { action: "getHeadersFetch", headersObj: headersObj, type: type, url: url }
         this.postMessage(next, This, t, oo)
     },
     //普通返回  gg.postFetch("https://www.aliexpress.com/item/1005002156462954.html",arr3,this.c01,this)

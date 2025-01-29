@@ -15,11 +15,7 @@ let menuList =
                 {
                     "name": "违禁词",
                     "template": "Shopee/违禁词.html"
-                },
-                {
-                    "name": "黑名单",
-                    "template": "Shopee/黑名单.html"
-                },
+                },               
                 {
                     "name": "品牌",
                     "template": "Shopee/品牌.html"
@@ -45,7 +41,7 @@ let menuList =
                     "name": "销售辅导",
                     "template": "Shopee/销售辅导.html"
                 },
-                null,                
+                null,
                 {
                     "name": "卖家账户",
                     "template": "Shopee/卖家账户.html"
@@ -53,6 +49,10 @@ let menuList =
                 {
                     "name": "订单",
                     "template": "Shopee/订单.html"
+                },
+                {
+                    "name": "客优云",
+                    "template": "Shopee/客优云.html"
                 },
                 {
                     "name": "聊聊",
@@ -75,7 +75,28 @@ let menuList =
                     "name": "采集箱",
                     "template": "Shopee/采集箱.html"
                 },
-           ]
+            ]
+        },
+        {
+            "name": "1688",
+            "list": [
+                {
+                    "name": "类目",
+                    "template": "1688/类目.html"
+                },
+                {
+                    "name": "采集箱",
+                    "template": "1688/采集箱.html"
+                },
+                {
+                    "name": "买家账户",
+                    "template": "1688/买家账户.html"
+                },
+                {
+                    "name": "买家订单",
+                    "template": "1688/买家订单.html"
+                },
+            ]
         },
         {
             "name": "TikTok",
@@ -84,7 +105,7 @@ let menuList =
                     "name": "类目",
                     "template": "TikTok/类目.html"
                 },
-               {
+                {
                     "name": "商品",
                     "template": "TikTok/商品.html"
                 },
@@ -137,7 +158,7 @@ let menuList =
                 },
             ]
         },
-       {
+        {
             "name": "敦煌网",
             "list": [
                 {
@@ -284,27 +305,6 @@ let menuList =
                 {
                     "name": "采购订单",
                     "template": "拼多多/采购订单.html"
-                },
-            ]
-        },
-        {
-            "name": "1688",
-            "list": [
-                {
-                    "name": "类目",
-                    "template": "1688/类目.html"
-                },
-                {
-                    "name": "采集箱",
-                    "template": "1688/采集箱.html"
-                },
-                {
-                    "name": "买家账户",
-                    "template": "1688/买家账户.html"
-                },
-                {
-                    "name": "买家订单",
-                    "template": "1688/买家订单.html"
                 },
             ]
         },
@@ -883,6 +883,10 @@ let menuList =
                 {
                     "name": "后台分类",
                     "template": "系统/后台分类.html"
+                },
+                {
+                    "name": "分类配置信息",
+                    "template": "系统/分类配置信息.html"
                 },
                 {
                     "name": "用户组",

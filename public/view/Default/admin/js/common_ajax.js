@@ -125,6 +125,17 @@ Object.assign(Tool, {
                 if (data[i].status == "error") {
                     isErr = true; break;
                 }
+                /////////////////////////////////
+                for (let j = 0; j < data[i].length; j++) {
+                    if (data[i][j].list) {//list是否有数据
+                        for (let k = 0; k < data[i][j].list.length; k++) {
+                            if (data[i][j].list[k].status == "error") {
+                                isErr = true; break;
+                            }
+                        }
+                    }
+                }
+                /////////////////////////////////
             }
             if (isErr) {
                 Tool.pre(["[common_ajax.js]list出错", data]);

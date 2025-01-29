@@ -683,10 +683,11 @@ var Tool = {
     </div>'
     },
     radio: function (id) {
-        return '<div class="custom-control custom-radio">\
-    <input type="radio" id="customRadio'+ id + '" name="customRadio" class="custom-control-input">\
-    <label class="custom-control-label" for="customRadio'+ id + '">' + id + '</label>\
-    </div>'
+        return '\
+        <div class="custom-control custom-radio">\
+            <input type="radio" id="customRadio'+ id + '" name="customRadio" class="custom-control-input">\
+            <label class="custom-control-label" for="customRadio'+ id + '">' + id + '</label>\
+        </div>'
     },
     switch: function (L, V, fun) {
         return '\
@@ -697,19 +698,19 @@ var Tool = {
     },
     Modal: function (title, body, footer, dx) {
         let str = '\
-    <div class="modal fade" tabindex="-1">\
-      <div class="modal-dialog modal-dialog-centered '+ dx + '" role="document">\
-        <div class="modal-content">\
-          <div class="modal-header">\
-            <h5 class="modal-title" id="exampleModalCenterTitle">'+ title + '</h5>\
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">\
-            </button>\
-          </div>\
-          <div class="modal-body">'+ body + '</div>\
-          <div class="modal-footer">'+ footer + '</div>\
+        <div class="modal fade" tabindex="-1">\
+        <div class="modal-dialog modal-dialog-centered '+ dx + '" role="document">\
+            <div class="modal-content">\
+            <div class="modal-header">\
+                <h5 class="modal-title" id="exampleModalCenterTitle">'+ title + '</h5>\
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">\
+                </button>\
+            </div>\
+            <div class="modal-body">'+ body + '</div>\
+            <div class="modal-footer">'+ footer + '</div>\
+            </div>\
         </div>\
-      </div>\
-    </div>'
+        </div>'
         $("body").append(str)
         $('.modal').on('hidden.bs.modal', function (e) { $(this).remove(); }).modal("toggle");
     },
@@ -789,6 +790,7 @@ var Tool = {
                 ],
                 "te_lib"
             ]
+            $("#state").html("正在翻译,需要开代理。。。")
             gg.postFetch(url, JSON.stringify(data), this.a02, this, oo)
         },
         a02: function (t, oo) {
