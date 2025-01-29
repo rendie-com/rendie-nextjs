@@ -3,7 +3,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "聊聊",
-        database: "shopee/聊聊",
+        database: "shopee/聊聊/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -68,14 +68,9 @@ mssql = mssql.concat([
                 default: "0",
                 des: "上次读取的消息id"
             }, {
-                name: "last_deleted_message_id",
-                type: "integer",
-                default: "0",
-                des: "上次删除的邮件id"
-            }, {
                 name: "last_clear_time",
-                type: "integer",
-                default: "0",
+                type: "varchar(20)",
+                default: "",
                 des: "上次清除时间"
             }, {
                 name: "latest_message_id",
@@ -109,9 +104,9 @@ mssql = mssql.concat([
                 des: "接收者最新消息id"
             }, {
                 name: "last_message_time",
-                type: "varchar(30)",
+                type: "integer",
                 default: "",
-                des: "最后消息时间"
+                des: "最后消息时间--要转数字"
             }, {
                 name: "last_message_time_nano",
                 type: "varchar(30)",
@@ -142,7 +137,107 @@ mssql = mssql.concat([
                 type: "integer",
                 default: "0",
                 des: "创建时间"
-            }
+            }, {
+                name: "choice_entity",
+                type: "varchar(255)",
+                default: "",
+                des: "json"
+            }, {
+                name: "crm_message_preview",
+                type: "varchar(255)",
+                default: "",
+                des: "json"
+            }, {
+                name: "crm_sender_message_preview",
+                type: "varchar(255)",
+                default: "",
+                des: "json"
+            }, {
+                name: "pinned",
+                type: "bit",
+                default: "0",
+                des: ""
+            }, {
+                name: "next_timestamp",
+                type: "integer",
+                default: "0",
+                des: "最后一条消息选项"
+            }, {
+                name: "next_timestamp_nano",
+                type: "varchar(30)",
+                default: "",
+                des: ""
+            }, {
+                name: "auto_translation",
+                type: "bit",
+                default: "0",
+                des: ""
+            }, {
+                name: "max_general_option_hide_time",
+                type: "varchar(30)",
+                default: "",
+                des: ""
+            }, {
+                name: "entry_point",
+                type: "varchar(30)",
+                default: "",
+                des: ""
+            }, {
+                name: "lack",
+                type: "bit",
+                default: "0",
+                des: ""
+            }, {
+                name: "mask",
+                type: "bit",
+                default: "0",
+                des: ""
+            }, {
+                name: "mute",
+                type: "bit",
+                default: "0",
+                des: ""
+            }, {
+                name: "due_attr",
+                type: "varchar(30)",
+                default: "",
+                des: ""
+            }, {
+                name: "attributes",
+                type: "varchar(30)",
+                default: "",
+                des: ""
+            }, {
+                name: "seller_unread_status",
+                type: "integer",
+                default: "0",
+                des: ""
+            }, {
+                name: "label_info",
+                type: "varchar(255)",
+                default: "",
+                des: ""
+            }, {
+                name: "opposite_last_deliver_msg_id",
+                type: "varchar(25)",
+                default: "",
+                des: ""
+            }, {
+                name: "opposite_last_read_msg_id",
+                type: "varchar(25)",
+                default: "",
+                des: ""
+            }, {
+                name: "last_deleted_message_id",
+                type: "varchar(30)",
+                default: "",
+                des: "上次删除的邮件id"
+            }, {
+                name: "to_avatar_hash",
+                type: "varchar(50)",
+                default: "",
+                des: ""
+            },
         ]
     },
 ]);

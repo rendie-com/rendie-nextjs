@@ -574,7 +574,7 @@ mssql = mssql.concat([
         des: "ip库",
         database: "main",
         action: "sqlite",
-        "sql": [
+        sql: [
             "create UNIQUE index PK_ip ON @.ip(@.ip)"
         ],
         table: [
@@ -891,6 +891,32 @@ mssql = mssql.concat([
                 type: "integer",
                 default: "0",
                 des: "访问次数"
+            }
+        ]
+    },
+    {
+        name: "config",
+        des: "后台的参数配置",
+        database: "main",
+        action: "sqlite",
+        table: [
+            {
+                name: "id",
+                type: "integer primary key",
+                default: "",
+                des: "索引"
+            },
+            {
+                name: "name",
+                type: "varchar(255)",
+                default: "",
+                des: "名称"
+            },
+            {
+                name: "value",
+                type: "text",
+                default: "",
+                des: "值"
             }
         ]
     }

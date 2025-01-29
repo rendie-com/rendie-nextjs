@@ -3,7 +3,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "优惠券",
-        database: "shopee/营销中心/优惠券",
+        database: "shopee/营销中心/优惠券/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -85,12 +85,6 @@ mssql = mssql.concat([
                 des: "规则（是对象）"
             },
             {
-                name: "site",
-                type: "varchar(3)",
-                default: "",
-                des: "站点---主要记录是来至哪个站点（如：my,br等）"
-            },
-            {
                 name: "fe_status",
                 type: "tinyint",
                 default: "0",
@@ -113,7 +107,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "折扣",
-        database: "shopee/营销中心/折扣",
+        database: "shopee/营销中心/折扣/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -165,12 +159,6 @@ mssql = mssql.concat([
                 des: "商品总数"
             },
             {
-                name: "site",
-                type: "varchar(3)",
-                default: "",
-                des: "站点---主要记录是来至哪个站点（如：my,br等）"
-            },
-            {
                 name: "addtime",
                 type: "integer",
                 default: "0",
@@ -181,7 +169,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "店内秒杀",
-        database: "shopee/营销中心/店内秒杀",
+        database: "shopee/营销中心/店内秒杀/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -213,12 +201,6 @@ mssql = mssql.concat([
                 type: "integer",
                 default: "0",
                 des: "折扣活动-结束时间"
-            },
-            {
-                name: "site",
-                type: "varchar(3)",
-                default: "",
-                des: "站点---主要记录是来至哪个站点（如：my,br等）"
             },
             {
                 name: "addtime",
@@ -255,7 +237,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "加购优惠",
-        database: "shopee/营销中心/加购优惠",
+        database: "shopee/营销中心/加购优惠/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -335,12 +317,6 @@ mssql = mssql.concat([
                 type: "tinyint",
                 default: "0",
                 des: "未知"
-            },
-            {
-                name: "site",
-                type: "varchar(3)",
-                default: "",
-                des: "站点---主要记录是来至哪个站点（如：my,br等）"
             },
         ]
     },

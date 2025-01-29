@@ -3,7 +3,8 @@ var fun =
 {
     obj: {
         A1: 1, A2: mssql.length, Aarr: mssql,
-        B1: 1, B2: 0
+        B1: 1, B2: 0, Barr: [],
+        C1: 1, C2: 0, Carr: [],
     },
     a01: function () {
         $(".bz").attr("class", "bz a6")
@@ -25,62 +26,182 @@ var fun =
         let p1 = (this.obj.A1 / this.obj.A2 * 100).toFixed(2)
         $(".l").html('<p id="chkdata" style="padding-top:240px;text-align:center;color:white;">' + p1 + '%</p>');
         $(".nr").append('（ ' + this.obj.A1 + '/' + this.obj.A2 + ' ） ' + oo.action + '.' + oo.database + '.' + oo.name + ' 【' + oo.des + '】');
-        this.a04(oo);
+        this.d01(oo);
     },
-    a04: function (oo) {
-        if (oo.database.indexOf("${100}") != -1)//要不要建多个表
-        {
-            let arr = oo.database.split("${100}");
-            oo.database = arr[0];
-            this.obj.B2 = parseInt(100);
-            this.a05(oo);
-        }
-        else {
-            this.obj.B2 = 1;
-            this.a05(oo);
+    ///////////////////////////////////////////    
+    d01: function (oo) {
+        switch (oo.database.split("${").length) {
+            case 3: this.e01(oo); break;//必须同时有${sg|tw|th|my|vn|ph|br|mx|co|cl}和${100}
+            case 2: this.f01(oo); break;//有${sg|tw|th|my|vn|ph|br|mx|co|cl}或${100}
+            case 1: this.d02(oo, oo.database); break;
+            default: alert("3个变量以上的组合，还没开发。"); break;
         }
     },
-    a05: function (oo) {
-        if (this.obj.B1 <= this.obj.B2) {
-            this.a06(oo)
-        }
-        else {
-            this.a08();
-        }
-    },
-    a06: function (oo) {
-        //数据库是否存在
-        let database = this.obj.B2 != 1 ? oo.database + (this.obj.B1.toString().padStart(("" + this.obj.B2).length, '0')) : oo.database
+    d02: function (oo, database) {
         if (oo.action == "mysql") {
-            alert("没做" + oo.action)
-            //Tool.mysql.a01(oo, database, this.obj.B1, this.obj.B2, this.a07, this);
+            alert("没做" + oo.action);
+            //Tool.mysql.a01(oo, database,  this.d03, this);
         }
         else if (oo.action == "pg01" || oo.action == "pg02" || oo.action == "pg03" || oo.action == "pg04") {
-            Tool.pg.a01(oo, database, this.obj.B1, this.obj.B2, this.a07, this, oo);
+            Tool.pg.a01(oo, database, this.d03, this);
         }
         else if (oo.action == "sqlite") {
-            Tool.sqlite.a01(oo, database, this.obj.B1, this.obj.B2, this.a07, this, oo);
-        }
-        else if (oo.action == "dynamodb") {
-            Tool.DynamoDB.a01(oo, database, this.obj.B1, this.obj.B2, this.a07, this, oo);
+            Tool.sqlite.a01(oo, database, this.d03, this);
         }
         else {
-            alert("没做" + oo.action)
+            alert("没做" + oo.action);
         }
     },
-    a07: function (oo) {
-        this.obj.B1++;
-        this.a05(oo);
-    },
-    a08: function () {
+    d03: function () {
         $(".nr").append('<br/>&nbsp;');
         $(".ct_box").scrollTop($(".ct_box").prop("scrollHeight"));
-        this.obj.A1++; this.obj.B1 = 1; this.obj.B2 = 0;
+        this.obj.A1++;
         this.a02();
-    }
+    },
+    /////////////////////////////////////////////////////////
+    e01: function (oo) {
+        this.obj.Barr = Tool.StrSlice(oo.database, "${", "}").split("|");
+        this.obj.B2 = this.obj.Barr.length;
+        this.e02(oo)
+    },
+    e02: function (oo) {
+        let Carr = []
+        for (let i = 0; i < 100; i++) {
+            Carr.push((i + 1).toString().padStart(3, '0'))
+        }
+        this.obj.Carr = Carr;
+        this.obj.C2 = 100;
+        this.e03(oo);
+    },
+    e03: function (oo) {
+        //同时有${sg|tw|th|my|vn|ph|br|mx|co|cl}和${100}
+        let name1 = "${" + Tool.StrSlice(oo.database, "${", "}") + "}"
+        let database = oo.database.replace(name1, this.obj.Barr[this.obj.B1 - 1]).replace("${100}", this.obj.Carr[this.obj.C1 - 1]);
+        $(".nr").append("<br/>【" + this.obj.B1 + "/" + this.obj.B2 + ' - ' + this.obj.C1 + "/" + this.obj.C2 + "】");
+        this.e04(oo, database);
+    },
+    e04: function (oo, database) {
+        if (oo.action == "mysql") {
+            alert("没做" + oo.action)
+            //Tool.mysql.a01(oo, database,  this.e05, this, oo);
+        }
+        else if (oo.action == "pg01" || oo.action == "pg02" || oo.action == "pg03" || oo.action == "pg04") {
+            Tool.pg.a01(oo, database, this.e05, this, oo);
+        }
+        else if (oo.action == "sqlite") {
+            Tool.sqlite.a01(oo, database, this.e05, this, oo);
+        }
+        else {
+            alert("没做" + oo.action);
+        }
+    },
+    e05: function (oo) {
+        this.obj.C1++;
+        if (this.obj.C1 <= this.obj.C2) {
+            this.e03(oo);
+        }
+        else {
+            this.obj.C1 = 1;
+            this.e06(oo);
+        }
+    },
+    e06: function (oo) {
+        this.obj.B1++;
+        if (this.obj.B1 <= this.obj.B2) {
+            this.e03(oo);
+        }
+        else {
+            this.obj.C1 = 1; this.obj.C2 = 0; this.obj.Carr = [];
+            this.obj.B1 = 1; this.obj.B2 = 0; this.obj.Barr = [];
+            this.d03();
+        }
+    },
+    //////////////////////////////////////////////////
+    //////////////////////////////////////////////////    
+    f01: function (oo) {
+        if (oo.database.indexOf("${100}") != -1) {
+            //只有${100}
+            this.g01(oo);
+        }
+        else {
+            //只有${sg|tw|th|my|vn|ph|br|mx|co|cl}
+            this.f02(oo)
+        }
+    },
+    f02: function (oo) {
+        //只有${sg|tw|th|my|vn|ph|br|mx|co|cl}
+        if (this.obj.B2 == 0) {
+            this.obj.Barr = Tool.StrSlice(oo.database, "${", "}").split("|");
+            this.obj.B2 = this.obj.Barr.length;
+        }
+        ///////////////////////////////////
+        this.obj.C2 = 1;
+        let name1 = "${" + Tool.StrSlice(oo.database, "${", "}") + "}"
+        let database = oo.database.replace(name1, this.obj.Barr[this.obj.B1 - 1]);
+        this.f03(oo, database);
+    },
+    f03: function (oo, database) {
+        $(".nr").append("<br/>【" + this.obj.B1 + "/" + this.obj.B2 + ' - ' + this.obj.C1 + "/" + this.obj.C2 + "】");
+        if (oo.action == "mysql") {
+            alert("没做" + oo.action);
+            //Tool.mysql.a01(oo, database,  this.f04, this,oo);
+        }
+        else if (oo.action == "pg01" || oo.action == "pg02" || oo.action == "pg03" || oo.action == "pg04") {
+            Tool.pg.a01(oo, database, this.f04, this, oo);
+        }
+        else if (oo.action == "sqlite") {
+            Tool.sqlite.a01(oo, database, this.f04, this, oo);
+        }
+        else {
+            alert("没做" + oo.action);
+        }
+    },
+    f04: function (oo) {
+        this.obj.C1++;
+        if (this.obj.C1 <= this.obj.C2) {
+            this.f01(oo);
+        }
+        else {
+            this.obj.C1 = 1;
+            this.f05(oo);
+        }
+    },
+    f05: function (oo) {
+        this.obj.B1++;
+        if (this.obj.B1 <= this.obj.B2) {
+            this.f01(oo);
+        }
+        else {
+            this.obj.C1 = 1; this.obj.C2 = 0; this.obj.Carr = [];
+            this.obj.B1 = 1; this.obj.B2 = 0; this.obj.Barr = [];
+            this.d03();
+        }
+    },
+    ///////////////////////////////////////
+    g01: function (oo) {
+        this.obj.B2 = 1
+        ////////////////////
+        if (this.obj.C2 == 0) {
+            let Carr = []
+            for (let i = 0; i < 100; i++) {
+                Carr.push((i + 1).toString().padStart(3, '0'))
+            }
+            this.obj.Carr = Carr;
+            this.obj.C2 = 100;
+        }
+        let database = oo.database.replace("${100}", this.obj.Carr[this.obj.C1 - 1]);
+        this.f03(oo, database);
+    },
 }
 fun.a01();
 
+
+// d05: function () {
+//     $(".nr").append('<br/>&nbsp;');
+//     $(".ct_box").scrollTop($(".ct_box").prop("scrollHeight"));
+//     this.obj.A1++; this.obj.B1 = 1; this.obj.B2 = 0; this.obj.Barr = [];
+//     this.a02();
+// },
 //b02: function (oo) {
 //    let select1 = ""
 //    if (oo.dbType == "access") {
@@ -99,18 +220,18 @@ $(".nr").append("。")
 if(t=="要建表")
 {
         let str='<r: db="mysql.admin">'+this.b03(this.obj.ConnType,oo)+'</r:>'
-       Tool.ajax.a01(str,1,this.a08, this,oo);
+       Tool.ajax.a01(str,1,this.d05, this,oo);
     }
 else
 {$(".nr").append("（已存在,跳过）"+t);this.a10();}
 },
-a08:function(t,oo)
+d05:function(t,oo)
 {
 $(".nr").append("。")
 if(t.indexOf("建立数据连接失败！")!=-1)
 {
   let str='<.FileCopy('+this.obj.path+'access2003.mdb,'+this.obj.path+(this.obj.B2!=1?oo.db+this.obj.B1:oo.db)+'.aspx)/>'
- Tool.ajax.a01(str,1,this.a07, this,oo);
+ Tool.ajax.a01(str,1,this.d04, this,oo);
 }
 else if(t=="要建表")
 {
@@ -122,7 +243,7 @@ else if(t=="")
    $(".nr").append('（'+(this.obj.B2==1?"":this.obj.B1+'. ')+'已存在,跳过）');
    $(".ct_box").scrollTop($(".ct_box").prop("scrollHeight"));
    this.obj.B1++;
-   this.a07(oo);
+   this.d04(oo);
 }
 else if(t.indexOf("不能读取记录；在 'Msysobjects' 上没有读取数据权限。")!=-1)
 {

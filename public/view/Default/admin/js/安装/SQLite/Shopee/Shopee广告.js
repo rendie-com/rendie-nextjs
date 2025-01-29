@@ -1,9 +1,9 @@
- 'use strict';
+'use strict';
 mssql = mssql.concat([
-   {
+    {
         name: "table",
         des: "广告",
-        database: "shopee/Shopee广告/广告",
+        database: "shopee/Shopee广告/广告/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -114,18 +114,12 @@ mssql = mssql.concat([
                 default: "",
                 des: "搜索商品联想的关键词"
             },
-            {
-                name: "site",
-                type: "varchar(3)",
-                default: "",
-                des: "站点---主要记录是来至哪个站点（如：my,br等）"
-            },
         ]
-    }, 
-     {
+    },
+    {
         name: "table",
         des: " 关键词",
-        database: "shopee/Shopee广告/关键词",
+        database: "shopee/Shopee广告/关键词/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -133,12 +127,6 @@ mssql = mssql.concat([
                 type: "integer primary key",
                 default: "",
                 des: "索引"
-            },
-            {
-                name: "site",
-                type: "varchar(3)",
-                default: "",
-                des: "站点---主要记录是来至哪个站点（如：my,br等）"
             },
             {
                 name: "keyword",
