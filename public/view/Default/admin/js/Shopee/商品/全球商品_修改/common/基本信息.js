@@ -134,7 +134,7 @@ Object.assign(Tool, {
                 <tr>\
                     <td class="center">巴西</td>\
                     <td class="center">葡萄牙语</td>\
-                    <td class="center">'+ (br_ads_key ? br_ads_key + '（' + br_keyword_cn_keyword.br_keyword_cn_keyword + '）' : '') + '</td>\
+                    <td class="center">'+ (br_ads_key ? br_ads_key : '') + '</td>\
                     <td id="pt_nameLen" class="center" title="商品名称的建议字数为 25~100">'+ (pt_nameLen < 25 || pt_nameLen > 100 ? '<font color=red>' + pt_nameLen + '</font>' : pt_nameLen) + '</td>\
                     <td id="pt_name">'+ pt_name + '</td>\
                 </tr>\

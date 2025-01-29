@@ -106,16 +106,16 @@ var fun =
                 sql: "select @.DHpic as DHpic,@.DHdesPic as DHdesPic FROM @.prodes where @.proid='${proid}'",
             }, {
                 action: "sqlite",
-                database: "shopee/Shopee广告/关键词",
-                sql: "select @.cn_keyword as tw_keyword_cn_keyword FROM @.table where @.keyword='${tw_ads_key}' and @.site='tw'",
+                database: "shopee/Shopee广告/关键词/tw",
+                sql: "select @.cn_keyword as tw_keyword_cn_keyword FROM @.table where @.keyword='${tw_ads_key}'",
             }, {
                 action: "sqlite",
-                database: "shopee/Shopee广告/关键词",
-                sql: "select @.cn_keyword as my_keyword_cn_keyword FROM @.table where @.keyword='${my_ads_key}' and @.site='my'",
+                database: "shopee/Shopee广告/关键词/my",
+                sql: "select @.cn_keyword as my_keyword_cn_keyword FROM @.table where @.keyword='${my_ads_key}'",
             }, {
                 action: "sqlite",
-                database: "shopee/Shopee广告/关键词",
-                sql: "select @.cn_keyword as br_keyword_cn_keyword FROM @.table where @.keyword='${br_ads_key}' and @.site='br'",
+                database: "shopee/Shopee广告/关键词/br",
+                sql: "select @.cn_keyword as br_keyword_cn_keyword FROM @.table where @.keyword='${br_ads_key}'",
             }]
         }]
         Tool.ajax.a01(data, this.a04, this, where);

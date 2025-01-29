@@ -15,7 +15,7 @@ var fun =
         obj.params.info1688 = obj.params.info1688 ? obj.params.info1688 : ""//1688信息 
         Tool.logistics.a01(obj.params.site, null, this.a02, this)
     },
-    a02: function () {
+    a02: function (logistics) {
         let data = [{
             action: "fs",
             fun: "access_sqlite",
@@ -39,9 +39,9 @@ var fun =
                 database: "shopee/商品/店铺商品/" + obj.params.site,
             }]
         }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.ajax.a01(data, this.a03, this, logistics);
     },
-    a03: function (t) {
+    a03: function (t, logistics) {
         let where = this.b08()
         let data = [{
             action: "sqlite",
@@ -56,7 +56,7 @@ var fun =
             database: "shopee/商品/店铺商品/" + obj.params.site,
             sql: "select " + Tool.fieldAs("fromid,isUnlisted,isTrueSignUp,unitWeight,discount,newDiscount,isDiscount,isSignUp,isSeckill,promotion,status,pic,proid,MinimumOrder,name,_1688_fromid,_1688_saleNum,_1688_maxPrice,_1688_MinimumOrder,_1688_freight,input_normal_price,self_uptime,price_uptime,uptime,addtime,scale") + " FROM @.table" + where + Tool.limit(10, obj.params.page, "sqlite"),
         }]
-        Tool.ajax.a01(data, this.a04, this, t);
+        Tool.ajax.a01(data, this.a04, this, logistics);
     },
     a04: function (t, logistics) {
         let config = JSON.parse(t[0][0].config)[obj.params.site];

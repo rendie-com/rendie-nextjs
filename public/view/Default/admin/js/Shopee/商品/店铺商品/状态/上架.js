@@ -40,7 +40,7 @@ var fun =
     b02: function () {
         let str = '\
         <select onChange="fun.c01($(this),this.options[this.selectedIndex].value)" class="form-select">\
-            <option value="-_-20">请选择上架数量</option>\
+            <option value="">请选择上架数量</option>\
             <option value="1">不限制</option>\
             <option value="2">上架10条1688中销量高的商品</option>\
             <option value="3">上架50条1688中销量高的商品</option>\
@@ -53,13 +53,13 @@ var fun =
             //@.price_uptime=0      表示不需要改价
             data = [{
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/"+ obj.params.site,
+                database: "shopee/商品/店铺商品/" + obj.params.site,
                 sql: "select @.fromid as fromid from @.table where  @.status=" + obj.params.status + " and @.price_uptime<>1 order by @._1688_saleNum desc" + Tool.limit(12, this.obj.A1),
             }]
             if (this.obj.A2 == 0) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/"+ obj.params.site,
+                    database: "shopee/商品/店铺商品/" + obj.params.site,
                     sql: "select count(1) as total FROM @.table where @.status=" + obj.params.status + " and @.price_uptime<>1",
                 })
             }
@@ -67,14 +67,14 @@ var fun =
         else if (this.obj.mode == 2) {
             data = [{
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/"+ obj.params.site,
+                database: "shopee/商品/店铺商品/" + obj.params.site,
                 sql: "select @.fromid as fromid from @.table where  @.status=" + obj.params.status + " and @.price_uptime<>1 order by @._1688_saleNum desc limit 10",
             }]
         }
         else if (this.obj.mode == 3) {
             data = [{
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/"+ obj.params.site,
+                database: "shopee/商品/店铺商品/" + obj.params.site,
                 sql: "select @.fromid as fromid from @.table where  @.status=" + obj.params.status + " and @.price_uptime<>1 order by @._1688_saleNum desc limit 50",
             }]
         }
@@ -99,7 +99,7 @@ var fun =
         Tool.ajax.a01(this.b03(), this.d04, this);
     },
     d04: function (t) {
-        if (this.obj.A2 == 0) { this.obj.A2 = this.obj.mode == 1 ? t[1][0] : 1; }
+        if (this.obj.A2 == 0) { this.obj.A2 = this.obj.mode == "1" ? Math.ceil(t[1][0].total / 12) : 1; }
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.e01, this, null, t[0])
     },
     e01: function (arr) {
@@ -146,7 +146,7 @@ var fun =
         // @.status=1       表示【上架商品】
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/"+ obj.params.site,
+            database: "shopee/商品/店铺商品/" + obj.params.site,
             sql: "update @.table set @.status=1, @.uptime=" + Tool.gettime("") + "  where @.fromId in (" + fromidArr.join(",") + ")",
         }]
         Tool.ajax.a01(data, this.e04, this, isbool);
@@ -164,6 +164,8 @@ var fun =
         }
         else {
             $("#state").html("上架已超限，上架已完成。");
+            this.obj.A1++;
+            Tool.Time("name", 0, this.d03, this)
         }
     },
 }

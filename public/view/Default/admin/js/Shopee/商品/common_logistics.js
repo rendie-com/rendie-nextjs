@@ -139,6 +139,7 @@ Object.assign(Tool, {
                     }
                 }
             }
+            price = price.toFixed(4)
             return [(showArr.length == 1 ? price : showArr.join(" + ") + " = " + price), price]
         },
     },
