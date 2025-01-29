@@ -6,7 +6,8 @@ Object.assign(Tool, {
             <div onclick="Tool.main(\'?jsFile=js03\')"'+ (jsFile == "js03" ? ' class="active"' : '') + '>次商品列表</div>\
             <div onclick="Tool.main(\'?jsFile=js09\')"'+ (jsFile == "js09" || jsFile == "js11" || jsFile == "js14" ? ' class="active"' : '') + '>图片</div>\
             <div onclick="Tool.main(\'?jsFile=js08\')"'+ (jsFile == "js08" ? ' class="active"' : '') + '>货源图片审核</div>\
-            <div onclick="Tool.main(\'?jsFile=js23\')"'+ (jsFile == "js23" ? ' class="active"' : '') + '>视频审核</div>\
+            <div onclick="Tool.main(\'?jsFile=js23\')"'+ (jsFile == "js23" ? ' class="active"' : '') + '>主视频审核</div>\
+            <div onclick="Tool.main(\'?jsFile=js29\')"'+ (jsFile == "js29" ? ' class="active"' : '') + '>讲解视频审核</div>\
             <div onclick="Tool.main(\'?jsFile=js27\')"'+ (jsFile == "js27" ? ' class="active"' : '') + '>主要下游平台</div>\
         </header>'
         return html;

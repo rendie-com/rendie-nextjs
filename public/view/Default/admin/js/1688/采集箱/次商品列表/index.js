@@ -18,7 +18,7 @@ var fun =
         }, {
             action: "sqlite",
             database: "1688",
-            sql: "select " + Tool.fieldAs("fromid,freight,unit,imgUrl,subject,companyName,province,city,companyUrl,brand,categoryId,state,errorMsg,uptime,addtime") + " FROM @.proList " + where +" order by @.uptime desc"+ Tool.limit(10, obj.params.page),
+            sql: "select " + Tool.fieldAs("fromid,freight,unit,imgUrl,subject,companyName,province,city,companyUrl,brand,categoryId1,categoryId,state,errorMsg,uptime,addtime") + " FROM @.proList " + where +" order by @.uptime desc"+ Tool.limit(10, obj.params.page),
         }]
         Tool.ajax.a01(data, this.a03, this);
     },
@@ -37,6 +37,7 @@ var fun =
                 <td><a href="'+ arr[i].companyUrl + '" target="_blank">' + arr[i].companyName + '</a></td>\
                 <td>'+ arr[i].province + ' ' + arr[i].city + '</td>\
                 <td>'+ arr[i].brand + '</td>\
+                <td>'+ arr[i].categoryId1 + '</td>\
                 <td>'+ arr[i].categoryId + '</td>\
                 <td class="p-0">'+ this.b09(arr[i].addtime, arr[i].uptime) + '</td>\
             </tr>'
@@ -63,6 +64,7 @@ var fun =
           <th>公司</th>\
           <th>发货地</th>\
           <th>品牌</th>\
+          <th>一级类目ID</th>\
           <th>类目ID</th>\
           <th class="w170">时间</th>\
         </tr>'
@@ -120,6 +122,7 @@ var fun =
 	        <li onClick="Tool.open4(\'js19\');"><a class="dropdown-item pointer">从data字段中提取信息【prodes】</a></li>\
 	        <li onClick="Tool.open4(\'js20\');"><a class="dropdown-item pointer">从data字段中提取信息【prolist】</a></li>\
 	        <li onClick="Tool.open4(\'js26\');"><a class="dropdown-item pointer">获取属性内有【主要下游平台】</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js28\');"><a class="dropdown-item pointer">修复【一级类目ID】</a></li>\
         </ul>'
     },
     b07: function (state, errorMsg) {

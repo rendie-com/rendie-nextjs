@@ -29,10 +29,10 @@ let config={
     0
   ],
   "GlobalPro_ManualReview_1688_count": [
-    6216,
-    1240,
-    93,
-    132,
+    4060,
+    3280,
+    199,
+    142,
     4,
     0,
     0,
@@ -75,15 +75,27 @@ let config={
     "201355758": 0
   },
   "product_ManualReview_video_status_count": [
-    6248,
-    577,
+    3763,
+    1557,
     0,
-    200,
-    42,
-    104,
+    548,
+    111,
     124,
-    356,
-    29,
-    5
+    248,
+    1197,
+    114,
+    23
+  ],
+  "product_ManualReview_ExplanationVideo_status_count": [
+    3763,
+    1930,
+    0,
+    1438,
+    6,
+    176,
+    3,
+    340,
+    0,
+    29
   ]
 }

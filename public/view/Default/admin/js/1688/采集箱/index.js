@@ -53,11 +53,15 @@
         case "js20": Tool.scriptArr([path + '次商品列表/从data字段中提取信息【prolist】.js']); break;
         case "js21": Tool.scriptArr([path + '次商品列表/config.js', path + '次商品列表/状态_更新数量.js']); break;
         case "js22": Tool.scriptArr([path + '主商品列表/config.js', path + '主商品列表/速卖通类目_更新数量.js']); break;
-        case "js23": Tool.scriptArr([path + '主商品列表/config.js', path + 'common.js', path + '视频审核/index.js']); break;
-        case "js24": Tool.scriptArr([path + '主商品列表/config.js', path + '视频审核/人工审核视频状态_更新数量.js']); break;
-        case "js25": Tool.scriptArr([path + '视频审核/人工审核视频状态_修复有无视频.js']); break;
+        case "js23": Tool.scriptArr([path + '主商品列表/config.js', path + 'common.js', path + '主视频审核/index.js']); break;
+        case "js24": Tool.scriptArr([path + '主商品列表/config.js', path + '主视频审核/人工审核视频状态_更新数量.js']); break;
+        case "js25": Tool.scriptArr([path + '主视频审核/人工审核视频状态_修复有无视频.js']); break;
         case "js26": Tool.scriptArr([path + '次商品列表/获取属性内有【主要下游平台】.js']); break;
         case "js27": Tool.scriptArr([path + 'common.js', path + '主要下游平台/config.js', path + '主要下游平台/index.js']); break;
+        case "js28": Tool.scriptArr([path + '次商品列表/更多/修复【一级类目ID】.js']); break;
+        case "js29": Tool.scriptArr([path + '主商品列表/config.js', path + 'common.js', path + '讲解视频审核/index.js']); break;
+        case "js30": Tool.scriptArr([path + '讲解视频审核/人工审核讲解视频状态_修复有无视频.js']); break;
+        case "js31": Tool.scriptArr([path + '主商品列表/config.js', path + '讲解视频审核/人工审核讲解视频状态_更新数量.js']); break;
         default: Tool.scriptArr([
             'admin/js/敦煌网/已上传商品/商品/common.js',
             path + 'common.js',

@@ -2,6 +2,7 @@
 var rendie_fun =
 {
     a01: function (username, password) {
+
         this.c01($('input[id="fm-login-id"]'), username);
         this.c01($('input[id="fm-login-password"]'), password);
         this.Time("time", 100, this.a02, this)
@@ -13,9 +14,9 @@ var rendie_fun =
     },
     a03: function (num) {
         num++
-        $("title").html("延时" + num+"秒");
+        $("title").html("延时" + num + "秒");
         this.Time("time", 1000, this.a03, this, num)
-    },   
+    },
     c01: function (oo, value) {
         let casess = oo.get(0);
         casess.value = value;

@@ -9,7 +9,7 @@
             path + '采集类目.js']);
             break;
         case "js02": Tool.scriptArr(['admin/js/1688/买家账户/common_登录.js', path + '采集类目属性.js']); break;
-        case "js03": Tool.scriptArr(['admin/js/Shopee/通用/把旧表复制到新表.js']); break;      
+        case "js03": Tool.scriptArr(['admin/js/Shopee/通用/把一个db文件拆分成多个db文件.js']); break;      
         default: Tool.scriptArr([path + '【1688】类目.js']); break;
     }
 }();

@@ -68,15 +68,15 @@ var fun =
                 </tr>\
                 <tr>\
                     <td><div class="center">属性图：'+ t2[1][0].list[0][0].DHattrPic.length + ' 张</div>' + this.b06(t2[1][0].list[0][0].DHdesPic) + '</td>\
-                    <td id="attrPic"><div id="attrPic' + t2.DHpicArr[0][1] + '">' + this.b12(t1[1][0].sku) + '</div></td>\
+                    <td id="attrPic"><div id="attrPic' + t2.DHpicArr[0][1] + '">' + (t1[1][0] ? this.b12(t1[1][0].sku) : '') + '</div></td>\
                 </tr>\
                 <tr>\
                    <td><div class="center">放大镜图：'+ DHpic.length + ' 张</div>' + this.b06(DHpic) + '</td>\
-                   <td id="pic"><div id="pic' + t2.DHpicArr[0][1] + '">' + this.b09("放大镜图", JSON.parse(t1[1][0].pic)) + '</div></td>\
+                   <td id="pic"><div id="pic' + t2.DHpicArr[0][1] + '">' + (t1[1][0] ? this.b09("放大镜图", JSON.parse(t1[1][0].pic)) : '') + '</div></td>\
                 </tr>\
                <tr>\
                    <td><div class="center">详情图：'+ t2[1][0].list[0][0].DHdesPic.length + ' 张</div>' + this.b06(t2[1][0].list[0][0].DHdesPic) + '</td>\
-                   <td id="desPic"><div id="desPic' + t2.DHpicArr[0][1] + '">' + this.b13(t1[1][0].des) + '</div></td>\
+                   <td id="desPic"><div id="desPic' + t2.DHpicArr[0][1] + '">' +(t1[1][0]?this.b13(t1[1][0].des):'')  + '</div></td>\
                 </tr>\
             </tbody>\
             </table>' + Tool.page(t2[0][0].total, 1, obj.params.page) + '\
@@ -90,7 +90,7 @@ var fun =
     b01: function () {
         return '\
         <div class="input-group w-50 mb-2">\
-          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="Field" value="'+ obj.params.field + '">' + this.b08(obj.params.field) + '</button>\
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b08(obj.params.field) + '</button>\
           <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c07(1)">商品编码</li>\
                 <li class="dropdown-item pointer" onclick="fun.c07(2)">自动匹配的【详情ID】</a></li>\
@@ -223,7 +223,7 @@ var fun =
                 <td class="right">状态：</td><td>' + this.b21(state) + '</td>\
             </tr>\
             <tr>\
-                <td class="right">销量：</td><td>' + saleNum + '</td>\
+                <td class="right">销量：</td><td>' + saleNum.toLocaleString() + '</td>\
             </tr>\
             <tr>\
                 <td class="right">1688详情地址：</td><td><a href="'+ url + '" target="_blank">' + url + '</a></td>\
@@ -329,7 +329,7 @@ var fun =
     b18: function (val, configArr) {
         let nArr = [], arr = Tool.ManualReview_1688;
         for (let i = 0; i < arr.length; i++) {
-            nArr.push('<option value="' + i + '" ' + (""+arr[i][0] == ""+val ? 'selected="selected"' : '') + '>' + i + '.' + arr[i][1] + '（' + configArr[i] + '）</option>');
+            nArr.push('<option value="' + i + '" ' + ("" + arr[i][0] == "" + val ? 'selected="selected"' : '') + '>' + i + '.' + arr[i][1] + '（' + configArr[i] + '）</option>');
         }
         return '\
         <select onChange="fun.c06(\'manualreview_1688\',this.options[this.selectedIndex].value)" class="form-select">\
@@ -354,7 +354,7 @@ var fun =
     b20: function (type, configArr, typeArr) {
         let nArr = [];
         for (let i = 0; i < typeArr.length; i++) {
-            nArr.push('<option value="' + typeArr[i].fromid + '" ' + ("" + typeArr[i].fromid == type ? 'selected="selected"' : '') + '>' + (i+1) + '.' + typeArr[i].name + '(' + configArr["" + typeArr[i].fromid] + ')</option>');
+            nArr.push('<option value="' + typeArr[i].fromid + '" ' + ("" + typeArr[i].fromid == type ? 'selected="selected"' : '') + '>' + (i + 1) + '.' + typeArr[i].name + '(' + configArr["" + typeArr[i].fromid] + ')</option>');
         }
         return '\
         <select onChange="fun.c09(\'aliexpress_type\',this.options[this.selectedIndex].value)" class="form-select">\
@@ -412,7 +412,7 @@ var fun =
         }
     },
     c03: function (manualreview_1688, manualreview_1688_fromid, proid) {
-        let data=[{
+        let data = [{
             action: "sqlite",
             database: "1688",
             sql: "update @.product set @.manualreview_1688=" + manualreview_1688 + ",@.manualreview_1688_fromid=" + manualreview_1688_fromid + " where @.proid='" + proid + "'",
@@ -435,13 +435,12 @@ var fun =
     },
     c07: function (val) {
         let name = this.b08("" + val);
-        $("#Field").html(name).val(val);
+        $("#field").html(name).val(val);
     },
     c08: function () {
-        let Field = $("#Field").val(), searchword = Tool.Trim($("#searchword").val());
-        if (searchword) {
-            searchword = encodeURIComponent(searchword);
-            Tool.main(obj.params.jsFile + "/1/" + Field + "/" + searchword);
+        let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
+        if (searchword) {          
+            Tool.main("?jsFile=" + obj.params.jsFile + "&page=1&field=" + field + "&searchword=" + searchword);
         }
         else {
             alert("请输入搜索内容");
@@ -460,13 +459,13 @@ var fun =
         Tool.ajax.a01(this.b07(id), this.d02, this, [id, proid]);
     },
     d02: function (t, arr) {
-        if(t[1].length==0){
+        if (t[1].length == 0) {
             $("#pic" + arr[0]).html("找不到了");
             $("#attrPic" + arr[0]).html("找不到了");
             $("#desPic" + arr[0]).html("找不到了");
-            $("#list" + arr[0]).html(this.b10(arr[0], arr[1], t[0][0].subject, t[0][0].state, t[0][0].saleNum));   
+            $("#list" + arr[0]).html(this.b10(arr[0], arr[1], t[0][0].subject, t[0][0].state, t[0][0].saleNum));
         }
-        else{
+        else {
             $("#pic" + arr[0]).html(this.b09("放大镜图", JSON.parse(t[1][0].pic)));
             $("#attrPic" + arr[0]).html(this.b12(JSON.parse(t[1][0].sku)));
             $("#desPic" + arr[0]).html(this.b13(t[1][0].des));

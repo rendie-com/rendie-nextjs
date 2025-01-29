@@ -11,7 +11,8 @@
             this.a02(oo)
         },
         a02: function (oo) {
-            let url = 'https://detail.1688.com/offer/' + oo.fromid + '.html?spm=a260k.dacugeneral.0.0.663335e4WNUj1W&cosite=-&tracelog=p4p&_p_isad=1&clickid=69afeffe7f5747679173f80a787dad08&sessionid=a98746cc3a639490310950d8052d200c';
+            //let url = 'https://detail.1688.com/offer/' + oo.fromid + '.html?spm=a260k.dacugeneral.0.0.663335e4WNUj1W&cosite=-&tracelog=p4p&_p_isad=1&clickid=69afeffe7f5747679173f80a787dad08&sessionid=a98746cc3a639490310950d8052d200c';
+            let url = 'https://detail.1688.com/offer/' + oo.fromid + '.html';
             $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
             $("#state").html("正在打开详情...");
             gg.getFetch(url,"text",  this.a03, this, oo)

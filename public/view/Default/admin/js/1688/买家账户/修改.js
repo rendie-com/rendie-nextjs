@@ -9,14 +9,14 @@ var fun =
   a02: function () {
     let data = [{
       action: "sqlite",
-      database: "1688",
-      sql: "select " + Tool.fieldAs("id,note,password,username,phone,sort") + " FROM @.buyer where @.id=" + obj.params.id,
+      database: "1688/买家账户",
+      sql: "select " + Tool.fieldAs("id,note,password,username,phone,sort") + " FROM @.table where @.id=" + obj.params.id,
     }]
     Tool.ajax.a01(data, this.a03, this)
   },
   a03: function (t) {
-    let oo=t[0][0]
-    let html = Tool.header(obj.params.return,"1688 &gt; 买家账户 &gt; 修改")+'\
+    let oo = t[0][0]
+    let html = Tool.header(obj.params.return, "1688 &gt; 买家账户 &gt; 修改") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle" id="div1">\
             <tbody>\
@@ -53,15 +53,17 @@ var fun =
   c01: function (This, L, V) {
     let val = This.val();
     if (val != V && !This.attr("disabled")) {
-      This.val("加载加...");
       This.attr("disabled", true);
-      let txt = '""<r: db="sqlite.1688">update @.buyer set @.' + L + '=\'' + val + '\' where @.id=' + obj.arr[4] + '</r:>'
-      Tool.ajax.a01(txt, 1, this.c02, this, [This, val]);
+      let data = [{
+        action: "sqlite",
+        database: "1688/买家账户",
+        sql: "update @.table set @." + L + "='" + val + "' where @.id=" + obj.params.id
+      }]
+      Tool.ajax.a01(data, this.c02, this, This);
     }
   },
   c02: function (t, This) {
-    if (t == "") { This[0].attr("disabled", false); This[0].val(This[1]); }
-    else { alert("出错：" + t); }
+    This.attr("disabled", false);
   },
 }
 fun.a01();

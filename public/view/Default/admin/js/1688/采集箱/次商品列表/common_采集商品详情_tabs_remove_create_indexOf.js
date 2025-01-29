@@ -12,6 +12,7 @@
         },
         a02: function (oo) {
             let url = 'https://detail.1688.com/offer/' + oo.fromid + '.html?spm=a260k.dacugeneral.0.0.663335e4WNUj1W&cosite=-&tracelog=p4p&_p_isad=1&clickid=69afeffe7f5747679173f80a787dad08&sessionid=a98746cc3a639490310950d8052d200c';
+            //let url = 'https://detail.1688.com/offer/' + oo.fromid + '.html';
             $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
             $("#state").html("正在打开详情...");
             gg.tabs_remove_create_indexOf(2,url,null,true,this.a03,this,oo)
@@ -42,7 +43,7 @@
             let __INIT_DATA = Tool.StrSlice(t, ' window.__INIT_DATA=', '</script>')
             if (__INIT_DATA) {
                 let o1 = JSON.parse(__INIT_DATA)
-                let o2 = this.b02(o1.data,o1.globalData.skuModel,o1.globalData.orderParamModel.orderParam.sellUnit);
+                let o2 = this.b02(o1.data,o1.globalData.skuModel,o1.globalData.orderParamModel.orderParam.sellUnit,o1.globalData.orderParamModel.orderParam.scale);
                 o2.ExplanationVideo=Tool.StrSlice(t,'playsinline="playsinline" poster="" src="', '"')
                 if (o2.error) {
                     this.d01(o2.state, o2.error, oo)
@@ -104,7 +105,8 @@
             }
             return num
         },
-        b02: function (data,skuModel,sellUnit) {
+        b02: function (data,skuModel,sellUnit,startAmount) {
+             //startAmount 件倍数。每件的个数（如：100）
             let attr = [],//【属性】               
                 videoUrl = "",//【视频地址】
                 ////////////////////////////////
@@ -114,8 +116,7 @@
                 deliveryLimit = 0, //【几天发货】
                 totalCost = 0,//运费（说明：这个有点不准，但比没有强。）
                 detailUrl = "",//详情内容URL
-                pic = [],//放大镜图
-                startAmount=0,//件倍数。每件的个数（如：100）
+                pic = [],//放大镜图               
                 currentPrices=[],//价格阶梯--多少件起卖。
                 count = 6;//计数，没有6个就是出错了
             //////////////////////////////////  
@@ -155,7 +156,6 @@
                     unitWeight = data[k].data.unitWeight;if (!unitWeight) unitWeight = -1;
                     deliveryLimit = data[k].data.freightInfo.deliveryLimit;if (!deliveryLimit) deliveryLimit = -1;
                     totalCost = data[k].data.freightInfo.totalCost;if (!totalCost) totalCost = 0;
-                    startAmount= data[k].data.startAmount//件倍数。每件的个数（如：100）
                     count--;
                 }
                 if (count == 0) break;
