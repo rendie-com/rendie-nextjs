@@ -41,8 +41,11 @@ Object.assign(Tool, {
             else if (t.message == "current shop can not access the current api") {
                 Tool.Time("name", 200, this.a02, this, oo)
             }
+            else if (t.message == "dependency error") {
+                Tool.Time("name", 200, this.a02, this, oo)
+            }
             else {
-                Tool.pre(["出错2025.1.16", t])
+                Tool.pre(["出错2025.2.2", t])
             }
         },
         //////////////////////////////////////
