@@ -43,9 +43,11 @@ Object.assign(Tool, {
             }
             else if (t.message == "dependency error") {
                 Tool.Time("name", 200, this.a02, this, oo)
+            } else if (t.message == "illegal request") {
+                Tool.Time("name", 200, this.a02, this, oo)
             }
             else {
-                Tool.pre(["出错2025.2.2", t])
+                Tool.pre(["出错2025.2.6", t])
             }
         },
         //////////////////////////////////////
