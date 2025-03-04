@@ -43,8 +43,8 @@ let menuList =
                 },
                 null,
                 {
-                    "name": "卖家账户",
-                    "template": "Shopee/卖家账户.html"
+                    "name": "商家设置",
+                    "template": "Shopee/商家设置.html"
                 },
                 {
                     "name": "订单",

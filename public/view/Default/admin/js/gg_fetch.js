@@ -46,11 +46,11 @@ Object.assign(gg, {
         let oo = { action: "postFetch", url: url, data: data }
         this.postMessage(next, This, t, oo)
     },
-    //指定类型提交  gg.typeHtml(url, "DELETE", data, this.a08, this, "xxxxx")
-    //typeHtml: function (url, type, data, next, This, t) {
-    //     let oo = { action: "typeHtml", url: url, type: type, data: data }
-    //     this.postMessage(next, This, t, oo)
-    //},
+    //指定类型提交  gg.typeFetch(url, "DELETE", data, this.a08, this, "xxxxx")
+    typeFetch: function (url, type, data, next, This, t) {
+        let oo = { action: "typeFetch", url: url, type: type, data: data }
+        this.postMessage(next, This, t, oo)
+    },
     ////////////////////////////////////////////////
     //设置Headers信息get请求返回html            gg.setHeaders_getHtml("https://www.aliexpress.com/item/1005002156462954.html",{},this.c01,this,t)
     //setHeaders_getHtml: function (url, headers, next, This, t) {

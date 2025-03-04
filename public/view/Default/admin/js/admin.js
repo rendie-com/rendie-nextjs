@@ -804,20 +804,20 @@ var Tool = {
     },
 }
 /*
- * var url = URL.createObjectURL(blob);
-function productUnit(name){		
-  let a = [100000000,100000001,100000002,100078580,100078581,100000003,100000004,100078584,100000005,100000006,100078587,100000007,100078589,100000008,100078559,100000009,100000010,100000011,100078560,100078596,100078597,100000012,100000014,100000013,100000015,100000016,100078603,100000017,100000018,100078606,100078607,100000019,100078609,100000020,100078558];
-  let b = ["袋 (bag/bags)","桶 (barrel/barrels)","蒲式耳 (bushel/bushels)","箱 (carton)","厘米 (centimeter)","立方米 (cubic meter)","打 (dozen)","英尺 (feet)","加仑 (gallon)","克 (gram)","英寸 (inch)","千克 (kilogram)","千升 (kiloliter)","千米 (kilometer)","升 (liter/liters)","英吨 (long ton)","米 (meter)","公吨 (metric ton)","毫克 (milligram)","毫升 (milliliter)","毫米 (millimeter)","盎司 (ounce)","包 (pack/packs)","双 (pair)","件/个 (piece/pieces)","磅 (pound)","夸脱 (quart)","套 (set/sets)","美吨 (short ton)","平方英尺 (square feet)","平方英寸 (square inch)","平方米 (square meter)","平方码 (square yard)","吨 (ton)","码 (yard/yards)"];
-  let str='<option value="0">请选择商品单位</option>'
-  for(let i=0;i<a.length;i++)
-  {
-    if(a[i]==name)
-    {str+='<option value="'+a[i]+'" selected="selected">'+b[i]+'</option>'}
-    else
-    {str+='<option value="'+a[i]+'">'+b[i]+'</option>'}
-  }
-  return str
-}
+    var url = URL.createObjectURL(blob);
+    function productUnit(name){		
+    let a = [100000000,100000001,100000002,100078580,100078581,100000003,100000004,100078584,100000005,100000006,100078587,100000007,100078589,100000008,100078559,100000009,100000010,100000011,100078560,100078596,100078597,100000012,100000014,100000013,100000015,100000016,100078603,100000017,100000018,100078606,100078607,100000019,100078609,100000020,100078558];
+    let b = ["袋 (bag/bags)","桶 (barrel/barrels)","蒲式耳 (bushel/bushels)","箱 (carton)","厘米 (centimeter)","立方米 (cubic meter)","打 (dozen)","英尺 (feet)","加仑 (gallon)","克 (gram)","英寸 (inch)","千克 (kilogram)","千升 (kiloliter)","千米 (kilometer)","升 (liter/liters)","英吨 (long ton)","米 (meter)","公吨 (metric ton)","毫克 (milligram)","毫升 (milliliter)","毫米 (millimeter)","盎司 (ounce)","包 (pack/packs)","双 (pair)","件/个 (piece/pieces)","磅 (pound)","夸脱 (quart)","套 (set/sets)","美吨 (short ton)","平方英尺 (square feet)","平方英寸 (square inch)","平方米 (square meter)","平方码 (square yard)","吨 (ton)","码 (yard/yards)"];
+    let str='<option value="0">请选择商品单位</option>'
+    for(let i=0;i<a.length;i++)
+    {
+        if(a[i]==name)
+        {str+='<option value="'+a[i]+'" selected="selected">'+b[i]+'</option>'}
+        else
+        {str+='<option value="'+a[i]+'">'+b[i]+'</option>'}
+    }
+    return str
+    }
 //将date型转换为tring 
 //传来的datetime是:Wed Mar 04 2009 11:05:05 GMT+0800格式  得到结果：2009-06-12 17:18:05
 function dateToStr(datetime)
