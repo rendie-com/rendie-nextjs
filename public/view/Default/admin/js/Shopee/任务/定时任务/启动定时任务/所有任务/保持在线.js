@@ -1,16 +1,16 @@
 'use strict';
 var task = {
-    a01: function (seller, site, next, This, t) {
+    a01: function (seller, site, num, next, This, t) {
         let pArr = [
             "SPC_CDS=" + seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + seller[site].shopId,
+            "cnsc_shop_id=" + seller[site][num - 1].shopId,
             "cbsc_shop_region=" + site
         ]
         let url = "https://seller.shopee.cn/api/report/miscellaneous/last_active?" + pArr.join("&")
         let data = {
             "platform_id": 2,
-            "shop_id": seller[site].shopId,
+            "shop_id": seller[site][num - 1].shopId,
             "timestamp": Tool.gettime(""),
             "action_type": "impression",
             "page_url": "https://seller.shopee.cn/"
@@ -21,7 +21,7 @@ var task = {
             This: This,
             t: t
         }
-        gg.postFetch(url,  JSON.stringify(data), this.a02, this, oo)
+        gg.postFetch(url, JSON.stringify(data), this.a02, this, oo)
     },
     a02: function (t, oo) {
         if (t.code == 0) {

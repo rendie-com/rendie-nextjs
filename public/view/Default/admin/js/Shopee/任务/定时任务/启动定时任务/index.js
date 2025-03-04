@@ -4,7 +4,7 @@ var fun =
     {
         A1: 1, A2: 0, Aobj: {},
         B1: 1, B2: 0, Barr: [],
-        seller: {},
+        seller: {}, site: "",
         runtime: 0,//运行时时间
         stop: false,
     },
@@ -28,6 +28,8 @@ var fun =
 		        <tr><td class="right">任务进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">站点：</td><td id="site" colspan="2"></td></tr>\
 		        <tr><td class="right">站点进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
+		        <tr><td class="right">第几个店铺：</td><td id="num" colspan="2"></td></tr>\
+		        <tr><td class="right">店铺进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
             </tbody>\
             <tbody id="tbody"></tbody>\
@@ -94,19 +96,34 @@ var fun =
         $("#runcycle").html(oo.runcycle + " 分钟");
         Tool.jsArr(JSON.parse(oo.jsfile), this.e01, this);
     },
-    /////////////////////////////////////////
+    /////////////////////////////////////////////
     e01: function () {
         Tool.x1x2("B", this.obj.B1, this.obj.B2, this.e02, this, this.f01)
     },
     e02: function () {
-        let site = this.obj.Barr[this.obj.B1 - 1]
-        $("#site").html(Tool.site(site))
-        task.a01(this.obj.seller, site, this.e03, this)
+        this.obj.site = this.obj.Barr[this.obj.B1 - 1]
+        $("#site").html(Tool.site(this.obj.site));
+        this.obj.C2 = this.obj.seller[this.obj.site].length;
+        this.e03();
     },
     e03: function () {
+        Tool.x1x2("C", this.obj.C1, this.obj.C2, this.e04, this, this.e06)
+    },
+    e04: function () {
+        task.a01(this.obj.seller, this.obj.site, this.obj.C1, this.e05, this);
+    },
+    e05: function () {
+        this.obj.C1++;
+        this.e03();
+    },
+    e06: function () {
+        $("#C1").css("width", "0%");
+        $("#C1,#C2").html("");
+        this.obj.C1 = 1; this.obj.C2 = 0;
         this.obj.B1++;
         this.e01();
     },
+    ///////////////////////////////////////////
     f01: function () {
         let oo = this.obj.Aobj
         let data = [{

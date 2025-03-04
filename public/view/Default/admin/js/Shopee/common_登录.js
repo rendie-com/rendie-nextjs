@@ -40,7 +40,7 @@ Object.assign(Tool, {
         },
         a05: function (t, oo) {
             oo.dom.html("注入_登入");
-            let url = "/" + o.path + "admin/js/Shopee/卖家账户/注入_登录.js"
+            let url = "/" + o.path + "admin/js/Shopee/商家设置/卖家账户/注入_登录.js"
             Tool.ajax.text(url, this.a06, this, oo);
         },
         a06: function (t, oo) {
