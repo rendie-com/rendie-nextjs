@@ -6,6 +6,7 @@ var fun =
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
         obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        obj.params.logisticsPhone = obj.params.logisticsPhone ? Tool.Trim(obj.params.logisticsPhone) : "";
         this.a02()
     },
     a02: function () {
@@ -24,11 +25,14 @@ var fun =
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
-        let where = " order by @.gmtCreate desc"
+        let where = "";
+        if (obj.params.logisticsPhone) {
+            where = " where @.logisticsPhone=" + obj.params.logisticsPhone
+        }
         let data = [{
             action: "sqlite",
             database: "shopee/客优云/问题件",
-            sql: "select " + Tool.fieldAs("expressNum,gmtCreate,logisticsName,logisticsPhone,expressStatus,shelfCode") + " FROM @.table" + where + Tool.limit(20, obj.params.page, "sqlite"),
+            sql: "select " + Tool.fieldAs("expressNum,gmtCreate,logisticsName,logisticsPhone,expressStatus,shelfCode,sellerId,sellerLogin,sellerPhone") + " FROM @.table" + where + " order by @.gmtCreate desc" + Tool.limit(20, obj.params.page, "sqlite"),
         }, {
             action: "sqlite",
             database: "shopee/客优云/问题件",
@@ -45,6 +49,9 @@ var fun =
                 <td>'+ Tool.js_date_time2(t[i].gmtCreate, "-") + '</td>\
                 <td>'+ t[i].logisticsName + '</td>\
                 <td>'+ t[i].logisticsPhone + '</td>\
+                <td>'+ (t[i].sellerId ? t[i].sellerId : "") + '</td>\
+                <td>'+ (t[i].sellerPhone ? t[i].sellerPhone : "") + '</td>\
+                <td>'+ (t[i].sellerLogin ? t[i].sellerLogin : "") + '</td>\
                 <td>'+ (t[i].shelfCode ? t[i].shelfCode : '') + '</td>\
                 <td>'+ this.b03(t[i].expressStatus) + '</td>\
            </tr>')
@@ -66,7 +73,10 @@ var fun =
             <th style="position: relative;">'+ this.b02() + ' 快递单号</th>\
             <th>收件时间</th>\
             <th>物流商</th>\
-            <th>物流商电话</th>\
+            <th class="p-0">'+ this.b04("物流商电话", obj.params.logisticsPhone) + '</th>\
+            <th>客优云ID</th>\
+            <th>卖家联系方式</th>\
+            <th>登陆账号</th>\
             <th>货架</th>\
             <th>状态</th>\
         </tr>'
@@ -83,11 +93,32 @@ var fun =
         let str = expressStatus
         if (expressStatus == "未录单") {
             str = '<font color=red>' + expressStatus + '</font>'
-        }        
-        else if(expressStatus == "已录单"){
+        }
+        else if (expressStatus == "已录单") {
             str = '<font color=#ffd424>' + expressStatus + '</font>'
         }
         return str;
+    },
+    b04: function (name, logisticsPhone) {
+        let optionArr = []
+        let arr = [
+            [17855895502, "富盛"],
+            [13316513542, "全驰"],
+            [15759526900, "今日达"],
+            [18958412711, "丰景"],
+            [17318018090, "河马"],
+            [15000202881, "艾詹"],
+            [18958412711, "速达"],
+            [18588806280, "小7國際"],
+        ]
+        for (let i = 0; i < arr.length; i++) {
+            optionArr.push('<option value="' + arr[i][0] + '"' + ("" + arr[i][0] == logisticsPhone ? 'selected="selected"' : '') + '>' + arr[i][0] + '.' + arr[i][1] + '</option>')
+        }
+        return '\
+        <select onChange="Tool.open(\'logisticsPhone\',this.options[this.selectedIndex].value)" class="form-select">\
+          <option value="">'+ name + '</option>\
+          '+ optionArr.join("") + '\
+        </select>';
     },
 }
 fun.a01();

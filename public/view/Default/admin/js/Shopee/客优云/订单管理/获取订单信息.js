@@ -55,6 +55,9 @@ var fun =
         if (k == "createTime" || k == "updateTime" || k == "payTime" || k == "deadlineDay" || k == "cancelDay" || k == "orderCancelDay" || k == "gmtCreate" || k == "gmtModified" || k == "shipByDate") {
             val = Tool.gettime(val);
         }
+        else if (k == "country") {
+            val = Tool.rpsql(val.toLowerCase());
+        }
         else if (typeof (val) == "string") {
             val = Tool.rpsql(val)
         }

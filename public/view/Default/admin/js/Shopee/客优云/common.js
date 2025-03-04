@@ -3,6 +3,7 @@ Object.assign(Tool, {
     let html = '\
         <header class="panel-heading">\
           <div onclick="Tool.main(\'\')"'+ (!jsFile ? ' class="active"' : '') + '>账户</div>\
+          <div onclick="Tool.main(\'?jsFile=js19\')"'+ (jsFile == "js19" ? ' class="active"' : '') + '>店铺授权</div>\
           <div onclick="Tool.main(\'?jsFile=js14\')"'+ (jsFile == "js14" ? ' class="active"' : '') + '>订单管理</div>\
           <div onclick="Tool.main(\'?jsFile=js02\')"'+ (jsFile == "js02" ? ' class="active"' : '') + '>包裹管理</div>\
           <div onclick="Tool.main(\'?jsFile=js04\')"'+ (jsFile == "js04" ? ' class="active"' : '') + '>充值日志</div>\
