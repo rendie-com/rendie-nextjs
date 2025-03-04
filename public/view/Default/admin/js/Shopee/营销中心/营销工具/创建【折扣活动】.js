@@ -7,11 +7,14 @@ var fun =
         B1: 1, B2: 0,
         start_time: config[obj.params.site].discount_time,
         end_time: 0,
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
+
         //obj.params.jsFile         选择JS文件        
         //obj.params.site           站点
         //obj.params.return         返回URL 
+        if (!this.obj.start_time) { this.obj.start_time = 0 }
         if (this.obj.start_time < Tool.gettime("")) {
             this.obj.start_time = Tool.gettime("") + 60 * 60 * 2//初始化 开始时间
         }
@@ -25,13 +28,14 @@ var fun =
         <div class="p-2">\
             <table class="table table-hover">\
                 <tbody>\
-                <tr><td class="w150 right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
-                <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
-                <tr><td class="right">时间段进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
-                <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
-                <tr><td class="right">活动开始时间：</td><td id="timeA" colspan="2">'+ Tool.js_date_time2(this.obj.start_time) + '</td></tr>\
-                <tr><td class="right">活动结束时间：</td><td id="timeB" colspan="2"></td></tr>\
-                <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
+                    <tr><td class="w150 right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+                    <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
+                    <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
+                    <tr><td class="right">时间段进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
+                    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
+                    <tr><td class="right">活动开始时间：</td><td id="timeA" colspan="2">'+ Tool.js_date_time2(this.obj.start_time) + '</td></tr>\
+                    <tr><td class="right">活动结束时间：</td><td id="timeB" colspan="2"></td></tr>\
+                    <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
                 </tbody>\
             </table>\
         </div>'
@@ -80,13 +84,13 @@ var fun =
         //@.status=1        表示【上架商品】
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "select @.fromid as fromid,@.newDiscount as newDiscount from @.table where @.status=1 and @.isDiscount=1 order by @._1688_saleNum desc" + Tool.limit(10, this.obj.B1),
         }]
         if (this.obj.B2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select count(1) as total from @.table where @.status=1 and @.isDiscount=1",
             })
         }
@@ -112,11 +116,11 @@ var fun =
             "need_item_model=0",
             "search_type=1",
             "search_content=" + ids.join(","),
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v3/public/product_selector/?" + pArr.join("&")
-        gg.getFetch(url,"json", this.d04, this, arr)
+        gg.getFetch(url, "json", this.d04, this, arr)
     },
     d04: function (t, arr) {
         if (t.code == 0) {
@@ -150,7 +154,7 @@ var fun =
         let arr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         //思路：先创建活动，后添加商品。
@@ -183,7 +187,7 @@ var fun =
         let arr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v4/discount/update_seller_discount_items/?" + arr.join("&")
@@ -222,7 +226,7 @@ var fun =
     ////////////////////////////////////////////////
     f01: function () {
         $("#state").html("正在更新活动时间。")
-        config[obj.params.site].discount_time = this.obj.end_time + 1;
+        config[this.obj.siteNum].discount_time = this.obj.end_time + 1;
         let data = [{
             action: "fs",
             fun: "writeFile",

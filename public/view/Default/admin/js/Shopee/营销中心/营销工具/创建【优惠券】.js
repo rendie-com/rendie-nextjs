@@ -7,6 +7,7 @@ var fun =
         start_time: 0,
         end_time: 0,
         seller: {},
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.jsFile         选择JS文件        
@@ -17,6 +18,7 @@ var fun =
         <table class="table table-hover">\
             <tbody>\
                 <tr><td class="w150 right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+                <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
                 <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
                 <tr><td class="right">活动进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">活动开始时间：</td><td id="timeA" colspan="2"></td></tr>\
@@ -38,7 +40,8 @@ var fun =
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a05, this);
     },
     a05: function () {
-        this.obj.start_time = config[obj.params.site].coupon_time[this.obj.A1 - 1]
+        if (!config[this.obj.siteNum]) config[this.obj.siteNum] = { coupon_time: [0, 0, 0, 0, 0, 0, 0, 0] }
+        this.obj.start_time = config[this.obj.siteNum].coupon_time[this.obj.A1 - 1]
         if (this.obj.start_time < Tool.gettime("")) {
             this.obj.start_time = Tool.gettime(Tool.userDate13(Date.now())) + 60 * 60 * 24 * 2
         }
@@ -66,7 +69,7 @@ var fun =
     },
     /////////////////////////////////////////
     b01: function (timeStr) {
-        let shopName = this.obj.seller[obj.params.site].shopName.replace(/\_/g, "")
+        let shopName = this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopName.replace(/\_/g, "")
         let voucher_code = shopName.substring(0, 4).toUpperCase() + Tool.userDate13(this.obj.start_time * 1000, "").substr(4) + this.obj.A1;
         let oo = {
             "name": "【" + this.obj.A1 + "】店铺优惠券1 —— " + timeStr,
@@ -143,7 +146,7 @@ var fun =
         return oo;
     },
     b04: function (timeStr) {
-        let shopName = this.obj.seller[obj.params.site].shopName.replace(/\_/g, "")
+        let shopName = this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopName.replace(/\_/g, "")
         let voucher_code = shopName.substring(0, 4).toUpperCase() + Tool.userDate13(this.obj.start_time * 1000, "").substr(4) + this.obj.A1;
         let oo = {
             "name": "【" + this.obj.A1 + "】非公开优惠券 —— " + timeStr,
@@ -176,7 +179,7 @@ var fun =
         return oo;
     },
     b05: function (timeStr) {
-        let shopName = this.obj.seller[obj.params.site].shopName.replace(/\_/g, "")
+        let shopName = this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopName.replace(/\_/g, "")
         let voucher_code = shopName.substring(0, 4).toUpperCase() + Tool.userDate13(this.obj.start_time * 1000, "").substr(4) + this.obj.A1;
         let oo = {
             "name": "【" + this.obj.A1 + "】店铺优惠券2 —— " + timeStr,
@@ -211,7 +214,7 @@ var fun =
         return oo;
     },
     b06: function (timeStr) {
-        let shopName = this.obj.seller[obj.params.site].shopName.replace(/\_/g, "")
+        let shopName = this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopName.replace(/\_/g, "")
         let voucher_code = shopName.substring(0, 4).toUpperCase() + Tool.userDate13(this.obj.start_time * 1000, "").substr(4) + this.obj.A1;
         let oo = {
             "name": "【" + this.obj.A1 + "】新买家优惠券 —— " + timeStr,
@@ -245,7 +248,7 @@ var fun =
         return oo
     },
     b07: function (timeStr) {
-        let shopName = this.obj.seller[obj.params.site].shopName.replace(/\_/g, "")
+        let shopName = this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopName.replace(/\_/g, "")
         let voucher_code = shopName.substring(0, 4).toUpperCase() + Tool.userDate13(this.obj.start_time * 1000, "").substr(4) + this.obj.A1;
         let oo = {
             "name": "【" + this.obj.A1 + "】回购买家优惠券 —— " + timeStr,
@@ -305,7 +308,7 @@ var fun =
         let pArr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v3/voucher/?" + pArr.join("&");
@@ -346,7 +349,7 @@ var fun =
         //     items.push(t[0][i].fromid)
         // }
 
-        let shopName = this.obj.seller[obj.params.site].shopName.replace(/\_/g, "")
+        let shopName = this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopName.replace(/\_/g, "")
         let voucher_code = shopName.substring(0, 4).toUpperCase() + Tool.userDate13(this.obj.start_time * 1000, "").substr(4) + this.obj.A1;
         let timeStr = Tool.userDate13(this.obj.start_time * 1000, "/").substr(5) + " - " + Tool.userDate13(this.obj.end_time * 1000 + 1000, "/").substr(5)
         let data = {
@@ -387,7 +390,7 @@ var fun =
         let pArr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site,
             "start_time=" + this.obj.start_time,
             "end_time=" + this.obj.end_time
@@ -405,7 +408,7 @@ var fun =
     },
     f03: function (t) {
         let data = {
-            "shopid": this.obj.seller[obj.params.site].shopId,
+            "shopid": this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "follow_prize_name": "【" + this.obj.A1 + "】关注礼优惠券",
             "start_time": this.obj.start_time,
             "end_time": this.obj.end_time,
@@ -417,7 +420,7 @@ var fun =
         let pArr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v4/follow_prize/create/?" + pArr.join("&");
@@ -427,7 +430,7 @@ var fun =
     ///////////////////////////////////////////////////
     g01: function () {
         $("#state").html("正在更新活动时间。")
-        config[obj.params.site].coupon_time[this.obj.A1 - 1] = this.obj.end_time + 1;
+        config[this.obj.siteNum].coupon_time[this.obj.A1 - 1] = this.obj.end_time + 1;
         let data = [{
             action: "fs",
             fun: "writeFile",

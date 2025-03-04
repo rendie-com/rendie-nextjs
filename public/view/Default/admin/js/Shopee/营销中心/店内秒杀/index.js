@@ -65,7 +65,7 @@ var fun =
             <th class="left">商品</th>\
             <th class="p-0 w160">\
                 <select onChange="Tool.open(\'status\',this.options[this.selectedIndex].value)" class="form-select">\
-                    <option value="-_-20">状态</option>\
+                    <option value="">状态</option>\
                     <option value="1" '+ (obj.params.status == "1" ? 'selected="selected"' : '') + '>接下来的活动</option>\
                     <option value="2" '+ (obj.params.status == "2" ? 'selected="selected"' : '') + '>进行中的活动</option>\
                     <option value="3" '+ (obj.params.status == "3" ? 'selected="selected"' : '') + '>已过期</option>\

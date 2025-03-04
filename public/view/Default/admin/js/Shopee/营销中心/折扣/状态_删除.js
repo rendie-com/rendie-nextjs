@@ -32,16 +32,16 @@ var fun =
     },
     a04: function () {
         $("#state").html("正在获取商品信息。。。");
-        let where = " where @.status=" + obj.params.status + " and @.site='" + obj.params.site + "'"
+        let where = " where @.status=" + obj.params.status
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/折扣",
+            database: "shopee/营销中心/折扣/" + obj.params.site,
             sql: "select @.promotion_id as promotion_id FROM @.table" + where + " limit 1",
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/营销中心/折扣",
+                database: "shopee/营销中心/折扣/" + obj.params.site,
                 sql: "select count(1) as total FROM @.table" + where,
             })
         }
@@ -85,7 +85,7 @@ var fun =
     d03: function (promotion_id) {
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/折扣",
+            database: "shopee/营销中心/折扣/" + obj.params.site,
             sql: "delete from @.table where @.promotion_id=" + promotion_id,
         }]
         Tool.ajax.a01(data, this.d04, this);
