@@ -3,9 +3,10 @@ var fun =
     obj:
     {
         A1: 1, A2: 0,
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num)
     },
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件        
+        //obj.params.jsFile         选择JS文件        
         //obj.params.site           站点
         //obj.params.return         返回URL  
         this.a02()
@@ -16,6 +17,7 @@ var fun =
             <table class="table table-hover align-middle">\
             <tbody>\
 		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+ 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
 		        <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
             </tbody>\
@@ -26,13 +28,13 @@ var fun =
     a03: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/商品/"+obj.params.site,
-            sql: "select @.shopid as shopid, @.shop_location as shop_location from @.table"  + Tool.limit(100, this.obj.A1),
+            database: "shopee/采集箱/商品/" + this.obj.siteNum,
+            sql: "select @.shopid as shopid, @.shop_location as shop_location from @.table" + Tool.limit(100, this.obj.A1),
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/采集箱/商品/"+obj.params.site,
+                database: "shopee/采集箱/商品/" + this.obj.siteNum,
                 sql: "select count(1) as total FROM @.table",
             })
         }
@@ -64,7 +66,7 @@ var fun =
         }
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/店铺/"+obj.params.site,
+            database: "shopee/采集箱/店铺/" + this.obj.siteNum,
             sql: "select @.shopid as shopid from @.table where @.shopid in(" + shopidArr.join(",") + ")",
         }]
         Tool.ajax.a01(data, this.a06, this, [insertObj, updateObj]);
@@ -82,32 +84,23 @@ var fun =
             if (shopidArr.indexOf(Tool.int(k)) == -1) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/采集箱/店铺/"+obj.params.site,
+                    database: "shopee/采集箱/店铺/" + this.obj.siteNum,
                     sql: insertObj[k],
                 })
             }
             else {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/采集箱/店铺/"+obj.params.site,
+                    database: "shopee/采集箱/店铺/" + this.obj.siteNum,
                     sql: updateObj[k],
                 })
             }
         }
         Tool.ajax.a01(data, this.a08, this);
     },
-    a08: function (t) {
-        let iserr = false;
-        for (let i = 0; i < t.length; i++) {
-            if (t[i].length != 0) { iserr = true; break; }
-        }
-        if (iserr) {
-            Tool.pre(["有出错", t]);
-        }
-        else {
-            this.obj.A1++;
-            this.a03()
-        }
+    a08: function () {
+        this.obj.A1++;
+        this.a03();
     },
 }
 fun.a01();

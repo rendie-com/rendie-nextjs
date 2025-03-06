@@ -1,23 +1,25 @@
 Object.assign(Tool, {
     follow_user: {
-        a01: function (target_user_id, dbname, is_follow, seller, site, next, This, t) {
+        a01: function (target_user_id, dbname, is_follow, seller, site, num, siteNum, next, This, t) {
             let oo = {
                 target_user_id: target_user_id,
                 dbname: dbname,
                 is_follow: is_follow,
                 seller: seller,
                 site: site,
+                num: num,
+                siteNum: siteNum,
                 next: next,
                 This: This,
-                t: t
+                t: t,
             }
-            this.a02(oo)
+            this.a02(oo);
         },
         a02: function (oo) {
             let pArr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
-                "cnsc_shop_id=" + oo.seller[oo.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.site][oo.num - 1].shopId,
                 "cbsc_shop_region=" + oo.site
             ]
             let url = "https://seller.shopee.cn/api/v3/order/follow_user?" + pArr.join("&")
@@ -70,7 +72,7 @@ Object.assign(Tool, {
         d02: function (setField, oo) {
             let data = [{
                 action: "sqlite",
-                database: "shopee/采集箱/粉丝/" + oo.site + "/" + oo.dbname,
+                database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + oo.dbname,
                 sql: "update @.table set " + setField + ' where @.userid=' + oo.target_user_id,
             }]
             $("#state").html("正在更新数据。。。")

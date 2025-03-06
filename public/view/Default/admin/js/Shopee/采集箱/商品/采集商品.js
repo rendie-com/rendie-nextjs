@@ -2,14 +2,15 @@ var fun =
 {
     obj:
     {
-        A1: 9, A2: 0, Aarr: [],
+        A1: 1, A2: 0, Aarr: [],
         B1: 1, B2: 0,
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num)
     },
     a01: function () {
         //obj.params.jsFile         选择JS文件        
         //obj.params.site           站点
         //obj.params.return         返回URL  
-        Tool.loadJS("/" + o.path + "admin/js/Shopee/采集箱/config_" + obj.params.site + ".js", this.a02, this)
+        Tool.loadJS("/" + o.path + "admin/js/Shopee/采集箱/config_" + this.obj.siteNum + ".js", this.a02, this)
     },
     a02: function () {
         let html = Tool.header(obj.params.return, "Shopee &gt; 采集箱 &gt; 商品 &gt; 采集商品") + '\
@@ -17,6 +18,7 @@ var fun =
             <table class="table table-hover align-middle">\
             <tbody>\
 		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+ 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
                 <tr><td class="right">关键词个数进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">关键词页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
@@ -132,16 +134,16 @@ var fun =
             ////////////////////////////////////////////////////////////////////////////////////////////////
             data.push({
                 action: "sqlite",
-                database: "shopee/采集箱/商品/" + obj.params.site,
+                database: "shopee/采集箱/商品/" + this.obj.siteNum,
                 sql: "select @.itemid as itemid from @.table where @.itemid=" + itemidArr[i],
                 list: [{
                     action: "sqlite",
-                    database: "shopee/采集箱/商品/" + obj.params.site,
+                    database: "shopee/采集箱/商品/" + this.obj.siteNum,
                     sql: "update @.table set " + arrUp.join(",") + " where @.itemid=" + itemidArr[i],
                 }],
                 elselist: [{
                     action: "sqlite",
-                    database: "shopee/采集箱/商品/" + obj.params.site,
+                    database: "shopee/采集箱/商品/" + this.obj.siteNum,
                     sql: "insert into @.table(" + arrL.join(",") + ")values(" + arrR.join(",") + ")",
                 }]
             })
@@ -214,7 +216,7 @@ fun.a01();
 //     </select>';
 //     return str2;
 // },
-// let site = obj.params.site, language = this.b01(site), www = this.b02(site)
+// let site = this.obj.siteNum, language = this.b01(site), www = this.b02(site)
 // if (language) {
 //     let cookies = [
 //         {

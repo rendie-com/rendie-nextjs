@@ -2,39 +2,54 @@
 var fun =
 {
     obj: {
-        size: 20
+        size: 20,
+        siteNum: "",
     },
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'sg'
         obj.params.field = obj.params.field ? obj.params.field : '1'
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        obj.params.site = obj.params.site ? obj.params.site : 'sg'
+        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
+        ///////////////////////////////////////////////////////////////////////
+        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num);
         this.a02();
     },
     a02: function () {
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/采集箱/商品/" + obj.params.site,
+            database: "shopee/采集箱/商品/" + this.obj.siteNum,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/商品/" + obj.params.site + ".db"],
-                database: "shopee/采集箱/商品/" + obj.params.site,
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/商品/" + this.obj.siteNum + ".db"],
+                database: "shopee/采集箱/商品/" + this.obj.siteNum,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
     },
-    a03: function (t) {
-        let sessionObj = {}
-        let str = sessionStorage.getItem(window.location.pathname + obj.params.jsFile)
-        if (str) sessionObj = JSON.parse(str)
-        Tool.ajax.a01(this.b07(sessionObj[obj.params.page]), this.a04, this, sessionObj);
+    a03: function () {
+        let data = [{
+            action: "sqlite",
+            database: "shopee/采集箱/商品/" + this.obj.siteNum,
+            sql: "select " + Tool.fieldAs("itemid,shopid,title,image,shop_location,currency,price,addtime") + " FROM @.table" + this.b03() + Tool.limit(this.obj.size, obj.params.page, "sqlite"),
+        }, {
+            action: "sqlite",
+            database: "shopee/采集箱/商品/" + this.obj.siteNum,
+            sql: "select count(1) as Count FROM @.table" + this.b03(),
+        }, {
+            action: "sqlite",
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
+        }]
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a04: function (t, sessionObj) {
+    a04: function (t) {
         let html1 = "", arr = Tool.getArr(t[0], "sqlite");
+        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
             <tr>\
@@ -49,12 +64,12 @@ var fun =
         }
         let html = Tool.header2(obj.params.jsFile, obj.params.site) + '\
     	<div class="p-2">\
-    		'+ Tool.header3(obj.params.jsFile, obj.params.site) + this.b06() + '\
+    		'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b06() + '\
     		<table class="table align-middle table-hover center">\
     			<thead class="table-light">'+ this.b01() + '</thead>\
     			<tbody>'+ html1 + '</tbody>\
     		</table>\
-            ' + Tool.page2(sessionObj, t[0].LastEvaluatedKey, t[1], "sqlite", this.obj.size, obj.params.page, obj.params.jsFile) + '\
+            ' + Tool.page(t[1][0].Count, this.obj.size, obj.params.page) + '\
     	</div>'
         Tool.html(null, null, html)
     },
@@ -76,7 +91,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js01&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">采集商品</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js01&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">采集商品</a></li>\
             <li onClick="Tool.openR(\'?jsFile=js10&table=pro_'+ obj.params.site + '&database=shopee_gather&newdatabase=shopee/采集箱/商品/' + obj.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
             <li onClick="Tool.openR(\'?jsFile=js11&table=table&database=shopee/采集箱/商品/'+ obj.params.site + '&toaction=dynamodb\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【DynamoDB】数据库</a></li>\
 		</ul>'
@@ -125,51 +140,7 @@ var fun =
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
-    b07: function (ExclusiveStartKey) {
-       
-            return this.b09(this.obj.size)
-       
-    },
-    // b08: function (size, ExclusiveStartKey) {
-    //     let TableName = Tool.getChinaAscii('shopee_采集箱_商品_' + obj.params.site + '_table')
-    //     let params = {
-    //         ProjectionExpression: 'itemid,shopid,title,image,shop_location,currency,price,addtime', // 只获取这些字段
-    //         Limit: size, // 每页项目数上限
-    //         TableName: TableName,
-    //     }
-    //     if (ExclusiveStartKey && obj.params.page != 1) {//翻页
-    //         params.ExclusiveStartKey = ExclusiveStartKey;
-    //     }
-    //     let data = [{
-    //         action: "sqlite",
-    //         fun: "scan",
-    //         params: params,
-    //     }]
-    //     /////////////////////////////////////////////
-    //     if (obj.params.page == 1) {
-    //         data.push({
-    //             action: "sqlite",
-    //             fun: "scan",
-    //             params: {
-    //                 TableName: TableName,
-    //                 Select: 'COUNT' // 请求只返回项目总数
-    //             }
-    //         })
-    //     }
-    //     return data;
-    // },
-    b09: function (size) {
-        let data = [{
-            action: "sqlite",
-            database: "shopee/采集箱/商品/" + obj.params.site,
-            sql: "select " + Tool.fieldAs("itemid,shopid,title,image,shop_location,currency,price,addtime") + " FROM @.table" + this.b03() + Tool.limit(size, obj.params.page, "sqlite"),
-        }, {
-            action: "sqlite",
-            database: "shopee/采集箱/商品/" + obj.params.site,
-            sql: "select count(1) as Count FROM @.table" + this.b03(),
-        }]
-        return data
-    },
+    ////////////////////////////////////////////////////
     c01: function (val) {
         let name = this.b05("" + val)
         $("#field").html(name).val(val)
@@ -186,6 +157,8 @@ var fun =
 }
 fun.a01();
 
+
+
 // let data = [{
 //     action: "fs",
 //     fun: "access_sqlite",
@@ -198,3 +171,32 @@ fun.a01();
 //         database: "shopee/采集箱/商品/" + obj.params.site
 //     }]
 // }]
+
+// b08: function (size, ExclusiveStartKey) {
+//     let TableName = Tool.getChinaAscii('shopee_采集箱_商品_' + obj.params.site + '_table')
+//     let params = {
+//         ProjectionExpression: 'itemid,shopid,title,image,shop_location,currency,price,addtime', // 只获取这些字段
+//         Limit: size, // 每页项目数上限
+//         TableName: TableName,
+//     }
+//     if (ExclusiveStartKey && obj.params.page != 1) {//翻页
+//         params.ExclusiveStartKey = ExclusiveStartKey;
+//     }
+//     let data = [{
+//         action: "sqlite",
+//         fun: "scan",
+//         params: params,
+//     }]
+//     /////////////////////////////////////////////
+//     if (obj.params.page == 1) {
+//         data.push({
+//             action: "sqlite",
+//             fun: "scan",
+//             params: {
+//                 TableName: TableName,
+//                 Select: 'COUNT' // 请求只返回项目总数
+//             }
+//         })
+//     }
+//     return data;
+// },

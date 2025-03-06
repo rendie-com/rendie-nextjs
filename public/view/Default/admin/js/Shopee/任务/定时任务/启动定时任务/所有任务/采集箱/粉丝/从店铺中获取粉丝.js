@@ -1,36 +1,38 @@
 'use strict';
 var task = {
     obj: {
-        C1: 1, C2: 0,
+        D1: 1, D2: 0,
         Cobj: {
             shopid: 0,//店铺ID
             get_follower_time: 0,//上次的获取粉丝时间
             new_get_follower_time: 0,//这次的获取粉丝时间            
         },
         dbnameObj: {},//用到的粉丝数据库计数,关注粉丝要用。
-        D1: 1, D2: 1,
+        E1: 1, E2: 1,
     },
-    a01: function (seller, site, next, This, t) {
+    a01: function (seller, site, num, next, This, t) {
         let oo = {
             seller: seller,
             site: site,
+            num: num,
             next: next,
             This: This,
-            t: t
+            t: t,
+            siteNum: Tool.siteNum(site, num),
         }
         $("#tbody").html('\
         <tr class="table-light"><td colspan="3"><b>采集箱/粉丝/从店铺中获取粉丝</b></td></tr>\
         <tr><td class="right">店铺ID：</td><td id="shopid" colspan="2"></td></tr>\
-        <tr><td class="right">店铺ID进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
-        <tr><td class="right">粉丝页进度：</td>'+ Tool.htmlProgress('D') + '</tr>\
+        <tr><td class="right">店铺ID进度：</td>'+ Tool.htmlProgress('D') + '</tr>\
+        <tr><td class="right">粉丝页进度：</td>'+ Tool.htmlProgress('E') + '</tr>\
         <tr><td class="right">上次的获取粉丝时间：</td><td id="get_follower_time" colspan="2"></td></tr>\
         <tr><td class="right">这次的获取粉丝时间：</td><td id="new_get_follower_time" colspan="2"></td></tr>\
         <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>\
         <tr class="table-light"><td colspan="3"><b>采集箱/粉丝/取消关注和关注</b></td></tr>\
         <tr><td class="right">粉丝数据库名：</td><td id="dbname" colspan="2"></td></tr>\
-        <tr><td class="right">粉丝数据库进度：</td>'+ Tool.htmlProgress('E') + '</tr>\
-        <tr><td class="right">取消关注进度：</td>'+ Tool.htmlProgress('F') + '</tr>\
-        <tr><td class="right">关注进度：</td>'+ Tool.htmlProgress('G') + '</tr>\
+        <tr><td class="right">粉丝数据库进度：</td>'+ Tool.htmlProgress('F') + '</tr>\
+        <tr><td class="right">取消关注进度：</td>'+ Tool.htmlProgress('G') + '</tr>\
+        <tr><td class="right">关注进度：</td>'+ Tool.htmlProgress('H') + '</tr>\
         <tr><td class="right">用户ID：</td><td id="userid" colspan="2"></td></tr>\
         <tr><td class="right">用到的粉丝数据库：</td><td colspan="2"><textarea id="dbnameObj" rows="100" class="form-control form-control"></textarea></td></tr>\
         ')
@@ -40,13 +42,13 @@ var task = {
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/采集箱/店铺/" + oo.site,
+            database: "shopee/采集箱/店铺/" + oo.siteNum,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_shop_" + oo.site + ".db", "https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_shop_" + oo.site + ".db"],
-                database: "shopee/采集箱/店铺/" + oo.site
+                urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_shop_" + oo.siteNum + ".db", "https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_shop_" + oo.siteNum + ".db"],
+                database: "shopee/采集箱/店铺/" + oo.siteNum
             }]
         }]
         Tool.ajax.a01(data, this.a03, this, oo);
@@ -56,13 +58,13 @@ var task = {
         let where = this.b01()
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/店铺/" + oo.site,
+            database: "shopee/采集箱/店铺/" + oo.siteNum,
             sql: "select " + Tool.fieldAs("shopid,get_follower_time") + " from @.table" + where + " order by @.get_follower_time asc limit 1",
         }]
-        if (this.obj.C2 == 0) {
+        if (this.obj.D2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/采集箱/店铺/" + oo.site,
+                database: "shopee/采集箱/店铺/" + oo.siteNum,
                 sql: "select count(1) as total FROM @.table" + where,
             })
         }
@@ -70,11 +72,11 @@ var task = {
     },
     a04: function (t, oo) {
         //一次执行只获取前5个店铺的粉丝
-        if (this.obj.C2 == 0) {
-            this.obj.C2 = t[1][0].total > 5 ? 5 : t[1][0].total;
+        if (this.obj.D2 == 0) {
+            this.obj.D2 = t[1][0].total > 5 ? 5 : t[1][0].total;
         }
         this.obj.Cobj = t[0][0];
-        Tool.x1x2("C", this.obj.C1, this.obj.C2, this.a05, this, this.e03, oo)
+        Tool.x1x2("D", this.obj.D1, this.obj.D2, this.a05, this, this.e03, oo)
     },
     a05: function (oo) {
         this.obj.Cobj.new_get_follower_time = Tool.gettime("")
@@ -91,10 +93,10 @@ var task = {
     },
     ///////////////////////////////////////////////////////////
     d01: function (oo) {
-        Tool.x1x2("D", this.obj.D1, this.obj.D2, this.d02, this, this.e01, oo)
+        Tool.x1x2("E", this.obj.E1, this.obj.E2, this.d02, this, this.e01, oo)
     },
     d02: function (oo) {
-        let url = "https://" + (oo.site == "tw" ? "xiapi" : oo.site) + ".xiapibuy.com/api/v4/pages/get_follower_list?limit=20&offset=" + ((this.obj.D1 - 1) * 20) + "&shopid=" + this.obj.Cobj.shopid
+        let url = "https://" + (oo.site == "tw" ? "xiapi" : oo.site) + ".xiapibuy.com/api/v4/pages/get_follower_list?limit=20&offset=" + ((this.obj.E1 - 1) * 20) + "&shopid=" + this.obj.Cobj.shopid
         $("#url").html(url);
         $("#state").html("正在获取店铺的粉丝。。。")
         gg.getFetch(url, "json", this.d03, this, oo)
@@ -107,9 +109,8 @@ var task = {
                     this.e01(oo);
                 }
                 else {
-                    if (!t.data.nomore) { this.obj.D2++; }
-
-                    Tool.accounts.a01(t.data.accounts, this.obj.dbnameObj, false, oo.site, this.d04, this, oo);
+                    if (!t.data.nomore) { this.obj.E2++; }
+                    Tool.accounts.a01(t.data.accounts, this.obj.dbnameObj, false, oo.siteNum, this.d04, this, oo);
                 }
             }
             else {
@@ -125,7 +126,7 @@ var task = {
     },
     d04: function (t, oo) {
         $("#dbnameObj").html(JSON.stringify(this.obj.dbnameObj, null, 2))
-        this.obj.D1++;
+        this.obj.E1++;
         this.d01(oo);
     },
     //////////////////////
@@ -133,7 +134,7 @@ var task = {
         //@.get_follower_time       获取粉丝时间
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/店铺/" + oo.site,
+            database: "shopee/采集箱/店铺/" + oo.siteNum,
             sql: "update @.table set @.get_follower_time=" + this.obj.Cobj.new_get_follower_time + " where @.shopid=" + this.obj.Cobj.shopid,
         }]
         $("#state").html("正在更新数据。。。")
@@ -141,8 +142,8 @@ var task = {
     },
     e02: function (t, oo) {
         if (t[0].length == 0) {
-            this.obj.C1++; this.obj.Cobj = {};
-            this.obj.D1 = 1; this.obj.D2 = 1;
+            this.obj.D1++; this.obj.Cobj = {};
+            this.obj.E1 = 1; this.obj.E2 = 1;
             this.a03("", oo);
         }
         else {
@@ -152,14 +153,14 @@ var task = {
     e03: function (oo) {
         let dbnameObj = this.obj.dbnameObj
         this.obj = {
-            C1: 1, C2: 0,
+            D1: 1, D2: 0,
             Cobj: {
                 shopid: 0,//店铺ID
                 get_follower_time: 0,//上次的获取粉丝时间
                 new_get_follower_time: 0,//这次的获取粉丝时间
             },
             dbnameObj: {},//用到的粉丝数据库计数,关注粉丝要用。
-            D1: 1, D2: 1,
+            E1: 1, E2: 1,
         }
         Tool.common_following.a01(dbnameObj, oo);
     },

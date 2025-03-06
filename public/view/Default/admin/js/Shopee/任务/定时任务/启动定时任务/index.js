@@ -110,6 +110,7 @@ var fun =
         Tool.x1x2("C", this.obj.C1, this.obj.C2, this.e04, this, this.e06)
     },
     e04: function () {
+        $("#num").html(this.obj.C1)//第几个店铺
         task.a01(this.obj.seller, this.obj.site, this.obj.C1, this.e05, this);
     },
     e05: function () {

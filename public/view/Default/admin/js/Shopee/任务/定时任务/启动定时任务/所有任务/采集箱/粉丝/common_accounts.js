@@ -1,9 +1,9 @@
 Object.assign(Tool, {
     accounts: {
-        a01: function (arr, dbnameObj, editField, site, next, This, t) {
+        a01: function (arr, dbnameObj, editField, siteNum, next, This, t) {
             let oo = {
                 dbnameObj: dbnameObj,
-                site: site,
+                siteNum: siteNum,
                 next: next,
                 This: This,
                 t: t
@@ -52,28 +52,28 @@ Object.assign(Tool, {
                     data1.push({
                         action: "fs",
                         fun: "access_sqlite",
-                        database: "shopee/采集箱/粉丝/" + oo.site + "/" + dbname,
+                        database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + dbname,
                         mode: 0,
                         elselist: [{
                             action: "fs",
                             fun: "download_sqlite",
-                            urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_fans_" + oo.site + "_" + dbname + ".db","https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_fans_" + oo.site + "_" + dbname + ".db"],
-                            database: "shopee/采集箱/粉丝/" + oo.site + "/" + dbname
+                            urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_fans_" + oo.siteNum + "_" + dbname + ".db", "https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_fans_" + oo.siteNum + "_" + dbname + ".db"],
+                            database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + dbname
                         }]
                     })
                 }
                 tmp_data.push({
                     action: "sqlite",
-                    database: "shopee/采集箱/粉丝/" + oo.site + "/" + dbname,
+                    database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + dbname,
                     sql: "select @.userid as userid from @.table where @.userid=" + arr[i].userid,
                     list: [{
                         action: "sqlite",
-                        database: "shopee/采集箱/粉丝/" + oo.site + "/" + dbname,
+                        database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + dbname,
                         sql: "update @.table set " + arrUp.join(",") + " where @.userid=" + arr[i].userid
                     }],
                     elselist: [{
                         action: "sqlite",
-                        database: "shopee/采集箱/粉丝/" + oo.site + "/" + dbname,
+                        database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + dbname,
                         sql: "insert into @.table(" + arrL.join(",") + ")values(" + arrR.join(",") + ")"
                     }]
                 })

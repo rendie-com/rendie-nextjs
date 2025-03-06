@@ -1,12 +1,19 @@
 'use strict';
 var fun =
 {
+    obj: {
+        size: 10,
+        siteNum: "",
+    },
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
         obj.params.site = obj.params.site ? obj.params.site : 'sg'//站点
         obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
         obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
+        ///////////////////////////////////////////////////////////////////////
+        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num);
         this.a02();
     },
     a02: function () {
@@ -25,18 +32,24 @@ var fun =
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function () {
+        let where = this.b03();
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/店铺/" + obj.params.site,
-            sql: "select count(1) as total FROM @.table" + this.b03(),
+            database: "shopee/采集箱/店铺/" + this.obj.siteNum,
+            sql: "select count(1) as total FROM @.table" + where,
         }, {
             action: "sqlite",
-            database: "shopee/采集箱/店铺/" + obj.params.site,
-            sql: "select " + Tool.fieldAs("shopname,follower_count,get_follower_time,following_count,is_official_shop,last_login_time,nickname,portrait,products,response_rate,response_time,shop_rating,shopee_verified_flag,show_official_shop_label,show_shopee_verified_label,userid,shopid,username,is_in_fss,ps_plus,rating_good,rating_normal,rating_bad,is_shopee_choice,shop_location") + " FROM @.table" + this.b03() + " order by @.get_follower_time desc" + Tool.limit(10, obj.params.page),
+            database: "shopee/采集箱/店铺/" + this.obj.siteNum,
+            sql: "select " + Tool.fieldAs("shopname,follower_count,get_follower_time,following_count,is_official_shop,last_login_time,nickname,portrait,products,response_rate,response_time,shop_rating,shopee_verified_flag,show_official_shop_label,show_shopee_verified_label,userid,shopid,username,is_in_fss,ps_plus,rating_good,rating_normal,rating_bad,is_shopee_choice,shop_location") + " FROM @.table" + where + " order by @.get_follower_time desc" + Tool.limit(this.obj.size, obj.params.page),
+        }, {
+            action: "sqlite",
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
+        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -62,14 +75,13 @@ var fun =
         }
         let html = Tool.header2(obj.params.jsFile, obj.params.site) + '\
 		<div class="p-2">\
-			'+ Tool.header3(obj.params.jsFile, obj.params.site) +
-            this.b06() + '\
+			'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b06() + '\
 			<table class="table align-middle table-hover center">\
 				<thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\
 			</table> ' + Tool.page(t[0][0].total, 10, obj.params.page) + '\
 		</div>'
-        Tool.html(null, null, html)
+        Tool.html(null, null, html);
     },
     //////////////////////////////////////////////
     b01: function () {
@@ -78,7 +90,7 @@ var fun =
           <th style="padding-left:25px;position: relative;">'+ this.b02() + '用户ID</th>\
           <th>店铺ID</th>\
           <th>店铺位置</th>\
-          <th>头像</th>\
+          <th class="w60">头像</th>\
           <th class="left">基本信息</th>\
           <th>商品数量</th>\
           <th>评分</th>\
@@ -95,9 +107,9 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js03&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">采集店铺</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js04&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">从商品中获取店铺ID</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js10&table=users_'+ obj.params.site + '&database=shopee_gather&newdatabase=shopee/采集箱/店铺/' + obj.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js03&site='+ obj.params.site + '&num='+ obj.params.num + '\');"><a class="dropdown-item pointer">采集店铺</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js04&site='+ obj.params.site  + '&num='+ obj.params.num+ '\');"><a class="dropdown-item pointer">从商品中获取店铺ID</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js10&table=users_'+ obj.params.site  + '&num='+ obj.params.num+ '&database=shopee_gather&newdatabase=shopee/采集箱/店铺/' + obj.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
 		</ul>'
     },
     b03: function () {
@@ -113,11 +125,14 @@ var fun =
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
     },
     b04: function (pic) {
-        let html = "\
-        <a href=\"https://s-cf-sg.shopeesz.com/file/" + pic + "\" target=\"_blank\">\
-            <img src=\"https://s-cf-sg.shopeesz.com/file/"+ pic + "_tn\" class=\"img-fluid w60\" style=\"border-radius:50%;\">\
-        </a>"
-        return html;
+        let img = "";
+        if (pic) {
+            img = '<a href="https://s-cf-sg.shopeesz.com/file/' + pic + '" target="_blank"><img src="' + pic + '_tn" class="img-fluid w60" style="border-radius:50%;"></a>'
+        }
+        else {
+            img = '<div style="border-radius: 50%;height: 60px;width: 60px;align-items: center;background: #d8d8d8;color: #fff;display: flex;font-size: 0;ont-weight: 500;    justify-content: center;overflow: hidden;"><i style="color: #fff;height: 50%;width: 50%;fill: currentColor;display: inline-block;line-height: 0;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="chat-icon"><path d="M12 12.255c3.159 0 5.72-2.743 5.72-6.127C17.72 2.743 15.159 0 12 0S6.28 2.743 6.28 6.128c0 3.384 2.561 6.127 5.72 6.127zM9.149 14.298c-4.4 0-8.198 3.026-9.104 7.254C-.225 22.813.755 24 2.068 24h19.864c1.313 0 2.293-1.187 2.023-2.448-.906-4.228-4.704-7.254-9.104-7.254H9.15z"></path></svg></i>'
+        }
+        return img
     },
     b05: function (val) {
         let name = "";

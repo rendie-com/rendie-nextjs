@@ -50,7 +50,7 @@ $(function () {
             "admin/js/安装/DynamoDB/Shopee/采集箱.js",
             'admin/js/Shopee/任务/定时任务/更多/把【sqlite】数据库该表同步到新的数据库.js'
         ]); break;
-        case "js12": Tool.scriptArr(["admin/js/Shopee/common.js", path + 'common.js', path + '粉丝/每个站点的粉丝.js']); break;
+        case "js12": Tool.scriptArr(["admin/js/Shopee/common.js", path + 'common.js', path + '粉丝/粉丝信息.js']); break;
         default: Tool.scriptArr([
             "admin/js/Shopee/common.js",
             path + 'common.js',
