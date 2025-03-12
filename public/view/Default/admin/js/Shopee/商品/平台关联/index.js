@@ -184,7 +184,7 @@ var fun =
         for (let i = 0; i < arr.length; i++) {
             if (penalty_type == arr[i][0]) {
                 let str2 = ""
-                if (penalty_type == 8 || penalty_type == 5 || penalty_type == 3 || penalty_type == 7) {
+                if (penalty_type == 8 || penalty_type == 5 || penalty_type == 3 || penalty_type == 7 || penalty_type == 8 || penalty_type == 17) {
                     str2 = '\
                     <div style="position: relative;top: -7px;left: -7px;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
@@ -300,7 +300,6 @@ var fun =
             Tool.open(9, val);
         }
     },
-
     c07: function (val) {
         if (val == "-1") {
             Tool.openR("?jsFile=js25");

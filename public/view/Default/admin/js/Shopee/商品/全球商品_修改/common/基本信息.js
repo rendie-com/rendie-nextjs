@@ -114,7 +114,7 @@ Object.assign(Tool, {
                     <td class="center">台湾</td>\
                     <td class="center">中文(繁体)</td>\
                     <td class="center">\
-                    '+ (tw_ads_key ? tw_ads_key + '（' + tw_keyword_cn_keyword.tw_keyword_cn_keyword + '）' : '') + '</td>\
+                    '+ tw_ads_key + '</td>\
                     <td colspan="2" class="p-0">'+ this.b06(_1688_subject, tw_nameLen, tw_name, tw_1_name, tw_2_nameLen, tw_2_name, proid) + '</td>\
                 </tr>\
                 <tr>\

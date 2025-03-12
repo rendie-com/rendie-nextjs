@@ -492,9 +492,11 @@ var fun =
         else if (oo.user_message == "Model number should be less than 100" || oo.user_message == "SKU number should be less than 100") {
             this.f01(8, oo.user_message, GlobalPro.proid)
         }
-
         else if (oo.user_message.indexOf("Product DTS value") != -1) {
             this.f01(12, oo.user_message, GlobalPro.proid)
+        }
+        else if (oo.transify_key == "ps_basicservice_error_10025") {
+            this.f01(17, oo.user_message, GlobalPro.proid)
         }
         else if (oo.user_message.indexOf("Option name length") != -1) {
             this.f01(13, oo.user_message, GlobalPro.proid)

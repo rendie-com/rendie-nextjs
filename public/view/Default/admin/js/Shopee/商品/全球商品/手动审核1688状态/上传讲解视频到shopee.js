@@ -126,7 +126,7 @@ var fun =
         let arr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller["my"].shopId,
+            "cnsc_shop_id=" + this.obj.seller["my"][0].shopId,
             "cbsc_shop_region=my"
         ]
         let url = "https://seller.shopee.cn/api/upload/v1/initiate_video_upload?" + arr.join("&")
@@ -159,7 +159,7 @@ var fun =
         let arr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller["my"].shopId,
+            "cnsc_shop_id=" + this.obj.seller["my"][0].shopId,
             "cbsc_shop_region=my"
         ]
         let url = "https://seller.shopee.cn/api/upload/v1/report_video_upload?" + arr.join("&")
@@ -225,7 +225,7 @@ var fun =
         let arr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller["my"].shopId,
+            "cnsc_shop_id=" + this.obj.seller["my"][0].shopId,
             "cbsc_shop_region=my"
         ]
         let data = {

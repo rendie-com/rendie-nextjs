@@ -1,7 +1,7 @@
 var fun =
 {
     obj: {
-        A1: 1, A2: 10, Aarr: [],
+        A1: 1, A2: 20, Aarr: [],
     },
     a01: function () {
         let html = Tool.header(obj.params.return,'Shopee &gt; 商品 &gt; 平台关联 &gt; 更新后违规类型_更新数量') + '\

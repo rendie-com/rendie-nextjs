@@ -29,8 +29,7 @@ Object.assign(Tool, {
             <tr>\
                 <td class="right">主视频上传到shopee后：</td>\
                 <td>\
-                    \
-                <textarea rows="10" class="form-control form-control">' + JSON.stringify(video, null, 2) + '</textarea></td>\
+                <textarea rows="10" class="form-control form-control" onblur="Tool.common5.c02($(this),'+ oo.manualreview_1688_fromid + ')">' + JSON.stringify(video, null, 2) + '</textarea></td>\
             </tr>'
             //<video width="600" height="400" controls><source src="https://down-ws-global.vod.susercontent.com/' + video[0].video_id + '" type="video/mp4">您的浏览器不支持 HTML5 video 标签。</video>
         },
@@ -54,6 +53,14 @@ Object.assign(Tool, {
                 action: "sqlite",
                 database: "1688",
                 sql: "update @.product set @.ManualReview_video_status=" + val + " where @.ManualReview_1688_fromid=" + manualreview_1688_fromid,
+            }]
+            Tool.ajax.a01(data, Tool.reload);
+        },
+        c02: function (This, manualreview_1688_fromid) {
+            let data = [{
+                action: "sqlite",
+                database: "shopee/商品/全球商品",
+                sql: "update @.table set @.video=" + Tool.rpsql(This.val()) + " where @.manualreview_1688_fromid=" + manualreview_1688_fromid,
             }]
             Tool.ajax.a01(data, Tool.reload);
         },
@@ -86,10 +93,7 @@ Object.assign(Tool, {
             </tr>\
             <tr>\
                 <td class="right">讲解视频上传到shopee后：</td>\
-                <td>\
-                    \
-                    <textarea rows="10" class="form-control form-control">' + JSON.stringify(ExplanationVideo, null, 2) + '</textarea>\
-                </td>\
+                <td><textarea rows="10" class="form-control form-control" click="xxxxx">' + JSON.stringify(ExplanationVideo, null, 2) + '</textarea></td>\
             </tr>'
             //<video width="600" height="400" controls><source src="https://down-ws-global.vod.susercontent.com/' + ExplanationVideo[0].video_id + '" type="video/mp4">您的浏览器不支持 HTML5 video 标签。</video>
         },
@@ -117,7 +121,6 @@ Object.assign(Tool, {
             Tool.ajax.a01(data, Tool.reload);
         },
     }
-
 })
 
 /*
@@ -170,8 +173,4 @@ video.addEventListener('loadeddata', function() {
     console.log('Cropped video:', croppedVideo);
   });
 });
-
-
-
-
 */

@@ -61,7 +61,7 @@ var fun =
         }, {
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "select " + Tool.fieldAs("video,ExplanationVideo,proid,id,ManualReview_1688_video_status,ManualReview_1688_ExplanationVideo_status,discount,editStatus,ms_nameLen,tw_nameLen,tw_2_nameLen,en_nameLen,pt_nameLen,es_nameLen,tw_name,tw_1_name,tw_2_name,ms_name,en_name,pt_name,es_name,fromID,manualreview_1688_fromid,ManualReview_1688_description,tw_description,ms_description,en_description,pt_description,es_description,BeforeReview,pic,ManualReview_1688_subject,ManualReview_1688_unitWeight,tw_ads_key,my_ads_key,br_ads_key,ManualReview_1688_categoryId,shopee_8pic") + " FROM @.table" + where + Tool.limit(1, obj.params.page),
+            sql: "select " + Tool.fieldAs("video,ExplanationVideo,proid,id,ManualReview_1688_video_status,ManualReview_1688_ExplanationVideo_status,discount,editStatus,ms_nameLen,tw_nameLen,tw_2_nameLen,en_nameLen,pt_nameLen,es_nameLen,tw_name,tw_1_name,tw_2_name,ms_name,en_name,pt_name,es_name,fromID,manualreview_1688_fromid,ManualReview_1688_description,tw_description,ms_description,en_description,pt_description,es_description,th_description,vi_description,BeforeReview,pic,ManualReview_1688_subject,ManualReview_1688_unitWeight,tw_ads_key,my_ads_key,br_ads_key,ManualReview_1688_categoryId,shopee_8pic") + " FROM @.table" + where + Tool.limit(1, obj.params.page),
             list: [{
                 action: "sqlite",
                 database: "1688",
@@ -117,6 +117,10 @@ var fun =
                 database: "shopee/Shopee广告/关键词/br",
                 sql: "select @.cn_keyword as br_keyword_cn_keyword FROM @.table where @.keyword='${br_ads_key}'",
             }]
+        }, {
+            action: "sqlite",
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this, where);
     },
@@ -125,9 +129,12 @@ var fun =
         if (oo) {
             let title = "每次修改都会把【更新前本地状态】设置成【0.未更新】\n且会修改【店铺商品】的【本地更新时间】为当前时间。"
             html = '\
-			<table class="table">\
+			<table class="table align-middle">\
                 <tr class="table-light">\
-                    <td class="right w270" style="padding-left:25px;position: relative;">'+ this.b05() + '<span title="' + title + '">设置【修改状态】' + this.b06() + '</span>：</td>\
+                    <td class="right w270" style="padding-left:25px;position: relative;">\
+                        '+ this.b05() + '\
+                        <span title="' + title + '">设置【修改状态】' + this.b06() + '</span>：\
+                    </td>\
                     <td>'+ (oo.id ? this.b07(oo.editStatus, oo.proid) : '') + '</td>\
                 </tr>\
                 <tbody '+ (obj.params.productType != "1" ? ' class="hide"' : '') + '>' + Tool.common1.a01(oo) + '</tbody>\
@@ -138,9 +145,9 @@ var fun =
 				<tbody '+ (obj.params.productType != "6" ? ' class="hide"' : '') + '>' + Tool.common6.a01(oo) + '</tbody>\
 			</table>'
         }
-        this.a05(t[0][0].total, html, where)
+        this.a05(t[0][0].total, html, where, t[2][0].config)
     },
-    a05: function (total, html1, where) {
+    a05: function (total, html1, where, seller) {
         let html2 = Tool.header2(obj.params.jsFile) + '\
 		<div class="p-2">\
 			'+ this.b02() + '\
@@ -151,7 +158,7 @@ var fun =
                         <td class="p-0">'+ this.b04("BeforeReview", obj.params.BeforeReview) + '</td>\
                         <td class="p-0">' + this.b08("mode", obj.params.mode) + '</td>\
                         <td class="p-0">' + this.b09("editStatus", obj.params.editStatus, config.GlobalPro_editStatus_count) + '</td>\
-                        <td class="p-0">' + this.b10("site", obj.params.site) + '</td>\
+                        <td class="p-0">' + this.b10("site", obj.params.site, seller) + '</td>\
                         <td class="p-0">' + this.b11("ManualReview_1688_video_status", obj.params.ManualReview_1688_video_status, config.GlobalPro_ManualReview_1688_video_status_count) + '</td>\
                         <td class="p-0">' + this.b12("ManualReview_1688_ExplanationVideo_status", obj.params.ManualReview_1688_ExplanationVideo_status, config.GlobalPro_ManualReview_1688_ExplanationVideo_status_count) + '</td>\
                     </tr>\
@@ -205,7 +212,7 @@ var fun =
                 case "3": arr.push("(@.en_nameLen<25 or @.en_nameLen>100)"); break;
                 case "4": arr.push("(@.pt_nameLen<25 or @.pt_nameLen>100)"); break;
                 case "5": arr.push("@.ManualReview_1688_unitWeight<=0"); break;
-                case "6": arr.push("(@.es_nameLen<25 or @.es_nameLen>100)"); break;//西班牙语
+                case "6": arr.push("(@.es_nameLen<25 or @.es_nameLen>100)"); break;
             }
         }
         if (obj.params.editStatus != "") { arr.push("@.editStatus=" + obj.params.editStatus); }
@@ -266,7 +273,7 @@ var fun =
                 <label class="form-check-label" for="editStatus'+ i + '">' + arr[i][1] + '</label>\
             </div>'
         }
-        return str
+        return str;
     },
     b08: function (name, val) {
         return '\
@@ -289,26 +296,24 @@ var fun =
         <select onChange="fun.c10(\''+ name + '\',this.options[this.selectedIndex].value)" class="form-select">\
             <option value="">修改状态</option>\
             <option value="-1">更新数量</option>\
-        ' + nArr.join("") + '\
+            ' + nArr.join("") + '\
         </select>'
     },
-    b10: function (name, val) {
-        let nArr = [], arr = [
-            ["sg", "新加坡"],
-            ["tw", "台湾虾皮"],
-            ["my", "马来西亚"],
-            ["br", "巴西"],
-            ["mx", "墨西哥"]
-        ];
-        for (let i = 0; i < arr.length; i++) {
-            nArr.push('<option value="' + arr[i][0] + '" ' + (arr[i][0] == val ? 'selected="selected"' : '') + '>' + arr[i][1] + '</option>');
+    b10: function (name, val, seller) {
+        let siteObj = JSON.parse(seller)
+        let optionArr = [];
+        for (let k in siteObj) {
+            for (let i = 0; i < siteObj[k].length; i++) {
+                let val2 = Tool.siteNum(k, (i + 1));
+                optionArr.push('<option value="' + val2 + '" ' + (val2 == val ? 'selected="selected"' : '') + '>' + Tool.site(k) + "（" + siteObj[k][i].shopName + '）</option>');
+            }
         }
         return '\
         <select onChange="fun.c08(\''+ name + '\',this.options[this.selectedIndex].value)" class="form-select">\
             <option value="">已发布站点</option>\
             <option value="-1">翻译【已发布站点】标题和详情</option>\
-            ' + nArr.join("") + '\
-        </select>'
+            ' + optionArr.join("") + '\
+        </select>';
     },
     b11: function (name, val, configArr) {
         let nArr = [], arr = Tool.ManualReview_1688_video_status;
@@ -320,7 +325,7 @@ var fun =
             <option value="">人工审核1688主视频状态</option>\
             <option value="-1">更新数量</option>\
             ' + nArr.join("") + '\
-        </select>'
+        </select>';
     },
     b12: function (name, val, configArr) {
         let nArr = [], arr = Tool.ManualReview_1688_video_status;

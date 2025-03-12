@@ -20,7 +20,7 @@ Object.assign(Tool, {
         },
         a02: function (oo) {
             $("#state").html("正在获取商品信息。。。");
-            let data = this.b01(oo.obj.mode, oo.obj.ManualReview_1688_categoryId1, oo.obj.site)
+            let data = this.b01(oo.obj.mode, oo.obj.ManualReview_1688_categoryId1, oo.obj.site, oo.obj.num)
             Tool.ajax.a01(data, this.a03, this, oo);
         },
         a03: function (t, oo) {
@@ -43,7 +43,7 @@ Object.assign(Tool, {
             Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d01, this, this.g01, oo)
         },
         ////////////////////////////////
-        b01: function (mode, ManualReview_1688_categoryId1, site) {
+        b01: function (mode, ManualReview_1688_categoryId1, site, num) {
             let whereArr = [
                 "@.ManualReview_1688_categoryId1=" + ManualReview_1688_categoryId1,//1688一级类目
                 "@.ManualReview=9",//敦煌手动审核状态【9.图片且详情审核通过】
@@ -52,11 +52,11 @@ Object.assign(Tool, {
                 "@.penalty_type=0",//更新后违规类型【0.未违规】
                 "@.ManualReview_1688=1",//手动审核1688状态【1.使用1688属性图】
                 "@.ManualReview_1688_state=0",//手动审核后1688商品状态【0.正常】
-                "@.is" + site + "=0 ",//站点更新状态【0.未更新】
+                "@.is" + Tool.siteNum(site, "" + num) + "=0 ",//站点更新状态【0.未更新】
                 //"@.ManualReview_1688_video_status=7",//人工审核1688视频状态【7.审核通过】
                 "@.editStatus<3",//修改状态 < 3  （	0：未修改 1：第一次修改 2：第二次修改 3：货源不对）
             ]
-            //whereArr = ["@.proid='R777269'"]
+            //whereArr = ["@.proid='R75241'"]
             $("#where").html('<tr><td class="right">发布条件：</td><td colspan="2">' + whereArr.join(" <br/> ") + '</td></tr>');
             let data = [];
             if (mode == 1) {
@@ -108,7 +108,7 @@ Object.assign(Tool, {
             else {
                 //说明：在这里用“Tool.common_price.a01”，的批发价是没什么用的，主要是要用到他的“上调价格”,“定原价”,“起订量”。
                 Tool.common_price.a01(oo.logistics,
-                    oo.seller[oo.obj.site],
+                    oo.seller[oo.obj.site][oo.obj.num - 1],
                     GlobalPro._1688_prodes_sku,
                     t[0][0].freight,
                     GlobalPro.discount,
@@ -168,7 +168,7 @@ Object.assign(Tool, {
                 "page_size=12",
                 "search_type=sku",
                 "keyword=" + GlobalPro.proid,
-                "cnsc_shop_id=" + oo.seller[oo.obj.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.obj.site][oo.obj.num - 1].shopId,
                 "cbsc_shop_region=" + oo.obj.site
             ]
             let url = "https://seller.shopee.cn/api/v3/mtsku/list/search_product_list?" + pArr.join("&")
@@ -205,9 +205,9 @@ Object.assign(Tool, {
                     mtsku_model_id: search_data.model_list[i].id,
                     mpsku_model_price: Tool.common_price.b03(
                         (parseFloat(search_data.model_list[i].price_detail.origin_price) + GlobalPro.common_price.upPrice) * GlobalPro._1688_prodes_sku.startAmount,
-                        oo.seller[oo.obj.site],
+                        oo.seller[oo.obj.site][oo.obj.num - 1],
                         GlobalPro.discount
-                    ).toFixed(oo.seller[oo.obj.site].scale),
+                    ).toFixed(oo.seller[oo.obj.site][oo.obj.num - 1].scale),
                 });
                 model_info_list.push({
                     "mtsku_model_id": search_data.model_list[i].id,
@@ -223,8 +223,8 @@ Object.assign(Tool, {
                 "mtsku_item_id": id,
                 "publish_shop_list": [
                     {
-                        "shop_id": oo.seller[oo.obj.site].shopId,
-                        "user_name": oo.seller[oo.obj.site].shopName,
+                        "shop_id": oo.seller[oo.obj.site][oo.obj.num - 1].shopId,
+                        "user_name": oo.seller[oo.obj.site][oo.obj.num - 1].shopName,
                         "region": oo.obj.site.toUpperCase(),
                         "model_price_list": model_price_list,
                         "model_info_list": model_info_list
@@ -240,14 +240,14 @@ Object.assign(Tool, {
             let pArr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
-                "cnsc_shop_id=" + oo.seller[oo.obj.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.obj.site][oo.obj.num - 1].shopId,
                 "cbsc_shop_region=" + oo.obj.site
             ]
             let url = "https://seller.shopee.cn/api/v3/mtsku/get_scene_token?" + pArr.join("&")
             let data = {
-                shop_id: oo.seller[oo.obj.site].shopId,
+                shop_id: oo.seller[oo.obj.site][oo.obj.num - 1].shopId,
                 region: oo.obj.site.toUpperCase(),
-                user_name: oo.seller[oo.obj.site].shopName,
+                user_name: oo.seller[oo.obj.site][oo.obj.num - 1].shopName,
                 scene: "create_mpsku_by_mtsku"
             }
             $("#state").html("正在获取token");
@@ -257,7 +257,7 @@ Object.assign(Tool, {
             let pArr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
-                "cnsc_shop_id=" + oo.seller[oo.obj.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.obj.site][oo.obj.num - 1].shopId,
                 "cbsc_shop_region=" + oo.obj.site
             ]
             let url = "https://seller.shopee.cn/api/v3/mtsku/create_mpsku_by_single_mtsku" + pArr.join("&")
@@ -283,7 +283,7 @@ Object.assign(Tool, {
             let pArr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
-                "cnsc_shop_id=" + oo.seller[oo.obj.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.obj.site][oo.obj.num - 1].shopId,
                 "cbsc_shop_region=" + oo.obj.site,
                 "page_number=1",
                 "page_size=1",
@@ -312,7 +312,7 @@ Object.assign(Tool, {
         //////////////////////////////////////
         f01: function (publish_result, oo) {
             if (publish_result.published_count == 1) {
-                this.f02("update @.table set @.is" + oo.obj.site + "=1 where @.proid='" + oo.GlobalPro[this.obj.B1 - 1].proid + "'", oo)
+                this.f02("update @.table set @.is" + Tool.siteNum(oo.obj.site, "" + oo.obj.num) + "=1 where @.proid='" + oo.GlobalPro[this.obj.B1 - 1].proid + "'", oo);
             }
             else if (publish_result.failed_count == 1) {//||publish_result.unpublished_count == 1
                 // @.penalty_type=8         更新后违规类型【8.发布商品失败】
@@ -328,10 +328,9 @@ Object.assign(Tool, {
                 "status": 1
                 }
                 */
-                $("#state").html("不能发布了。");
-                Tool.pre(t)
+                $("#state").html("不能发布了...。");
+                Tool.pre(publish_result)
                 //this.f02("update @.table set @.penalty_type=8 where @.proid in ('" + oo.GlobalPro[this.obj.B1 - 1].proid + "')", oo)
-                //this.g02(oo);
             }
             else {
                 Tool.pre(["未知发布结果", publish_result])
