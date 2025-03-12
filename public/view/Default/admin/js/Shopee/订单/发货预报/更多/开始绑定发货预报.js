@@ -38,7 +38,9 @@ var fun =
         this.a04();
     },
     a04: function () {
-        let where = " where @.binding_status=0";
+        //binding_status=0    表示未绑定
+        //binding_status=1    表示绑定失败
+        let where = " where @.binding_status<2";
         let data = [{
             action: "sqlite",
             database: "shopee/订单/发货预报/" + this.obj.siteNum,

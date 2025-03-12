@@ -56,6 +56,11 @@ var fun =
         let www = ""
         switch (site) {
             case "tw": www = "xiapi"; break;
+            case "vn":
+            case "cl":
+            case "co":
+            case "ph":
+            case "th":
             case "sg":
             case "my":
             case "br":
@@ -121,12 +126,18 @@ var fun =
                 "@.shop_location",
                 "@.addtime",
             ]
+            let price1 = priceArr[i].replace(/,/ig, "")
+            let priceArr2 = price1.split(".")
+            if (priceArr2.length == 3) {
+                //如：1.310.000  转换成：1310.000 
+                price1 = priceArr2[0] + priceArr2[1] + "." + priceArr2[2]
+            }
             let arrR = [
                 shopidArr[i],
                 shopidArr[i],
                 Tool.rpsql(titleArr[i]),
                 Tool.rpsql(imageArr[i]),
-                priceArr[i].replace(/,/ig, ""),
+                price1,
                 Tool.rpsql(shop_locationArr[i]),
                 Tool.gettime(""),
             ]

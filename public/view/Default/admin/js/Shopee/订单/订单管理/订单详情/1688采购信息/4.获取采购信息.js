@@ -17,29 +17,32 @@ Object.assign(Tool, {
                 Tool.at("验证码拦截");
             }
             else {
-                let liArr = Tool.StrSplits(t, 'data-is-plus-order="false">', '</li>');
-                let arr = [], orderidArr = [];
-                for (let i = 0; i < liArr.length; i++) {
-                    let total = Tool.StrSlice(liArr[i], '<div class="total" data-role="buyer" title="', '"')
-                    let orderid = Tool.StrSlice(liArr[i], ' <order-comment data-orderid="', '"')//订单号
-                    arr.push({
-                        orderid: orderid,//订单号
-                        total: total,//实际付款
-                    })
-                    orderidArr.push(orderid);
-                }
-                this.a04(orderidArr, arr);
+                this.a04(t)
             }
         },
-        a04: function (orderidArr, _1688_orderArr) {
+        a04: function (t) {
+            let liArr = Tool.StrSplits(t, 'data-is-plus-order="false">', '</li>');
+            let arr = [], orderidArr = [];
+            for (let i = 0; i < liArr.length; i++) {
+                let total = Tool.StrSlice(liArr[i], '<div class="total" data-role="buyer" title="', '"')
+                let orderid = Tool.StrSlice(liArr[i], ' <order-comment data-orderid="', '"')//订单号
+                arr.push({
+                    orderid: orderid,//订单号
+                    total: total,//实际付款
+                })
+                orderidArr.push(orderid);
+            }
+            this.a05(orderidArr, arr);
+        },
+        a05: function (orderidArr, _1688_orderArr) {
             let data = [{
                 action: "sqlite",
                 database: "1688/买家订单",
                 sql: "select " + Tool.fieldAs("orderid,shopee_order_sn") + " FROM @.table where @.orderid in('" + orderidArr.join("','") + "')",
             }]
-            Tool.ajax.a01(data, this.a05, this, _1688_orderArr);
+            Tool.ajax.a01(data, this.a06, this, _1688_orderArr);
         },
-        a05: function (t, _1688_orderArr) {
+        a06: function (t, _1688_orderArr) {
             let Narr = [];
             for (let i = 0; i < _1688_orderArr.length; i++) {
                 if (this.b02(_1688_orderArr[i].orderid, t[0])) {//是否在新订单
@@ -113,7 +116,76 @@ Object.assign(Tool, {
     },
 });
 
+/*
+ str += '\
+            <tr class="table-light center"><th colspan="4">合计</th></tr>\
+            <tr class="table-light">\
+                <th></th>\
+                <th>敦煌网</th>\
+                <th class="center">对比</th>\
+                <th>速卖通</th>\
+            </tr>\
+            <tr>\
+                <td class="right">运费：</td>\
+                <td>$'+ oo.dhgate.shipping + '</td>\
+                <td class="center" title="超出±3会提示，否则不会提示。">'+ this.b07(oo.dhgate.shipping, oo.aliexpress.total.shipping, oo) + '</td>\
+                <td>$'+ oo.aliexpress.total.shipping.toFixed(2) + '</td>\
+            </tr>\
+            <tr>\
+                <td class="right">订单实收：</td>\
+                <td>$'+ oo.dhgate.total + '</td>\
+                <td class="center" title="30%>利润率>90%会提示，否则不会提示。">'+ this.b08(total100, oo) + '</td>\
+                <td>$' + oo.aliexpress.total.total.toFixed(2) + '（' + total100 + '%）</td>\
+            </tr>\
+            <tr>\
+                <td class="right">商品件数：</td>\
+                <td>'+ dhgate_quantity + '</td>\
+                <td class="center">'+ this.b09(dhgate_quantity, oo.aliexpress.total.quantity, oo) + '</td>\
+                <td>'+ oo.aliexpress.total.quantity + '</td>\
+            </tr>'
 
+            str += '\
+                <tr class="table-light">\
+                    <th colspan="2"></th>\
+                    <th colspan="2">\
+                        【' + (i + 1) + '/' + arr.length + '】\
+                        采购单号：<a href="https://www.aliexpress.com/p/order/detail.html?orderId=' + arr[i].orderId + '" target="_blank">' + arr[i].orderId + '</a>\
+                    </th>\
+                </tr>'
+                str += '\
+                <tr>\
+                    <th></th>\
+                    <th>敦煌网地址</th>\
+                    <th class="center">对比</th>\
+                    <th>通卖通地址</th>\
+                </tr>'+ this.b01(oo.dhgate, arr[i]) + '\
+                <tr>\
+                    <td class="right">Vat Number：</td>\
+                    <td colspan="3">'+ oo.dhgate.vatNumber + '</td>\
+                </tr>\
+                <tr class="table-light">\
+                    <td colspan="2">敦煌网</td>\
+                    <td colspan="2">速卖通</td>\
+                </tr>\
+                <tr>\
+                    <td colspan="2" class="p-0 w-50">'+ orderitemObj.html + '</td>\
+                    <td colspan="2" class="p-0 w-50">' + this.b05(arr[i].productVOList, arr[i].order_price, oo.aliexpress.total, orderitemObj.AttributeCartArr, oo) + '</td>\
+                </tr>'
+
+                 str += '\
+                <tr>\
+                    <td class="w100" rowspan="3">\
+                        <a href="'+ orderitem[i].pic + '" target="_blank">\
+                            <img src="' + orderitem[i].pic.replace('image.dhgate.com/f3/', 'image.dhgate.com/100x100/f3/') + '" title="点击预览" class="border" height="100">\
+                        </a>\
+                    </td>\
+                    <td><a href="https://www.dhgate.com/product/-/'+ orderitem[i].fromid + '.html" target="_blank">' + orderitem[i].name + '</a></td>\
+                </tr>\
+                <tr><td title="属性">'+ orderitem[i].AttributeCart + '</td></tr>\
+                <tr><td title="价格">'+ orderitem[i].RealPrice + ' x ' + orderitem[i].Amount + '（' + orderitem[i].Unit + '）</td></tr>\
+                <tr><td class="right">编码：</td><td>'+ orderitem[i].proid + '</td></tr>\
+                <tr><td class="right">产品备注：</td><td>' + orderitem[i].Remark + '</td></tr>'
+*/
 
 //update rd_table set rd_purchasePostingFee=0 where rd_purchasePostingFee is null
 

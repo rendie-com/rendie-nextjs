@@ -24,8 +24,8 @@ var fun =
 		    <tr><td class="right">状态：</td><td id="state" colspan="2"></td></tr>\
           </tbody>\
           </table>\
-        </div>'
-        Tool.html(this.a02, this, html)
+        </div>';
+        Tool.html(this.a02, this, html);
     },
     a02: function () {
         Tool.login.a01(this.a03, this);
@@ -60,17 +60,17 @@ var fun =
         }
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
         $("#state").html("正在获取第" + this.obj.A1 + "页商品。。。");
-        gg.postFetch(url, JSON.stringify(data), this.a05, this)
+        gg.postFetch(url, JSON.stringify(data), this.a05, this);
     },
     a05: function (oo) {
         if (oo.message == "success") {
-            this.obj.A2 = Math.ceil(oo.data.pagination.total / 40)
+            this.obj.A2 = Math.ceil(oo.data.pagination.total / 40);
             this.obj.B2 = oo.data.index_list.length;
             this.obj.Barr = oo.data.index_list;
             this.d01();
         }
         else {
-            Tool.pre(["出错11", oo])
+            Tool.pre(["出错11", oo]);
         }
     },
     /////////////////////////////////////
@@ -87,13 +87,13 @@ var fun =
     },
     d04: function (t, Barr) {
         Barr.order = t;
-        Tool.get_order_income_components.a01(Barr.order_id, this.obj.seller, obj.params.site, obj.params.num, this.d05, this, Barr)
+        Tool.get_order_income_components.a01(Barr.order_id, this.obj.seller, obj.params.site, obj.params.num, this.d05, this, Barr);
     },
     d05: function (t, Barr) {
-        Barr.order["@.seller_income_breakdown"] = Tool.rpsql(JSON.stringify(t.seller_income_breakdown))//买家价格明细
-        Barr.order["@.buyer_payment_breakdown"] = Tool.rpsql(JSON.stringify(t.buyer_payment_breakdown))//买家价格明细        
+        Barr.order["@.seller_income_breakdown"] = Tool.rpsql(JSON.stringify(t.seller_income_breakdown));//买家价格明细
+        Barr.order["@.buyer_payment_breakdown"] = Tool.rpsql(JSON.stringify(t.buyer_payment_breakdown));//买家价格明细
         $("#state").html("获取订单国际物流信息");
-        Tool.get_logistics_tracking_history.a01(Barr.order_id, this.obj.seller, obj.params.site, obj.params.num, this.d06, this, Barr)
+        Tool.get_logistics_tracking_history.a01(Barr.order_id, this.obj.seller, obj.params.site, obj.params.num, this.d06, this, Barr);
     },
     d06: function (t, Barr) {
         Barr.order["@.package_number"] = Tool.rpsql(t.package_number);//包裹编号（如：OFG172202595203743）---获取国内运单号要用
@@ -105,12 +105,12 @@ var fun =
     d07: function (t, Barr) {
         $("#state").html("更新或添加订单信息");
         Barr.order["@.DomesticWaybill"] = Tool.rpsql(JSON.stringify(t))//国内运单号（如：json）
-        Tool.updateOrInsert_orders.a01(Barr.order, obj.params.site, obj.params.num, this.d08, this)
+        Tool.updateOrInsert_orders.a01(Barr.order, obj.params.site, obj.params.num, this.d08, this);
     },
     d08: function () {
         this.obj.B1++;
         $("#state").html("正在进入第" + this.obj.B1 + "条。。。");
-        this.d02()
+        this.d02();
     },
     e01: function () {
         this.obj.B1 = 1; this.obj.B2 = 0; this.obj.Barr = [];

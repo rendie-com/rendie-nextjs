@@ -84,7 +84,7 @@ var fun =
             }
             else {
                 td = '\
-                <td class="p-0">' + this.b18(arr[i].shipping_method, arr[i].action_status) + '</td>\
+                <td class="p-0">'+ this.b18(arr[i].shipping_method, arr[i].action_status) + '</td>\
                 <td class="p-0">'+ this.b14(arr[i].carrier_id, arr[i].fm_tn) + '</td>\
                 <td class="p-0">'+ this.b20(arr[i].submit_time, arr[i].ship_by_date) + '</td>\
                 <td>'+ (arr[i].is_pick_up_done ? '是' : '否') + '</td>\
@@ -211,7 +211,11 @@ var fun =
                 case "3": arr.push("@.fm_tn='" + obj.params.searchword + "'"); break;//首公里追踪号
             }
         }
-        if (obj.params.binding_status == "0") { arr.push("@.binding_status=0"); } else { arr.push("@.binding_status>0"); }
+        if (obj.params.binding_status == "0") {
+            //binding_status=0    表示未绑定
+            //binding_status=1    表示绑定失败
+            arr.push("@.binding_status<2");
+        } else { arr.push("@.binding_status>0"); }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
     },
     b09: function (warehouse_id) {

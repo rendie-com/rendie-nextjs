@@ -96,7 +96,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-	        <li onClick="Tool.openR(\'?jsFile=js01&site='+ obj.params.site + '&num='+ obj.params.num + '\');"><a class="dropdown-item pointer">*获取订单信息</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js01&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取订单信息</a></li>\
         </ul>';
     },
     b03: function (arr) {
@@ -159,6 +159,7 @@ var fun =
             case 79:
                 str = "Pix"; break;
             case 80: str = "Boleto Bancário"; break;
+            case 99: str = "Mari Credit Card Instant Checkout"; break;
         }
         return '<font color="#8c8c8c">' + str + '</font>';
     },

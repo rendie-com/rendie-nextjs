@@ -103,16 +103,15 @@ var fun =
     },
     b05: function (oo) {
         let purchaseInfo = [{ total: 0, orderid: "" }]
-        if (oo.purchaseInfo && oo.purchaseInfo != "[]") {
-            purchaseInfo = JSON.parse(oo.purchaseInfo);
-        }
-        let purchaseNotes = "";
-        if (purchaseNotes) purchaseNotes = oo.purchaseNotes.replace(/\n/ig, '\\n');
+        if (oo.purchaseInfo && oo.purchaseInfo != "[]") { purchaseInfo = JSON.parse(oo.purchaseInfo); }
+        let purchaseOrderArr = this.b08(purchaseInfo);
+        let purchaseNotes = oo.purchaseNotes;
+        if (purchaseNotes) { purchaseNotes = oo.purchaseNotes.replace(/\n/ig, '\\n'); } else { purchaseNotes = ""; }
         return '\
         <table class="table table-hover align-middle mb-0">\
             <thead class="table-light"><tr><th colspan="2">1688采购信息</th></tr></thead>\
             <tr><td class="right w150">采购账号：</td><td>'+ oo.purchaseAccount + '</td></tr>\
-            <tr><td class="right">采购信息：</td><td><textarea class="form-control" rows=10 onblur="fun.c04($(this))">' + JSON.stringify(purchaseInfo, null, 2) + '</textarea></td></tr>\
+            <tr><td class="right">采购信息：</td><td><textarea class="form-control" rows=11 onblur="fun.c04($(this))">' + JSON.stringify(purchaseInfo, null, 2) + '</textarea>' + purchaseOrderArr.join("") + '</td></tr>\
             <tr><td class="right">采购贴单费：</td><td>'+ oo.purchasePostingFee + '（元）</td></tr>\
             <tr><td class="right">采购状态：</td><td>'+ this.b06(oo.purchaseStatus) + '</td></tr>\
             <tr><td class="right">采购备注：</td><td><textarea class="form-control h-100" onblur="fun.c01($(this),\'purchaseNotes\',\''+ purchaseNotes + '\')">' + purchaseNotes + '</textarea></td></tr>\
@@ -150,6 +149,13 @@ var fun =
             }
         }
         return "（" + str + "）";
+    },
+    b08: function (purchaseInfo) {
+        let purchaseOrderArr = []
+        for (let i = 0; i < purchaseInfo.length; i++) {
+            purchaseOrderArr.push('<a href="https://trade.1688.com/order/new_step_order_detail.htm?orderId=' + purchaseInfo[i].orderid + '" target="_blank" class="p-1">' + purchaseInfo[i].orderid + '</a>');
+        }
+        return purchaseOrderArr;
     },
     /////////////////////////////////////////////////////////////////////////////////////
     c01: function (This, L, V) {
