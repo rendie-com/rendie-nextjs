@@ -78,11 +78,12 @@ var fun =
     e02: function (arr) {
         let data = [];
         for (let i = 0; i < arr.length; i++) {
+            let day = Tool.int(this.obj.day)
             data.push({
                 "id": arr[i].fromid,
                 //"category_path": [100009, 100021],
-                "pre_order": true,
-                "days_to_ship": Tool.int(this.obj.day)
+                "pre_order": (day <= 2 ? false : true),//是否预购                
+                "days_to_ship": day
             })
         }
         this.e03(data)

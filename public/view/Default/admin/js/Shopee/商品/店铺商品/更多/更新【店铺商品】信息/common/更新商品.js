@@ -2,10 +2,12 @@
 Object.assign(Tool, {
     update_product:
     {
-        a01: function (seller, site, std_tier_variation_list, model_list, shop_product_fromid, name, description, min_purchase_limit, wholesale_list, video, discount, manualreview_1688_unitweight, startAmount, images, next, This, t) {
+        a01: function (seller, site, num, siteNum, std_tier_variation_list, model_list, shop_product_fromid, name, description, min_purchase_limit, wholesale_list, video, discount, manualreview_1688_unitweight, startAmount, images, next, This, t) {
             let oo = {
                 seller: seller,
                 site: site,
+                num: Tool.int(num) - 1,
+                siteNum: siteNum,
                 std_tier_variation_list: std_tier_variation_list,
                 model_list: model_list,
                 shop_product_fromid: shop_product_fromid,
@@ -22,7 +24,8 @@ Object.assign(Tool, {
                 //////////////////////////////////
                 next: next,
                 This: This,
-                t: t
+                t: t,
+
             }
             oo.logistics_channels = this.b01(site)//shopee的物流方式
             this.a02(oo);
@@ -52,25 +55,25 @@ Object.assign(Tool, {
                 is_draft: false
             }
             if (oo.logistics_channels) { data.product_info.logistics_channels = oo.logistics_channels; }//运费
-            this.a03(data, oo)
+            this.a03(data, oo);
         },
         a03: function (data, oo) {
             let pArr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
-                "cnsc_shop_id=" + oo.seller[obj.params.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.site][oo.num].shopId,
                 "cbsc_shop_region=" + oo.site
             ]
             let url = "https://seller.shopee.cn/api/v3/product/update_product_info?" + pArr.join("&")
             $("#state").html("正在更新。。。");
-            gg.postFetch(url, JSON.stringify(data), this.a04, this, oo)
+            gg.postFetch(url, JSON.stringify(data), this.a04, this, oo);
         },
         a04: function (t, oo) {
             if (t.msg == "success") {
                 //@.price_uptime=' + Tool.gettime("")+ ',
                 let data = [{
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    database: "shopee/商品/店铺商品/" + oo.siteNum,
                     sql: 'update @.table set @.self_uptime=@.uptime-1,@.scale=' + oo.startAmount + ',@.unitWeight=' + oo.manualreview_1688_unitweight + ',@.MinimumOrder=' + oo.min_purchase_limit + ',@.min_purchase_limit=' + oo.min_purchase_limit + ',@.discount=' + oo.discount + ' where @.fromid=' + oo.shop_product_fromid,
                 }]
                 $("#state").html("正在更新本地商品状态。。。");
@@ -195,7 +198,27 @@ Si tiene alguna pregunta sobre este producto, ¡no dude en enviarnos un mensaje!
 ♥️3. Si tiene alguna pregunta, comuníquese con nosotros antes de abrir una disputa o dejarnos un comentario negativo. Haremos todo lo posible para resolver este problema.\n\
 ♥️4. Puedes contactarnos a través del mensaje de Shopee.\n\
 \n\
-✨Si te gustan nuestros productos, recuerda seguirnos❤️'
+✨Si te gustan nuestros productos, recuerda seguirnos❤️',
+                vi: 'Xin chào, cảm ơn bạn đã ghé thăm cửa hàng của chúng tôi! \n\
+Chúng tôi đảm bảo rằng các dịch vụ và sản phẩm của chúng tôi có chất lượng tốt và đáng tin cậy. \n\
+Nếu bạn có bất kỳ câu hỏi nào về sản phẩm này, vui lòng nhắn tin cho chúng tôi! 🥰 ❤️\n\
+\n\
+♥️1. Khi nhận được đơn hàng của bạn, chúng tôi sẽ gửi hàng sớm nhất có thể. \n\
+♥️2. Khi bạn nhận được gói hàng và bạn có hài lòng với sản phẩm và dịch vụ hay không. Hãy để lại cho chúng tôi phản hồi năm sao và những bức ảnh đẹp. Bất kỳ sự giúp đỡ nào cũng sẽ được đánh giá cao. \n\
+♥️3. Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi trước khi mở tranh chấp hoặc để lại phản hồi tiêu cực. Chúng tôi sẽ cố gắng hết sức để giải quyết vấn đề. \n\
+♥️4. Bạn có thể liên hệ với chúng tôi bằng cách để lại tin nhắn trên Shopee\n\
+\n\
+✨ Nếu bạn thích sản phẩm của chúng tôi, hãy nhớ theo dõi chúng tôi❤️',
+                th: 'สวัสดีขอขอบคุณที่มาเยี่ยมชมร้านค้าของเรา! \n\
+เรารับประกันว่าบริการและผลิตภัณฑ์ของเราเป็นคุณภาพดีและเชื่อถือได้ \n\
+หากคุณมีคำถามใด ๆ เกี่ยวกับผลิตภัณฑ์นี้ โปรดอย่าลังเลที่จะส่งข้อความถึงเรา! 🥰 ❤️\n\
+\n\
+♥️1. เมื่อเราได้รับคำสั่งซื้อของคุณแล้ว เราจะส่งพัสดุออกไปโดยเร็วที่สุด \n\
+♥️2. เมื่อคุณได้รับแพคเกจแล้ว และคุณพอใจกับสินค้าและบริการหรือไม่ กรุณาให้ข้อเสนอแนะระดับ 5 ดาวและรูปภาพสวยๆ แก่เรา ความช่วยเหลือใด ๆ จะได้รับการชื่นชมอย่างมาก \n\
+♥️3. หากมีคำถามใดๆ โปรดติดต่อเราก่อนที่จะเปิดข้อโต้แย้งหรือแสดงความคิดเห็นเชิงลบ เราจะพยายามอย่างดีที่สุดเพื่อแก้ไขปัญหานี้ \n\
+♥️4.สามารถติดต่อเราได้โดยการฝากข้อความไว้ที่ Shopee\n\
+\n\
+✨ หากคุณชอบผลิตภัณฑ์ของเรา โปรดอย่าลืมติดตามเรา ❤️'
             }
             return oo[this.b03(site)];
         },
@@ -203,20 +226,19 @@ Si tiene alguna pregunta sobre este producto, ¡no dude en enviarnos un mensaje!
             let language
             switch (site) {//选择JS文件
                 case "tw": language = "tw"; break;
+                case "ph":
                 case "sg":
                 case "my":
                     language = "en"; break;
                 case "br": language = "pt"; break;
                 case "mx": language = "es"; break;
+                case "vn": language = "vi"; break;
+                case "th": language = "th"; break;
             }
             return language
         },
     }
 })
-
-
-
-
 
 // e02: function (sku, freight, oo) {
 //     let o2 = {

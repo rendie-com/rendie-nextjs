@@ -5,6 +5,7 @@ var fun =
     {
         A1: 1, A2: 0,
         seller: {},
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.return        返回URL
@@ -15,6 +16,7 @@ var fun =
                 <tbody>\
                     <tr><td class="w250 right">获取站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
                     <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
+		            <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
                     <tr><td class="right">商品条进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                     <tr><td class="right">shopee_放大镜图进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
                     <tr><td class="right">1688_属性图进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
@@ -42,13 +44,13 @@ var fun =
     a04: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "select " + Tool.fieldAs("fromid,pic,proid") + " FROM @.table order by @.self_uptime desc" + Tool.limit(1, this.obj.A1, "sqlite"),
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select count(1) as total FROM @.table",
             })
         }
@@ -65,8 +67,8 @@ var fun =
         let dom = {
             picA: $("#B_picA"),
             picB: $("#B_picB"),
-        }
-        Tool.common_B.a01(oo.proid, this.obj.seller, obj.params.site, dom, this.d02, this, oo)
+        };
+        Tool.common_B.a01(oo.proid, this.obj.seller, obj.params.site, obj.params.num, dom, this.d02, this, oo)
     },
     d02: function (oo) {
         let dom = {
@@ -74,7 +76,7 @@ var fun =
             picA: $("#C_picA"),
             picB: $("#C_picB"),
         }
-        Tool.common_C.a01(oo.proid, this.obj.seller, obj.params.site, dom, this.d03, this)
+        Tool.common_C.a01(oo.proid, this.obj.seller, obj.params.site, obj.params.num, dom, this.d03, this)
     },
     d03: function () {
         this.obj.A1++;

@@ -14,7 +14,8 @@ var fun =
             [9, "=9"],
             [10, ">=10"],
         ],
-        A2arr: []
+        A2arr: [],
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.return          返回URL
@@ -24,8 +25,9 @@ var fun =
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\
-		        <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr></tbody>\
-		        <tr><td class="right w150">状态进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
+		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr></tbody>\
+		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
+		        <tr><td class="right">状态进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2">...</td></tr></tbody>\
             </table>\
         </div>'
@@ -37,7 +39,7 @@ var fun =
     a03: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "select count(1) as total from @.table where @.MinimumOrder" + this.obj.Aarr[this.obj.A1 - 1][1],
         }]
         $("#state").html("正在统计数量");
@@ -50,7 +52,7 @@ var fun =
         this.a02();
     },
     a05: function () {
-        config[obj.params.site].shopPro_MinimumOrder_count = this.obj.A2arr;
+        config[this.obj.siteNum].shopPro_MinimumOrder_count = this.obj.A2arr;
         let data = [{
             action: "fs",
             fun: "writeFile",

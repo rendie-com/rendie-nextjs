@@ -5,16 +5,18 @@ var fun =
     {
         A1: 1, A2: 0,
         seller: {},
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.site       站点
-        //obj.params.price
-        obj.params.price = obj.params.price ? obj.params.price : "-_-20";//新折扣类型
+        //obj.params.price      新折扣类型
+        //obj.params.num
         let html = Tool.header(obj.params.return, "Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 定价 &gt; 删除新折扣") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
 		    <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		    <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
 		    <tr><td class="right">条件：</td><td colspan="2">'+ this.b01(obj.params.price) + '</td></tr>\
 		    <tr><td class="right w150">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
@@ -36,13 +38,13 @@ var fun =
         $("#state").html("正在获取商品信息。。。");
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "select @.fromid as fromid FROM @.table where @.newDiscount" + this.b02(obj.params.price) + " limit 10",
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select count(1) as total FROM @.table where @.newDiscount" + this.b02(obj.params.price),
             })
         }
@@ -80,7 +82,7 @@ var fun =
             "version=3.1.0",
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/v3/product/delete_product/?" + pArr.join("&")
@@ -110,7 +112,7 @@ var fun =
         }
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "delete from @.table where @.fromId in (" + fromidArr.join(",") + ")",
         }]
         Tool.ajax.a01(data, this.d04, this);

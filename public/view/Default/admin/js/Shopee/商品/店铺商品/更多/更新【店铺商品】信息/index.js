@@ -9,6 +9,7 @@ var fun =
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
 		    <tr><td class="w190 right">更新站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		    <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
 		    <tr><td class="right">更新条件：</td><td colspan="2">'+ this.b01() + '</td></tr>\
 		    <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
             <tr><td class="right">参数：</td><td colspan="2" class="p-0" id="parameter"></td></tr>\
@@ -20,7 +21,7 @@ var fun =
           <tbody id="tbody"></tbody>\
           </table>\
         </div>'
-        Tool.html(null, null, html)
+        Tool.html(null, null, html);
     },
     b01: function () {
         let str = '\
@@ -36,65 +37,108 @@ var fun =
         <table class="table mb-0 align-middle">\
             <tr class="table-light center">\
                 <th class="w120"></th>\
-                <th class="w100">台湾虾皮</th>\
-                <th class="w100">马来西亚</th>\
-                <th class="w100">巴西</th>\
+                <th class="w120">新加坡sg</th>\
+                <th class="w120">台湾虾皮tw</th>\
+                <th class="w120">泰国th</th>\
+                <th class="w120">马来西亚my</th>\
+                <th class="w120">越南vn</th>\
+                <th class="w120">菲律宾ph</th>\
+                <th class="w120">巴西br</th>\
+                <th class="w120">墨西哥mx</th>\
+                <th class="w120">哥伦比亚co</th>\
+                <th class="w120">智利cl</th>\
                 <th></th>\
             </tr>\
             <tr>\
                 <td class="right">汇率：</td>\
-                <td><input type="text" class="form-control center" value="'+ oo.tw.exchangeRate + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.my.exchangeRate + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.br.exchangeRate + '")" disabled="disabled"></td>\
-                <td></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.sg[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.tw[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.th[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.my[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.vn[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.ph[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.br[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.mx[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.co[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.cl[0].exchangeRate + '")" disabled="disabled"></td>\
+                <td class="p-0"></td>\
             </tr>\
             <tr>\
                 <td class="right">佣金费率：</td>\
-                <td><input type="text" class="form-control center" value="'+ oo.tw.commissionRate + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.my.commissionRate + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.br.commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.sg[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.tw[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.th[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.my[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.vn[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.ph[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.br[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.mx[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.co[0].commissionRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.cl[0].commissionRate + '")" disabled="disabled"></td>\
                 <td></td>\
             </tr>\
             <tr>\
                 <td class="right">活动服务费率：</td>\
-                <td><input type="text" class="form-control center" value="'+ oo.tw.activityServiceRate + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.my.activityServiceRate + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.br.activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.sg[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.tw[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.th[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.my[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.vn[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.ph[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.br[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.mx[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.co[0].activityServiceRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.cl[0].activityServiceRate + '")" disabled="disabled"></td>\
                 <td></td>\
             </tr>\
             <tr>\
                 <td class="right">满多少免运费：</td>\
-                <td><input type="text" class="form-control center" value="'+ oo.tw.fullPrice + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.my.fullPrice + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.br.fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.sg[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.tw[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.th[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.my[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.vn[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.ph[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.br[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.mx[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.co[0].fullPrice + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.cl[0].fullPrice + '")" disabled="disabled"></td>\
                 <td></td>\
             </tr>\
             <tr>\
                 <td class="right">税率：</td>\
-                <td><input type="text" class="form-control center" value="'+ oo.tw.taxRate + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.my.taxRate + '")" disabled="disabled"></td>\
-                <td><input type="text" class="form-control center" value="'+ oo.br.taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.sg[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.tw[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.th[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.my[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.vn[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.ph[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.br[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.mx[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.co[0].taxRate + '")" disabled="disabled"></td>\
+                <td class="p-0"><input type="text" class="form-control center" value="'+ oo.cl[0].taxRate + '")" disabled="disabled"></td>\
                 <td></td>\
             </tr>\
             <tr>\
                 <td class="right">说明：</td>\
-                <td colspan="4">以这里的"参数"为准，如果不对，那就把shopee的"参数"复制过来。（注：在shopee填的参数，不会对这里的价格产生影响。）</td>\
+                <td colspan="11">以这里的"参数"为准，如果不对，那就把shopee的"参数"复制过来。（注：在shopee填的参数，不会对这里的价格产生影响。）</td>\
             </tr>\
         </table>'
     },
+    //////////////////////////////////////////////////////////////////////
     c01: function (This, mode) {
         This.attr("disabled", true);
-        Tool.login.a01(this.c02, this, mode)
+        Tool.login.a01(this.c02, this, mode);
     },
     c02: function (t, mode) {
-        $("#parameter").html(this.b02(t))
-        $("#state").html("已登陆。。。")
-        t.mode = mode
-        Tool.logistics.a01(obj.params.site, $("#logistics"), this.c03, this, t)
+        $("#parameter").html(this.b02(t));
+        $("#state").html("已登陆。。。");
+        t.mode = mode;
+        Tool.logistics.a01(obj.params.site, $("#logistics"), this.c03, this, t);
     },
     c03: function (logistics, t) {
         t.logistics = logistics;
-        Tool.common_A.a01(t, obj.params.site)
+        Tool.common_A.a01(t, obj.params.site, obj.params.num);
     },
 }
 fun.a01();

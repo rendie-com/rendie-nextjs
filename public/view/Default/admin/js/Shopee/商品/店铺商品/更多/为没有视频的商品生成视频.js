@@ -4,6 +4,7 @@ var fun =
   obj: {
     A1: 1, A2: 0,
     seller: {},
+    siteNum: Tool.siteNum(obj.params.site, obj.params.num),
   },
   a01: function () {
     let html = Tool.header(obj.params.return, 'Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 更多 &gt; 为没有视频的商品生成视频') + '\
@@ -17,6 +18,7 @@ var fun =
           如果还是没有视频，那就用图片生成视频，上传用shopee平台。<br/>\
         </td></tr>\
         <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		    <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
         <tr><td class="right">商品条进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
         <tr><td class="right">商品编码：</td><td id="proid" colspan="2"></td></tr>\
         <tr><td class="right">准备的图片：</td><td id="pic" colspan="2"></td></tr>\
@@ -41,7 +43,7 @@ var fun =
     //let where = ""
     let data = [{
       action: "sqlite",
-      database: "shopee/商品/店铺商品/" + obj.params.site,
+      database: "shopee/商品/店铺商品/" + this.obj.siteNum,
       sql: "select " + Tool.fieldAs("proid") + " FROM @.table" + where + Tool.limit(1, 1, "sqlite"),
       list: [
         {
@@ -51,14 +53,14 @@ var fun =
         }, {
           action: "sqlite",
           database: "shopee/商品/图片/shopee首图",
-          sql: "select @." + obj.params.site + "_video as video FROM @.table where @.proid='${proid}'",
+          sql: "select @." + this.obj.siteNum + "_video as video FROM @.table where @.proid='${proid}'",
         }
       ]
     }]
     if (this.obj.A2 == 0) {
       data.push({
         action: "sqlite",
-        database: "shopee/商品/店铺商品/" + obj.params.site,
+        database: "shopee/商品/店铺商品/" + this.obj.siteNum,
         sql: "select count(1) as Count FROM @.table" + where,
       })
     }
@@ -114,7 +116,7 @@ var fun =
       {
         action: "sqlite",
         database: "shopee/商品/图片/shopee放大镜图",
-        sql: "select @." + obj.params.site + "_watermark as watermark FROM @.table where @.src in('" + shopee_8pic.join("','") + "')",
+        sql: "select @." + this.obj.siteNum + "_watermark as watermark FROM @.table where @.src in('" + shopee_8pic.join("','") + "')",
       }
     ]
     $("#state").html("正在获取水印图。。。")
@@ -218,7 +220,7 @@ var fun =
     let arr = [
       "SPC_CDS=" + this.obj.seller.SPC_CDS,
       "SPC_CDS_VER=2",
-      "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+      "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
       "cbsc_shop_region=" + obj.params.site
     ]
     let url = "https://seller.shopee.cn/api/upload/v1/initiate_video_upload?" + arr.join("&")
@@ -251,7 +253,7 @@ var fun =
     let arr = [
       "SPC_CDS=" + this.obj.seller.SPC_CDS,
       "SPC_CDS_VER=2",
-      "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+      "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
       "cbsc_shop_region=" + obj.params.site
     ]
     let url = "https://seller.shopee.cn/api/upload/v1/report_video_upload?" + arr.join("&")
@@ -304,7 +306,9 @@ var fun =
       this.f01(oo);
     }
     else {
-      Tool.pre(["信息出错", t])
+      $("#state").html("出错重试。。。");
+      Tool.Time("name", 1000, this.a04, this, oo);
+      //Tool.pre(["信息出错", t])
     }
   },
   /////////////////////////////////////
@@ -323,7 +327,7 @@ var fun =
     let arr = [
       "SPC_CDS=" + this.obj.seller.SPC_CDS,
       "SPC_CDS_VER=2",
-      "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+      "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
       "cbsc_shop_region=" + obj.params.site
     ]
     let data = {
@@ -362,16 +366,16 @@ var fun =
       list: [{
         action: "sqlite",
         database: "shopee/商品/图片/shopee首图",
-        sql: "update @.table set @." + obj.params.site + "_video=" + Tool.rpsql(JSON.stringify(shopeeVideo)) + " where @.proid='" + proid + "'",
+        sql: "update @.table set @." + this.obj.siteNum + "_video=" + Tool.rpsql(JSON.stringify(shopeeVideo)) + " where @.proid='" + proid + "'",
       }],
       elselist: [{
         action: "sqlite",
         database: "shopee/商品/图片/shopee首图",
-        sql: "insert into @.table(@.proid,@." + obj.params.site + "_video)values('" + proid + "'," + Tool.rpsql(JSON.stringify(shopeeVideo)) + ")",
+        sql: "insert into @.table(@.proid,@." + this.obj.siteNum + "_video)values('" + proid + "'," + Tool.rpsql(JSON.stringify(shopeeVideo)) + ")",
       }]
     }, {
       action: "sqlite",
-      database: "shopee/商品/店铺商品/" + obj.params.site,
+      database: "shopee/商品/店铺商品/" + this.obj.siteNum,
       sql: "update @.table set @.ismakevideo=1 where @.proid='" + proid + "'"
     }]
     Tool.ajax.a01(data, this.f05, this)

@@ -1,7 +1,10 @@
 'use strict';
 var fun =
 {
-    obj: { A1: 1, A2: 0 },
+    obj: {
+        A1: 1, A2: 0,
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
+    },
     a01: function () {
         //obj.params.site           站点
         let html = Tool.header(obj.params.return, 'Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 1688信息_把1688信息同步过来') + '\
@@ -10,6 +13,7 @@ var fun =
           <tbody>\
             <tr><td class="right w150">同步字段：</td><td colspan="2">【销量】【最高价】【运费】【详情ID】</td></tr>\
             <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		    <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
             <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
             <tr><td class="right">商品编码：</td><td id="proid" colspan="2"></td></tr>\
             <tr><td class="right">1688地址：</td><td id="url" colspan="2"></td></tr>\
@@ -24,13 +28,13 @@ var fun =
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "select " + Tool.fieldAs("proid,manualreview_1688_fromid") + " FROM @.table where @.is" + obj.params.site + "=1" + Tool.limit(1, this.obj.A1, "sqlite"),
+            sql: "select " + Tool.fieldAs("proid,manualreview_1688_fromid") + " FROM @.table where @.is" + this.obj.siteNum + "=1" + Tool.limit(1, this.obj.A1, "sqlite"),
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
                 database: "shopee/商品/全球商品",
-                sql: "select count(1) as total FROM @.table where @.is" + obj.params.site + "=1",
+                sql: "select count(1) as total FROM @.table where @.is" + this.obj.siteNum + "=1",
             })
         }
         //minprice  在做活动的时候能用上。
@@ -67,7 +71,7 @@ var fun =
         ]
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/"+ obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "update @.table set " + updateArr.join(",") + " where @.proid='" + oo.proid + "'",
         }]
         $("#state").html("正在更新。。。");

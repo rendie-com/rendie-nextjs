@@ -5,6 +5,7 @@ var fun =
         A1: 1, A2: 0,
         config: {},
         logistics: [],
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.site           站点
@@ -13,6 +14,7 @@ var fun =
           <table class="table table-hover align-middle">\
           <tbody>\
             <tr><td class="right w150">说明：</td><td colspan="2">定价与原价相同，且不需要改价，则可以打折，否则不可以。</td></tr>\
+		    <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
             <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
             <tr><td class="right">物流方式：</td><td id="logistics" colspan="2"></td></tr>\
             <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
@@ -29,7 +31,7 @@ var fun =
         let data = [{
             action: "sqlite",
             database: "shopee/卖家账户",
-            sql: "select @.config as config FROM @.table limit 1",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a03, this)
     },
@@ -46,13 +48,13 @@ var fun =
         let where = " where @.status<>6"//表示不等于【审查中】
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "select " + Tool.fieldAs("fromid,unitweight,scale,discount,_1688_minimumorder,_1688_maxprice,_1688_freight,input_normal_price") + " FROM @.table" + where + Tool.limit(10, this.obj.A1, "sqlite"),
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select count(1) as total FROM @.table" + where,
             })
         }
@@ -64,33 +66,44 @@ var fun =
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d03, this, null, t[0])
     },
     d03: function (t) {
-        let data = [];
+        let data = [], isErr = false;;
         for (let i = 0; i < t.length; i++) {
             $("#fromid").html(t[i].fromid)
             let oo = Tool.fixedPrice.a01(t[i]._1688_maxprice,
                 t[i].scale,
                 t[i]._1688_minimumorder,
                 t[i]._1688_freight,
-                this.obj.config[obj.params.site],
+                this.obj.config[obj.params.site][Tool.int(obj.params.num)-1],
                 t[i].unitweight,
                 this.obj.logistics,
                 t[i].discount)
-            $("#fixedPrice").html(oo.str.split("\n").join("<br/>"))
-            /////////////////////////////////////////////////////////////////////////////
-            let newDiscount = (1 - oo.discountPrice / t[i].input_normal_price) * 100
-            $("#newDiscount").html(" = (1 - 打折后[含平台费] / 原价) * 100<br/>\
-            = (1 - "+ oo.discountPrice + " / " + t[i].input_normal_price + ") * 100<br/>\
-            = (1 - "+ oo.discountPrice / t[i].input_normal_price + ") * 100<br/>\
-            = " + newDiscount)
-            /////////////////////////////////////////////////////////////////
-            data.push({
-                action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
-                sql: "update @.table set @.newDiscount=" + newDiscount.toFixed(4) + ",@.min_purchase_limit=" + oo.min_purchase_limit + " where @.fromid=" + t[i].fromid
-            })
+            if (oo.str) {
+                $("#fixedPrice").html(oo.str.split("\n").join("<br/>"))
+                /////////////////////////////////////////////////////////////////////////////
+                let newDiscount = (1 - oo.discountPrice / t[i].input_normal_price) * 100
+                $("#newDiscount").html(" = (1 - 打折后[含平台费] / 原价) * 100<br/>\
+                    = (1 - "+ oo.discountPrice + " / " + t[i].input_normal_price + ") * 100<br/>\
+                    = (1 - "+ oo.discountPrice / t[i].input_normal_price + ") * 100<br/>\
+                    = " + newDiscount);
+                /////////////////////////////////////////////////////////////////
+                data.push({
+                    action: "sqlite",
+                    database: "shopee/商品/店铺商品/" + this.obj.siteNum,
+                    sql: "update @.table set @.newDiscount=" + newDiscount.toFixed(4) + ",@.min_purchase_limit=" + oo.min_purchase_limit + " where @.fromid=" + t[i].fromid
+                })
+            }
+            else {
+                isErr = true;
+                break;
+            }
         }
         $("#state").html("正在更新。。。");
-        Tool.ajax.a01(data, this.d04, this)
+        if (isErr) {
+            Tool.at("获取新折扣失败，可能是没有来源数据。");
+        }
+        else {
+            Tool.ajax.a01(data, this.d04, this);
+        }
     },
     d04: function (t) {
         let isErr = false;

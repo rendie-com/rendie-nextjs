@@ -5,15 +5,18 @@ var fun =
     {
         A1: 1, A2: 0,
         seller: {},
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.return        返回URL
         //obj.params.site          站点
+        //obj.params.num           第几个店铺
         let html = Tool.header(obj.params.return, "Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 更多 &gt; 获取【店铺商品】信息") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
 		    <tr><td class="w150 right">获取站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		    <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
 		    <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		    <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>\
@@ -33,10 +36,10 @@ var fun =
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "update @.table set @.is" + obj.params.site + "=0",
+            sql: "update @.table set @.is" + this.obj.siteNum + "=0",
         }, {
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "update @.table set @.status=0",
         }]
         Tool.ajax.a01(data, this.a04, this);
@@ -120,7 +123,7 @@ var fun =
             "page_size=12",
             "list_type=all",
             "count_list_types=sold_out,banned,deboosted,deleted,unlisted,reviewing",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/v3/mpsku/list/get_product_list?" + arr.join("&")
@@ -184,23 +187,23 @@ var fun =
             }
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select @.fromid as fromid from @.table where @.fromid=" + products[i].id,
                 list: [{
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                     sql: "update @.table set " + updateArr.join(",") + "  where @.fromid=" + products[i].id,
                 }],
                 elselist: [{
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                     sql: "insert into @.table(@.self_uptime," + arrL.join(",") + ")values(" + Tool.gettime("") + "," + arrR.join(",") + ")",
                 }]
             })
             data.push({
                 action: "sqlite",
                 database: "shopee/商品/全球商品",
-                sql: "update @.table set @.is" + obj.params.site + "=1 where @.proid=" + Tool.rpsql(products[i].parent_sku),
+                sql: "update @.table set @.is" + this.obj.siteNum + "=1 where @.proid=" + Tool.rpsql(products[i].parent_sku),
             })
         }
         $("#updateFields").html(this.b03(arrL));

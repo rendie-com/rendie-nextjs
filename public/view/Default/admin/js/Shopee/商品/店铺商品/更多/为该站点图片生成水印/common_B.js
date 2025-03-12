@@ -6,17 +6,19 @@ Object.assign(Tool, {
             temp: {},
             B1: 1, B2: 0, Barr: []
         },
-        a01: function (proid, seller, site, dom, next, This, t) {
+        a01: function (proid, seller, site, num, dom, next, This, t) {
             let oo = {
                 proid: proid,
                 seller: seller,
                 site: site,
+                num: num,
                 dom: dom,
                 next: next,
                 This: This,
-                t: t
+                t: t,
+                siteNum: Tool.siteNum(site, num)
             }
-            this.a02(oo)
+            this.a02(oo);
         },
         a02: function (oo) {
             let data = [{
@@ -35,11 +37,11 @@ Object.assign(Tool, {
                 this.a04(oo);
             }
             else {
-                Tool.pre("【shopee_放大镜图】必须要有图片。")
+                Tool.pre("【shopee_放大镜图】必须要有图片。");
             }
         },
         a04: function (oo) {
-            Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d01, this, this.f01, oo)
+            Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d01, this, this.f01, oo);
         },
         ////////////////////////////////////////////////
         b01: function (pic) {
@@ -54,24 +56,24 @@ Object.assign(Tool, {
             let data = [{
                 action: "sqlite",
                 database: "shopee/商品/图片/shopee放大镜图",
-                sql: "select " + Tool.fieldAs("width,height," + oo.site + "_watermark") + " FROM @.table where @.src='" + this.obj.Barr[this.obj.B1 - 1] + "'",
+                sql: "select " + Tool.fieldAs("width,height," + oo.siteNum + "_watermark") + " FROM @.table where @.src='" + this.obj.Barr[this.obj.B1 - 1] + "'",
                 elselist: [{
                     action: "sqlite",
                     database: "shopee/商品/图片/shopee放大镜图",
                     sql: "INSERT INTO @.table(@.src,@.proid,@.addtime) VALUES ('" + this.obj.Barr[this.obj.B1 - 1] + "','" + oo.proid + "'," + Tool.gettime("") + ")"
                 }]
-            }]
+            }];
             Tool.ajax.a01(data, this.d02, this, oo);
         },
         d02: function (t, oo) {
-            if (t[0][0][oo.site + "_watermark"] == null) {
+            if (t[0][0][oo.siteNum + "_watermark"] == null) {
                 oo.dom.picA.append(this.b01(this.obj.Barr[this.obj.B1 - 1]));
                 this.d03(t[0][0], oo);
             }
-            else if (t[0][0][oo.site + "_watermark"]) {
+            else if (t[0][0][oo.siteNum + "_watermark"]) {
                 oo.dom.picA.append('<figure class="figure border mb-1 m-1 p-1 w100 center">已上传跳过</figure>');
                 oo.dom.picB.append('<figure class="figure border mb-1 m-1 p-1 w100 center">已上传跳过</figure>');
-                this.e04([[]], oo)
+                this.e04([[]], oo);
             }
             else {
                 Tool.pre(["出错001", t]);
@@ -80,7 +82,7 @@ Object.assign(Tool, {
         d03: function (o1, o2) {
             let url = "https://s-cf-sg.shopeesz.com/file/" + this.obj.Barr[this.obj.B1 - 1];
             if (o1.width) {
-                o1.base64 = url
+                o1.base64 = url;
                 this.e01(o1, o2)
             }
             else {
@@ -109,39 +111,67 @@ Object.assign(Tool, {
                 density: 4,//稠密度                       数值越大，水印越多
                 str: [] //水印文字           数组类型      最大三行（即lingth<=3）[必传]
             }
-            if (oo.site == "my") {
-                objmsg.str = ["https://shopee.com.my/choice.my"]
-                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo)
+            if (oo.siteNum == "my") {
+                objmsg.str = ["https://shopee.com.my/choice.my"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
             }
-            else if (oo.site == "br") {
-                objmsg.str = ["https://shopee.com.br/cupons.br"]
-                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo)
+            else if (oo.siteNum == "th") {
+                objmsg.str = ["https://shopee.co.th/sale.th"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
             }
-            else if (oo.site == "tw") {
-                objmsg.str = ["https://shopee.tw/discount.tw"]
-                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo)
+            else if (oo.siteNum == "vn") {
+                objmsg.str = ["https://shopee.vn/1688.vn"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
+            } else if (oo.siteNum == "co") {
+                objmsg.str = ["https://shopee.com.co/cuponsjl.co"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
             }
-            else if (oo.site == "sg") {
-                objmsg.str = ["https://shopee.sg/accessory.sg"]
-                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo)
+            else if (oo.siteNum == "cl") {
+                objmsg.str = ["https://shopee.cl/accessory.cl"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
             }
-            else if (oo.site == "mx") {
-                objmsg.str = ["https://shopee.com.mx/coupons.mx"]
-                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo)
+            else if (oo.siteNum == "ph") {
+                objmsg.str = ["https://shopee.ph/accessory.ph"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
+            }
+            else if (oo.siteNum == "br") {
+                objmsg.str = ["https://shopee.com.br/cupons.br"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
+            }
+            else if (oo.siteNum == "tw") {
+                objmsg.str = ["https://shopee.tw/discount.tw"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
+            }
+            else if (oo.siteNum == "sg") {
+                objmsg.str = ["https://shopee.sg/accessory.sg"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
+            }
+            else if (oo.siteNum == "sg2") {
+                objmsg.str = ["https://shopee.sg/jewelry..sg"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
+            }
+            else if (oo.siteNum == "mx") {
+                objmsg.str = ["https://shopee.com.mx/accessory.mx"];
+                Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
+            }
+            else if (oo.siteNum == "mx2") {
+                objmsg.str = ["https://shopee.com.mx/coupons.mx"];
+                alert("ffffffffffffffffffffffffff")
+                //Tool.drawWaterMark.a01(t.base64, objmsg, this.e02, this, oo);
             }
             else {
-                Tool.pre("还没开发。。。")
+                Tool.pre("还没开发2025-3-7。。。");
             }
         },
         e02: function (blob, oo) {
             this.obj.temp.pic = URL.createObjectURL(blob)
             $("#state").html("正在上传图片...");
-            Tool.upPic.a01(this.obj.temp.pic, oo.seller, oo.site, this.e03, this, oo);//上传图片
+            Tool.upPic.a01(this.obj.temp.pic, oo.seller, oo.site, oo.num, this.e03, this, oo);//上传图片
         },
         e03: function (src, oo) {
-            let temp = this.obj.temp
+            let temp = this.obj.temp;
             URL.revokeObjectURL(temp.pic);//方法释放使用URL
-            oo.dom.picB.append(this.b01(src))
+            oo.dom.picB.append(this.b01(src));
             $("#state").html("正在更新数据...");
             let sqlstr = ""
             if (temp.size) {
@@ -150,7 +180,7 @@ Object.assign(Tool, {
             let data = [{
                 action: "sqlite",
                 database: "shopee/商品/图片/shopee放大镜图",
-                sql: "update @.table set @." + oo.site + "_watermark='" + src + "'" + sqlstr + " where @.src='" + this.obj.Barr[this.obj.B1 - 1] + "'",
+                sql: "update @.table set @." + oo.siteNum + "_watermark='" + src + "'" + sqlstr + " where @.src='" + this.obj.Barr[this.obj.B1 - 1] + "'",
             }]
             Tool.ajax.a01(data, this.e04, this, oo)
         },

@@ -184,7 +184,7 @@ Object.assign(Tool, {
                 Tool.drawWaterMark.a01(url, objmsg, this.e05, this, oo)
             }
             else {
-                Tool.pre("还没开发。。。")
+                Tool.pre("还没开发2025/3/7。。。")
             }
         },
         e05: function (blob, oo) {

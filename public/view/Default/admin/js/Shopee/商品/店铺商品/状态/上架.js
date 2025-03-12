@@ -5,7 +5,8 @@ var fun =
     {
         A1: 1, A2: 0,
         mode: 0,
-        seller: {}
+        seller: {},
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.return        返回URL
@@ -16,6 +17,7 @@ var fun =
             <table class="table table-hover align-middle mb-0">\
             <tbody>\
  		        <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
  		        <tr><td class="right">当前商品状态：</td><td colspan="2">'+ this.b01(obj.params.status) + '</td></tr>\
  		        <tr><td class="right">上架数量：</td><td colspan="2">'+ this.b02() + '</td></tr>\
                 <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
@@ -53,13 +55,13 @@ var fun =
             //@.price_uptime=0      表示不需要改价
             data = [{
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select @.fromid as fromid from @.table where  @.status=" + obj.params.status + " and @.price_uptime<>1 order by @._1688_saleNum desc" + Tool.limit(12, this.obj.A1),
             }]
             if (this.obj.A2 == 0) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                     sql: "select count(1) as total FROM @.table where @.status=" + obj.params.status + " and @.price_uptime<>1",
                 })
             }
@@ -67,14 +69,14 @@ var fun =
         else if (this.obj.mode == 2) {
             data = [{
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select @.fromid as fromid from @.table where  @.status=" + obj.params.status + " and @.price_uptime<>1 order by @._1688_saleNum desc limit 10",
             }]
         }
         else if (this.obj.mode == 3) {
             data = [{
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select @.fromid as fromid from @.table where  @.status=" + obj.params.status + " and @.price_uptime<>1 order by @._1688_saleNum desc limit 50",
             }]
         }
@@ -115,7 +117,7 @@ var fun =
             "source=seller_center",
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/v3/product/update_product/?" + pArr.join("&")
@@ -146,7 +148,7 @@ var fun =
         // @.status=1       表示【上架商品】
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "update @.table set @.status=1, @.uptime=" + Tool.gettime("") + "  where @.fromId in (" + fromidArr.join(",") + ")",
         }]
         Tool.ajax.a01(data, this.e04, this, isbool);

@@ -1,6 +1,9 @@
 ﻿'use strict';
 var fun =
 {
+    obj: {
+        siteNum: ""
+    },
     a01: function () {
         obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
@@ -13,6 +16,9 @@ var fun =
         obj.params.category = obj.params.category ? obj.params.category : ""//分类信息
         obj.params.status = obj.params.status ? obj.params.status : ""//状态
         obj.params.info1688 = obj.params.info1688 ? obj.params.info1688 : ""//1688信息 
+        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
+        ///////////////////////////////////////////////////////////////////////
+        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num);
         Tool.logistics.a01(obj.params.site, null, this.a02, this)
     },
     a02: function (logistics) {
@@ -30,39 +36,40 @@ var fun =
         }, {
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/商品/店铺商品/" + obj.params.site + ".db"],
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/商品/店铺商品/" + this.obj.siteNum + ".db"],
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this, logistics);
     },
     a03: function (t, logistics) {
-        let where = this.b08()
+        let where = this.b08();
         let data = [{
             action: "sqlite",
             database: "shopee/卖家账户",
-            sql: "select @.config as config FROM @.table limit 1",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }, {
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "select count(1) as total FROM @.table" + where,
         }, {
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "select " + Tool.fieldAs("fromid,isUnlisted,isTrueSignUp,unitWeight,discount,newDiscount,isDiscount,isSignUp,isSeckill,promotion,status,pic,proid,MinimumOrder,name,_1688_fromid,_1688_saleNum,_1688_maxPrice,_1688_MinimumOrder,_1688_freight,input_normal_price,self_uptime,price_uptime,uptime,addtime,scale") + " FROM @.table" + where + Tool.limit(10, obj.params.page, "sqlite"),
         }]
         Tool.ajax.a01(data, this.a04, this, logistics);
     },
     a04: function (t, logistics) {
-        let config = JSON.parse(t[0][0].config)[obj.params.site];
+        let siteArr = JSON.parse(t[0][0].config)[obj.params.site]
+        let config = siteArr[Tool.int(obj.params.num) - 1];
         let html1 = "", arr = t[2]
         for (let i = 0; i < arr.length; i++) {
-            ////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////
             let oo = Tool.fixedPrice.a01(arr[i]._1688_maxPrice,
                 arr[i].scale,
                 arr[i]._1688_MinimumOrder,
@@ -70,8 +77,8 @@ var fun =
                 config,
                 arr[i].unitWeight,
                 logistics,
-                arr[i].newDiscount)
-            ////////////////////////////////////////////////////////////////////////////////////////////////
+                arr[i].newDiscount);
+            //////////////////////////////////////////////////////
             html1 += '\
             <tr>\
                 <td class="p-0">'+ this.b11(arr[i].fromid, arr[i].proid, arr[i]._1688_fromid) + '</td>\
@@ -90,21 +97,21 @@ var fun =
         //////////////////////////////////////////////////
         let html = Tool.header2(obj.params.jsFile) + '\
 		<div class="p-2">\
-			'+ Tool.tab(obj.params.jsFile, obj.params.site) + this.b06() + '\
+			'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b06() + '\
 			<table class="table align-top table-hover center align-top">\
 				<thead class="table-light">'+ this.b01(config) + '</thead>\
 				<tbody>'+ html1 + '</tbody>\
 			</table>\
             ' + Tool.page(t[1][0].total, 10, obj.params.page) + '\
 		</div>'
-        Tool.html(this.a05, this, html)
+        Tool.html(this.a05, this, html);
     },
     a05: function () {
         $('[data-bs-toggle="tooltip"]').tooltip({
             //帮助：https://bootstrapdoc.com/docs/5.0/components/tooltips
             //帮助：https://blog.csdn.net/m0_49017085/article/details/130595296
             template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner"></pre></div>',//为了换行
-        })
+        });
         $('[data-bs-toggle="tooltip2"]').tooltip({ boundary: 'window' })
     },
     b01: function (siteObj) {
@@ -112,14 +119,14 @@ var fun =
         <tr>\
             <th style="padding-left: 20px;position: relative;" class="w140">'+ this.b02() + 'ID</th>\
             <th class="w120">首图</th>\
-            <th class="p-0">'+ this.b19('标题', obj.params.title, "title", config[obj.params.site].shopPro_title_count) + '</th>\
-            <th class="p-0">'+ this.b23('定价', obj.params.price, "price", config[obj.params.site].shopPro_price_count) + '</th>\
-            <th class="p-0">'+ this.b16('活动', obj.params.activity, "activity", config[obj.params.site].shopPro_activity_count) + '</th>\
+            <th class="p-0">'+ this.b19('标题', obj.params.title, "title") + '</th>\
+            <th class="p-0">'+ this.b23('定价', obj.params.price, "price") + '</th>\
+            <th class="p-0">'+ this.b16('活动', obj.params.activity, "activity") + '</th>\
             <th class="w120">满'+ siteObj.currency_symbol + siteObj.fullPrice + '利润</th>\
             <th class="w120">满'+ siteObj.currency_symbol + (siteObj.fullPrice * 2) + '利润</th>\
             <th class="w120">满'+ siteObj.currency_symbol + (siteObj.fullPrice * 3) + '利润</th>\
             <th class="w100 p-0">'+ this.b13(obj.params.category, "category", config[obj.params.site].shopPro_MinimumOrder_count, config[obj.params.site].shopPro_unitWeight_count) + '</th>\
-            <th class="p-0">'+ this.b10('状态', obj.params.status, "status", config[obj.params.site].shopPro_status_count) + '</th>\
+            <th class="p-0">'+ this.b10('状态', obj.params.status, "status") + '</th>\
             <th class="w100 p-0">'+ this.b12('1688信息', obj.params.info1688, "info1688") + '</th>\
         </tr>'
         return html;
@@ -128,17 +135,16 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-	        <li onClick="Tool.openR(\'?jsFile=js16&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取【店铺商品】信息</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js67&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取【店铺商品】详情信息</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js45&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*更新【店铺商品】信息</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js46&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为该站点图片生成水印</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js48&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为该站点首图生成水印</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js69&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为没有视频的商品生成视频</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js49&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*为该站点创建类目</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js50&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*删除该站点类目</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js56&site='+ obj.params.site + '\');" title="怎么选？答：定价错误的选出来。"><a class="dropdown-item pointer">选出要修改价格的商品</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js62&table=shopPro_' + obj.params.site + '&database=shopee\');"><a class="dropdown-item pointer">*把该表同步到【PostgreSQL】数据库</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js70&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*修改出货天数</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js16&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取【店铺商品】信息</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js67&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取【店铺商品】详情信息</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js45&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*更新【店铺商品】信息</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js46&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*为该站点图片生成水印</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js48&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*为该站点首图生成水印</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js69&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*为没有视频的商品生成视频</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js49&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*为该站点创建类目</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js56&site='+ obj.params.site + '&num=' + obj.params.num + '\');" title="怎么选？答：定价错误的选出来。"><a class="dropdown-item pointer">选出要修改价格的商品</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js62&table=shopPro_' + obj.params.site + '&num=' + obj.params.num + '&database=shopee\');"><a class="dropdown-item pointer">*把该表同步到【PostgreSQL】数据库</a></li>\
+	        <li onClick="Tool.openR(\'?jsFile=js70&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*修改出货天数</a></li>\
         </ul>'
     },
     b03: function (pic) {
@@ -296,17 +302,18 @@ var fun =
             <tr><td title="1688销量">'+ _1688_saleNum + '</td></tr>\
         </table>'
     },
-    b10: function (name, val, name2, configArr) {
+    b10: function (name, val, name2) {
+        let configArr = config[this.obj.siteNum].shopPro_status_count
         let nArr = [], arr = Tool.shopPro_statusArr;
         for (let i = 0; i < arr.length; i++) {
             nArr.push('<option value="' + arr[i][0] + '" ' + ("" + arr[i][0] == "" + val ? 'selected="selected"' : '') + '>' + arr[i][0] + '.' + arr[i][1] + '(' + configArr[i] + ')</option>');
         }
         return '\
         <select onChange="fun.c03(\''+ name2 + '\',this.options[this.selectedIndex].value)" class="form-select">\
-          <option value="">'+ name + '</option>\
-          <option value="-1">更新数量</option>\
-          <option value="-2">问题数据下架</option>\
-          ' + nArr.join("") + '\
+            <option value="">'+ name + '</option>\
+            <option value="-1">更新数量</option>\
+            <option value="-2">问题数据下架</option>\
+            ' + nArr.join("") + '\
         </select>';
     },
     b11: function (fromid, proid, _1688_fromid) {
@@ -378,23 +385,19 @@ var fun =
         return '\
         <table class="table mb-0 table-bordered left">\
             <tr'+ (discount1.profitRate < 10 ? ' style="color:red;"' : '') + '>\
-                <td data-bs-toggle="tooltip" data-bs-placement="right"data-bs-title="说明：利润率<10则字体变红色。\n店内正常折扣 = 指定折扣 - 6 = ' + discount1.txt + '" class="nowrap">\
-                   '+ siteObj.currency_symbol + ' ' + discount1.profit + ' (' + discount1.profitRate + '%)\
-                </td>\
+                <td data-bs-toggle="tooltip" data-bs-placement="right"data-bs-title="说明：利润率<10则字体变红色。\n店内正常折扣 = 指定折扣 - 6 = ' + discount1.txt + '" class="nowrap">' + siteObj.currency_symbol + ' ' + discount1.profit + ' (' + discount1.profitRate + '%)</td>\
             </tr>\
             <tr'+ (discount2.profitRate < 10 ? ' style="color:red;"' : '') + '>\
-                <td data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="说明：利润率<10则字体变红色。\n报名商品活动 = 指定折扣 - 1 = ' + discount2.txt + '" class="nowrap">\
-                   '+ siteObj.currency_symbol + ' ' + discount2.profit + ' (' + discount2.profitRate + '%)\
-                </td>\
+                <td data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="说明：利润率<10则字体变红色。\n报名商品活动 = 指定折扣 - 1 = ' + discount2.txt + '" class="nowrap">' + siteObj.currency_symbol + ' ' + discount2.profit + ' (' + discount2.profitRate + '%)</td>\
             </tr>\
             <tr'+ (discount3.profitRate < 10 ? ' style="color:red;"' : '') + '>\
-                <td data-bs-toggle="tooltip" data-bs-placement="right"data-bs-title="说明：利润率<10则字体变红色。\n店内秒杀活动 = 加购折扣 = 指定折扣 = ' + discount3.txt + '" class="nowrap" style="font-weight: bold;">\
-                 '+ siteObj.currency_symbol + ' ' + discount3.profit + ' (' + discount3.profitRate + '%)\
-                </td>\
+                <td data-bs-toggle="tooltip" data-bs-placement="right"data-bs-title="说明：利润率<10则字体变红色。\n店内秒杀活动 = 加购折扣 = 指定折扣 = ' + discount3.txt + '" class="nowrap" style="font-weight: bold;">' + siteObj.currency_symbol + ' ' + discount3.profit + ' (' + discount3.profitRate + '%)</td>\
             </tr>\
         </table>'
     },
-    b16: function (name, val, name2, configArr) {
+    b16: function (name, val, name2) {
+        let configArr = config[this.obj.siteNum].shopPro_activity_count
+        if (!configArr) configArr = [];
         let nArr = [], arr2 = Tool.shopPro_activity;
         for (let i = 0; i < arr2.length; i++) {
             nArr.push('<option value="' + arr2[i][0] + '" ' + ("" + arr2[i][0] == val ? 'selected="selected"' : '') + '>' + arr2[i][0] + '.' + arr2[i][1] + '(' + configArr[i] + ')</option>');
@@ -453,22 +456,24 @@ var fun =
             case 6: str1 = "报名Shopee直播"; break;
             case 7: str1 = "店内秒杀"; break;
             case 8: str1 = "折扣"; break;
-            default: str1 = "未知：" + campaign_type
+            default: str1 = "未知：" + campaign_type;
         }
         return str1
     },
-    b19: function (name, val, title, configArr) {
+    b19: function (name, val, title) {
+        if (!config[this.obj.siteNum].shopPro_title_count) { config[this.obj.siteNum].shopPro_title_count = []; }
+        let configArr = config[this.obj.siteNum].shopPro_title_count;
         let nArr = [], arr2 = Tool.shopPro_title;
         for (let i = 0; i < arr2.length; i++) {
             nArr.push('<option value="' + arr2[i][0] + '" ' + ("" + arr2[i][0] == val ? 'selected="selected"' : '') + '>' + arr2[i][0] + '.' + arr2[i][1] + '(' + configArr[i] + ')</option>');
         }
         return '\
         <select onChange="fun.c07(\''+ title + '\',this.options[this.selectedIndex].value)" class="form-select">\
-          <option value="">'+ name + '</option>\
-          <option value="-1">更新数量</option>\
-          <option value="-2">【本地更新时间】设置为【当前时间】</option>\
-          <option value="-3">【新折扣<=8】的【本地更新时间】设置为【当前时间】</option>\
-          ' + nArr.join("") + '\
+        <option value="">'+ name + '</option>\
+        <option value="-1">更新数量</option>\
+        <option value="-2">【本地更新时间】设置为【当前时间】</option>\
+        <option value="-3">【新折扣<=8】的【本地更新时间】设置为【当前时间】</option>\
+        ' + nArr.join("") + '\
         </select>';
     },
     b20: function (status) {
@@ -476,21 +481,21 @@ var fun =
         switch (status) {
             case 1:
                 str3 = '\
-                    <li onClick="Tool.openR(\'?jsFile=js17&site=' + obj.params.site + '&status=' + status + '\');"><a class="dropdown-item pointer">*下架</a></li>\
-                    <li onClick="Tool.openR(\'?jsFile=js23&site=' + obj.params.site + '&status=' + status + '\');"><a class="dropdown-item pointer">*置顶推广</a></li>';
+                <li onClick="Tool.openR(\'?jsFile=js17&site=' + obj.params.site + '&status=' + status + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*下架</a></li>\
+                <li onClick="Tool.openR(\'?jsFile=js23&site=' + obj.params.site + '&status=' + status + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*置顶推广</a></li>';
                 break;
             case 8:
-                str3 = '<li onClick="Tool.openR(\'?jsFile=js18&site=' + obj.params.site + '&status=' + status + '\');"><a class="dropdown-item pointer">*上架</a></li>';
+                str3 = '<li onClick="Tool.openR(\'?jsFile=js18&site=' + obj.params.site + '&status=' + status + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*上架</a></li>';
                 break;
         }
         let str2 = '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js34&site='+ obj.params.site + '&status=' + status + '\');"><a class="dropdown-item pointer">*删除</a></li>' + str3 + '\
+            <li onClick="Tool.openR(\'?jsFile=js34&site='+ obj.params.site + '&status=' + status + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*删除</a></li>' + str3 + '\
 		</ul>'
         switch (status) {
             case -3: str1 = str2 + "问题数据"; break;
-            case -4: str1 = "下架失败"; break;
+            case -4: str1 = str2 + "下架失败"; break;
             case 0: str1 = str2 + "未知"; break;
             case 1: str1 = str2 + "上架商品"; break;
             case 2: str1 = "修改后【审查中】"; break;
@@ -509,18 +514,21 @@ var fun =
         else {
             str1 = '<span class="p-1" style="color: #666;background-color:#eee;">不能打折</span>'
         }
+        ////////////////////////////////
         if (isSignUp) {
             str2 = '<span class="p-1" style="color: #5c7;background-color:#eaf9ef;">能报名</span>'
         }
         else {
             str2 = '<span class="p-1" style="color: #666;background-color:#eee;">不能报名</span>'
         }
+        ////////////////////////////////
         if (isSeckill) {
             str3 = '<span class="p-1" style="color: #5c7;background-color:#eaf9ef;">能做秒杀</span>'
         }
         else {
             str3 = '<span class="p-1" style="color: #666;background-color:#eee;">不能做秒杀</span>'
         }
+        ///////////////////////////////
         return '\
         <table class="table mb-0 table-bordered">\
             <tr><td>'+ str1 + '</td></tr>\
@@ -547,8 +555,12 @@ var fun =
             </tr>\
         </table>';
     },
-    b23: function (name, val, price, configArr) {
+    b23: function (name, val, price) {
         //为什么要搞这个折扣？答：在报商品活动的时候，折扣太小报不了。
+        if (!config[this.obj.siteNum]) { config[this.obj.siteNum] = {}; }
+        else if (!config[this.obj.siteNum].shopPro_price_count) { config[this.obj.siteNum].shopPro_price_count = []; }
+        let configArr = config[this.obj.siteNum].shopPro_price_count;
+        //////////////////////////////////////////////////////////
         let n2Arr = [], arr2 = Tool.shopPro_price
         for (let i = 0; i < arr2.length; i++) {
             n2Arr.push('<option value="' + arr2[i][0] + '" ' + (arr2[i][0] == val ? 'selected="selected"' : '') + '>' + arr2[i][0] + '.' + arr2[i][1] + '(' + configArr[i] + ')</option>');
@@ -573,24 +585,24 @@ var fun =
             alert("【商品ID】必须是数字。")
         }
         else if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
+            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&searchword=" + searchword + "&num=" + obj.params.num);
         } else { alert("请输入搜索内容"); }
     },
     c03: function (name, val) {
         if (val == "-1") {
-            Tool.openR("?jsFile=js15&site=" + obj.params.site);
+            Tool.openR("?jsFile=js15&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-2") {
-            Tool.openR("?jsFile=js37&site=" + obj.params.site);
+            Tool.openR("?jsFile=js37&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-21") {
-            Tool.openR("?jsFile=js59&site=" + obj.params.site);
+            Tool.openR("?jsFile=js59&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-22") {
-            Tool.openR("?jsFile=js58&site=" + obj.params.site);
+            Tool.openR("?jsFile=js58&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-23" || val == "-24") {
-            Tool.openR("?jsFile=js60&site=" + obj.params.site + "&" + name + "=" + val);
+            Tool.openR("?jsFile=js60&site=" + obj.params.site + "&" + name + "=" + val + "&num=" + obj.params.num);
         }
         else {
             Tool.open(name, val);
@@ -598,7 +610,7 @@ var fun =
     },
     c04: function (name, val) {
         if (val == "-1") {
-            Tool.openR("?jsFile=js10&site=" + obj.params.site);
+            Tool.openR("?jsFile=js10&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else {
             Tool.open(name, val);
@@ -606,10 +618,10 @@ var fun =
     },
     c05: function (name, val) {
         if (val == "-1") {
-            Tool.openR("?jsFile=js51&site=" + obj.params.site);
+            Tool.openR("?jsFile=js51&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-20") {
-            Tool.openR("?jsFile=js54&site=" + obj.params.site);
+            Tool.openR("?jsFile=js54&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else {
             Tool.open(name, val);
@@ -618,7 +630,7 @@ var fun =
     c06: function (fromid) {
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
             sql: "update @.table set @.status=-3 where @.fromid='" + fromid + "'",
         }]
         Tool.ajax.a01(data, Tool.reload)
@@ -626,13 +638,13 @@ var fun =
     c07: function (name, val) {
         let data = []
         if (val == "-1") {
-            Tool.openR("?jsFile=js57&site=" + obj.params.site);
+            Tool.openR("?jsFile=js57&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-2") {
             if (confirm('确定【本地更新时间】设置为【当前时间】吗?')) {
                 data = [{
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                     sql: "update @.table set @.self_uptime=" + Tool.gettime(""),
                 }]
                 Tool.ajax.a01(data, Tool.reload)
@@ -642,7 +654,7 @@ var fun =
             if (confirm('确定【新折扣<=8】的【本地更新时间】设置为【当前时间】吗?')) {
                 data = [{
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + obj.params.site,
+                    database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                     sql: "update @.table set @.self_uptime=" + Tool.gettime("") + " where @.newDiscount<=8",
                 }]
             }
@@ -654,10 +666,10 @@ var fun =
     },
     c08: function (I, val) {
         if (val == "-1") {
-            Tool.openR("?jsFile=js61&site=" + obj.params.site);
+            Tool.openR("?jsFile=js61&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-2") {
-            Tool.openR("?jsFile=js53&site=" + obj.params.site);
+            Tool.openR("?jsFile=js53&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else {
             Tool.open(I, val);
@@ -665,13 +677,13 @@ var fun =
     },
     c09: function (name, val) {
         if (val == "-1") {
-            Tool.openR("?jsFile=js59&site=" + obj.params.site);
+            Tool.openR("?jsFile=js59&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-2") {
-            Tool.openR("?jsFile=js58&site=" + obj.params.site);
+            Tool.openR("?jsFile=js58&site=" + obj.params.site + "&num=" + obj.params.num);
         }
         else if (val == "-3" || val == "-4") {
-            Tool.openR("?jsFile=js60&site=" + obj.params.site + "&" + name + "=" + val);
+            Tool.openR("?jsFile=js60&site=" + obj.params.site + "&" + name + "=" + val + "&num=" + obj.params.num);
         }
         else {
             Tool.open(name, val);

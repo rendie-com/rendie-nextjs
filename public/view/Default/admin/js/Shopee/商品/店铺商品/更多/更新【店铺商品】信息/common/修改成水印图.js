@@ -6,13 +6,13 @@ Object.assign(Tool, {
         //proid                         商品编码
         //manualreview_1688_fromid      1688商品ID
         //seller                        店铺参数信息
-        //site                          站点
-        a01: function (pic1, shopee_8pic, manualreview_1688_fromid, proid, seller, site, next, This, t) {
+        //siteNum                          站点
+        a01: function (pic1, shopee_8pic, manualreview_1688_fromid, proid, seller, siteNum, next, This, t) {
             let oo = {
                 pic1: pic1,
                 manualreview_1688_fromid: manualreview_1688_fromid,
                 seller: seller,
-                site: site,
+                siteNum: siteNum,
                 next: next,
                 This: This,
                 t: t
@@ -28,13 +28,13 @@ Object.assign(Tool, {
             let data = [{
                 action: "sqlite",
                 database: "shopee/商品/图片/shopee首图",
-                sql: "select @." + oo.site + "_watermark as watermark,@." + oo.site + "_video as video FROM @.table where @.proid='" + proid + "'",
+                sql: "select @." + oo.siteNum + "_watermark as watermark,@." + oo.siteNum + "_video as video FROM @.table where @.proid='" + proid + "'",
             }]
             for (let i = 0; i < shopee_8pic.length; i++) {
                 data.push({
                     action: "sqlite",
                     database: "shopee/商品/图片/shopee放大镜图",
-                    sql: "select @." + oo.site + "_watermark as watermark FROM @.table where @.src='" + shopee_8pic[i] + "'",
+                    sql: "select @." + oo.siteNum + "_watermark as watermark FROM @.table where @.src='" + shopee_8pic[i] + "'",
                 })
             }
             $("#state").html("正在获取商品水印图片...");
@@ -55,10 +55,10 @@ Object.assign(Tool, {
                     oo.temp_images = arr;//临时放一下
                     let html = '<tr><td class="right">视频：</td><td colspan="2"><textarea rows="10" class="form-control form-control-sm">' + JSON.stringify(oo.video, null, 2) + '</textarea></td></tr>'
                     $("#tbody").append(html);
-                    this.a04(oo)
+                    this.a04(oo);
                 }
                 else {
-                    Tool.pre(["请生成视频后，再来更新。" + oo.video])
+                    Tool.pre(["请生成视频后，再来更新。" + oo.video]);
                 }
             }
             else {
@@ -93,7 +93,7 @@ Object.assign(Tool, {
                 let data = [{
                     action: "sqlite",
                     database: "shopee/商品/图片/1688属性图",
-                    sql: "select " + Tool.fieldAs("src," + oo.site + "_watermark") + " FROM @.table where @.src in('" + arr.join("','") + "')",
+                    sql: "select " + Tool.fieldAs("src," + oo.siteNum + "_watermark") + " FROM @.table where @.src in('" + arr.join("','") + "')",
                 }]
                 oo.temp_attrPic = attrPic;//临时放一下
                 $("#state").html("正在获取水印图片...");
@@ -106,7 +106,7 @@ Object.assign(Tool, {
             for (let i = 0; i < arr.length; i++) {
                 //替换成水印图
                 if (arr[i].shopee) {
-                    let pic = this.b01(arr[i].shopee, t[0], oo.site)
+                    let pic = this.b01(arr[i].shopee, t[0], oo.siteNum)
                     if (pic) {
                         arr[i].shopee = pic;
                     }
@@ -127,11 +127,11 @@ Object.assign(Tool, {
             }
         },
         //能否找得到水印图
-        b01: function (pic, arr, site) {
+        b01: function (pic, arr, siteNum) {
             let rPic = "";
             for (let i = 0; i < arr.length; i++) {
                 if (pic == arr[i].src) {
-                    rPic = arr[i][site + "_watermark"];
+                    rPic = arr[i][siteNum + "_watermark"];
                     break;
                 }
             }

@@ -2,13 +2,15 @@
 Object.assign(Tool, {
     common_pic1_waterMark:
     {
-        a01: function (proid, pic1, key, seller, site, dom, next, This, t) {
+        a01: function (proid, pic1, key, seller, site, num, siteNum, dom, next, This, t) {
             let oo = {
                 proid: proid,
                 pic1: pic1,//这个是“全球商品”中的图片，所以一定是没有水印的。
                 key: key,
                 seller: seller,
                 site: site,
+                num: num,
+                siteNum: siteNum,
                 dom: dom,
                 next: next,
                 This: This,
@@ -21,7 +23,7 @@ Object.assign(Tool, {
             let data = [{
                 action: "sqlite",
                 database: "shopee/商品/图片/shopee首图",
-                sql: "select " + Tool.fieldAs("width,height,src," + oo.site + "_watermark") + " FROM @.table where @.proid='" + oo.proid + "' limit 1",
+                sql: "select " + Tool.fieldAs("width,height,src," + oo.siteNum + "_watermark") + " FROM @.table where @.proid='" + oo.proid + "' limit 1",
             }]
             Tool.ajax.a01(data, this.a03, this, oo);
         },
@@ -34,9 +36,9 @@ Object.assign(Tool, {
             else {
                 //说明是有数据没水印。
                 oo.dom.pic1A.html(this.b01(t[0][0].src));
-                if (t[0][0][oo.site + "_watermark"]) {
+                if (t[0][0][oo.siteNum + "_watermark"]) {
                     //跳过
-                    //Tool.pre(["有水印要跳过吗？", t[0][0][oo.site + "_watermark"]])
+                    //Tool.pre(["有水印要跳过吗？", t[0][0][oo.siteNum + "_watermark"]])
                     this.a07("", oo)
                 }
                 else {
@@ -48,30 +50,40 @@ Object.assign(Tool, {
             oo.src = t.src;//保存还要用到这个。
             let url = "https://s-cf-sg.shopeesz.com/file/" + oo.src;
             $("#state").html('正在生成水印图...');
-            if (oo.site == "my") {
+            if (oo.siteNum == "my") {
                 Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.com.my/choice.my", oo.key, this.a05, this, oo)
-            }
-            else if (oo.site == "br") {
+            } else if (oo.siteNum == "co") {
+                Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.com.co/cuponsjl.co", oo.key, this.a05, this, oo)
+            } else if (oo.siteNum == "cl") {
+                Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.cl/accessory.cl", oo.key, this.a05, this, oo)
+            } else if (oo.siteNum == "th") {
+                Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.co.th/sale.th", oo.key, this.a05, this, oo)
+            } else if (oo.siteNum == "vn") {
+                Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.vn/1688.vn", oo.key, this.a05, this, oo)
+            } else if (oo.siteNum == "ph") {
+                Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.ph/accessory.ph", oo.key, this.a05, this, oo)
+            } else if (oo.siteNum == "br") {
                 Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.com.br/cupons.br", oo.key, this.a05, this, oo)
-            }
-            else if (oo.site == "tw") {
+            } else if (oo.siteNum == "tw") {
                 Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.tw/discount.tw", oo.key, this.a05, this, oo)
-            }
-            else if (oo.site == "sg") {
+            } else if (oo.siteNum == "sg") {
                 Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.sg/accessory.sg", oo.key, this.a05, this, oo)
-            }
-            else if (oo.site == "mx") {
+            } else if (oo.siteNum == "sg2") {
+                Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.sg/jewelry..sg", oo.key, this.a05, this, oo)
+            } else if (oo.siteNum == "mx") {
+                Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.com.mx/accessory.mx", oo.key, this.a05, this, oo)
+            } else if (oo.siteNum == "mx2") {
                 Tool.drawPic1WaterMark.a01(url, t.width, t.height, "https://shopee.com.mx/coupons.mx", oo.key, this.a05, this, oo)
             }
             else {
-                Tool.pre("还没开发2025.1.13。。。")
+                Tool.pre("还没开发2025.1.13。。。" + oo.siteNum)
             }
         },
         a05: function (blob, oo) {
             oo.temp_pic = URL.createObjectURL(blob)
             oo.dom.pic1B.html('<img src="' + oo.temp_pic + '" width="500">')
             $("#state").html("正在上传图片...");
-            Tool.upPic.a01(oo.temp_pic, oo.seller, oo.site, this.a06, this, oo);//上传图片
+            Tool.upPic.a01(oo.temp_pic, oo.seller, oo.site, oo.num, this.a06, this, oo);//上传图片
         },
         a06: function (src, oo) {
             URL.revokeObjectURL(oo.temp_pic);//方法释放使用URL
@@ -84,7 +96,7 @@ Object.assign(Tool, {
                 let data = [{
                     action: "sqlite",
                     database: "shopee/商品/图片/shopee首图",
-                    sql: "update @.table set @." + oo.site + "_watermark='" + src + "' where @.proid='" + oo.proid + "'",
+                    sql: "update @.table set @." + oo.siteNum + "_watermark='" + src + "' where @.proid='" + oo.proid + "'",
                 }]
                 Tool.ajax.a01(data, this.a07, this, oo)
             }
@@ -95,7 +107,7 @@ Object.assign(Tool, {
         a07: function (t, oo) {
             let data = [{
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + oo.site,
+                database: "shopee/商品/店铺商品/" + oo.siteNum,
                 sql: "update @.table set @.isPic1WaterMark=1 where @.proid='" + oo.proid + "'",
             }]
             Tool.ajax.a01(data, this.a08, this, oo)

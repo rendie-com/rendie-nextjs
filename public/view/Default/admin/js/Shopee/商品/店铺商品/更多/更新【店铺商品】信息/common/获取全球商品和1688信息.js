@@ -5,7 +5,7 @@ Object.assign(Tool, {
         a01: function (proid, site, next, This, t) {
             let oo = {
                 proid: proid,
-                language1: this.b01(site),
+                language1: this.b01(site),//为什么多出一个？答：因为台湾标提单独拿出来翻译了。
                 language2: this.b02(site),
                 next: next,
                 This: This,
@@ -60,10 +60,16 @@ Object.assign(Tool, {
             switch (site) {//选择JS文件
                 case "tw": language = "tw_2"; break;
                 case "sg":
+                case "ph":
                 case "my":
                     language = "en"; break;
                 case "br": language = "pt"; break;
-                case "mx": language = "es"; break;
+                case "mx":
+                case "cl":
+                case "co":
+                    language = "es"; break;
+                case "th": language = "th"; break;
+                case "vn": language = "vi"; break;
             }
             return language
         },
@@ -72,10 +78,16 @@ Object.assign(Tool, {
             switch (site) {//选择JS文件
                 case "tw": language = "tw"; break;
                 case "sg":
+                case "ph":
                 case "my":
                     language = "en"; break;
                 case "br": language = "pt"; break;
-                case "mx": language = "es"; break;
+                case "mx":
+                case "cl":
+                case "co":
+                    language = "es"; break;
+                case "th": language = "th"; break;
+                case "vn": language = "vi"; break;
             }
             return language
         },
@@ -108,7 +120,7 @@ Object.assign(Tool, {
                 <td colspan="2">' + unit + t[0][0].unit + '</td>\
             </tr>'
             $("#tbody").append(html);
-            this.d03(sku, t[0][0].freight, oo)
+            this.d03(sku, t[0][0].freight, oo);
         },
         d03: function (sku, freight, oo) {
             if (sku) {

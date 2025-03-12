@@ -5,6 +5,7 @@ var fun =
     {
         A1: 1, A2: 0,
         seller: {},
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.jsFile       选择JS文件      
@@ -15,6 +16,7 @@ var fun =
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
 		    <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		    <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
 		    <tr><td class="right w150">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">条件：</td><td id="where" colspan="2"></td></tr>\
 		    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
@@ -48,35 +50,39 @@ var fun =
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "select @.proid as proid FROM @.table where @.is" + obj.params.site + "=1 and (" + arr.join(" or ") + ")" + Tool.limit(12, this.obj.A1),
+            sql: "select @.proid as proid FROM @.table where @.is" + this.obj.siteNum + "=1 and (" + arr.join(" or ") + ")" + Tool.limit(12, this.obj.A1),
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
                 database: "shopee/商品/全球商品",
-                sql: "select count(1) as total FROM @.table where @.is" + obj.params.site + "=1 and (" + arr.join(" or ") + ")",
+                sql: "select count(1) as count FROM @.table where @.is" + this.obj.siteNum + "=1 and (" + arr.join(" or ") + ")",
             })
         }
         Tool.ajax.a01(data, this.a05, this);
     },
     a05: function (t) {
-        if (this.obj.A2 == 0) { this.obj.A2 = Math.ceil(t[1][0].total / 12); }
-        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a06, this, null, t[0])
+        if (this.obj.A2 == 0) { this.obj.A2 = Math.ceil(t[1][0].count / 12); }
+        this.d01(t[0])
     },
-    a06: function (arr) {
-        let data = [],proidArr=[]
+    //////////////////////////////////////////////////////////
+    d01: function (arr) {
+        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d02, this, null, arr)
+    },
+    d02: function (arr) {
+        let data = [], proidArr = []
         for (let i = 0; i < arr.length; i++) {
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "select @.fromid as fromid FROM @.table  where @.proid='" + arr[i].proid + "'",
             })
             proidArr.push(arr[i].proid)
         }
         $("#proid").html(proidArr.join(" , "))
-        Tool.ajax.a01(data, this.a07, this);
+        Tool.ajax.a01(data, this.d03, this);
     },
-    a07: function (arr) {
+    d03: function (arr) {
         let data = [];
         for (let i = 0; i < arr.length; i++) {
             if (arr[i].length != 0) {
@@ -86,63 +92,53 @@ var fun =
                 })
             }
         }
-        this.d01(data)
+        this.d04(data)
     },
-    ///////////////////////////////////  
-    d01: function (data) {
+    d04: function (data) {
         let pArr = [
             "version=3.1.0",
             "source=seller_center",
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/v3/product/update_product/?" + pArr.join("&")
         $("#state").html("正在下架。。。");
-        gg.postFetch(url, JSON.stringify(data), this.d02, this)
+        gg.postFetch(url, JSON.stringify(data), this.d05, this)
     },
-    d02: function (oo) {
+    d05: function (oo) {
         if (oo.code == 0) {
             $("#state").html("正在更新下架。。。");
-            this.d03(oo.data.result)
+            this.d06(oo.data.result)
         }
         else if (oo.code == 1000100007) {//部分成功
-            this.d03(oo.data.result)
+            this.d06(oo.data.result)
         }
         else if (oo.code == 1000100006) {//全部失败
-            this.d03(oo.data.result)
+            this.d06(oo.data.result)
         }
         else {
             Tool.pre(["出错：", oo])
         }
     },
-    d03: function (arr) {
+    d06: function (arr) {
         let data = []
         for (let i = 0; i < arr.length; i++) {
             // @.status=-3       表示【-3.问题数据】
             // @.status=-4       表示【-4.下架失败】
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
                 sql: "update @.table set @.status=" + (arr[i].code ? -4 : -3) + ", @.uptime=" + Tool.gettime("") + " where @.fromId=" + arr[i].id,
             })
         }
-        Tool.ajax.a01(data, this.d04, this);
+        Tool.ajax.a01(data, this.d07, this);
     },
-    d04: function (t) {
-        let iserr = false;
-        for (let i = 0; i < t.length; i++) {
-            if (t[i].length != 0) { iserr = true; break; }
-        }
-        if (iserr) {
-            Tool.pre(["有出错", t]);
-        }
-        else {
-            $("#state").html("这一页下架完成。。。");
-            this.obj.A1++;
-            this.a04();
-        }
+    d07: function () {
+        $("#state").html("这一页下架完成。。。");
+        this.obj.A1++;
+        this.a04();
     },
 }
 fun.a01();

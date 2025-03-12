@@ -8,12 +8,13 @@ Object.assign(Tool, {
         //GlobalPro_fromid              全球商品ID
         //scale                         每包件数
         //shopPro_fromid                店铺商品ID
-        a01: function (model_list, attrPic, seller, site, global_fromid, shop_fromid, next, This, t) {
+        a01: function (model_list, attrPic, seller, site, num, global_fromid, shop_fromid, next, This, t) {
             let oo = {
                 model_list: model_list,
                 attrPic: attrPic,
                 seller: seller,
                 site: site,
+                num: Tool.int(num)-1,
                 global_fromid: global_fromid,
                 shop_fromid: shop_fromid,
                 next: next,
@@ -27,7 +28,7 @@ Object.assign(Tool, {
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
                 "mtsku_item_id=" + oo.global_fromid,
-                "cnsc_shop_id=" + oo.seller[oo.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.site][oo.num].shopId,
                 "cbsc_shop_region=" + oo.site
             ]
             let url = "https://seller.shopee.cn/api/v3/mtsku/get_mtsku_info/?" + arr.join("&");
@@ -38,7 +39,7 @@ Object.assign(Tool, {
         },
         d02: function (t, oo) {
             if (t.message == "success") {
-                this.d03(t.data.model_list, oo)
+                this.d03(t.data.model_list, oo);
             }
             else {
                 Tool.pre(["出错", t]);
@@ -47,10 +48,10 @@ Object.assign(Tool, {
         d03: function (arr, oo) {
             let GlobalPro_price = {}
             for (let i = 0; i < arr.length; i++) {
-                GlobalPro_price[arr[i].seller_sku] = arr[i].price_info.normal_price
+                GlobalPro_price[arr[i].seller_sku] = arr[i].price_info.normal_price;
             }
-            oo.temp_GlobalPro_price = GlobalPro_price
-            this.d04(oo)
+            oo.temp_GlobalPro_price = GlobalPro_price;
+            this.d04(oo);
         },
         d04: function (oo) {
             let arr = [
@@ -58,7 +59,7 @@ Object.assign(Tool, {
                 "SPC_CDS_VER=2",
                 "product_id=" + oo.shop_fromid,
                 "is_draft=false",
-                "cnsc_shop_id=" + oo.seller[oo.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.site][oo.num].shopId,
                 "cbsc_shop_region=" + oo.site
             ]
             let url = "https://seller.shopee.cn/api/v3/product/get_product_info?" + arr.join("&")
@@ -76,25 +77,30 @@ Object.assign(Tool, {
             }
         },
         e01: function (arr, model_list, oo) {
+            let iserr = false;
             for (let i = 0; i < arr.length; i++) {
-                let isImg = false;//是否有图片
+                let imgArr = [];//是否有图片
                 for (let j = 0; j < arr[i].value_list.length; j++) {
-                    if (arr[i].value_list[j].image_id) {
-                        isImg = true;
-                        break;
+                    if (arr[i].value_list[j].image_id) { imgArr = arr[i].value_list; break; }
+                }
+                /////////////////////////////////////////////////////
+                if (imgArr.length != 0) {
+                    if (imgArr.length == oo.attrPic.length) {
+                        for (let j = 0; j < arr[i].value_list.length; j++) {
+                            arr[i].value_list[j].image_id = oo.attrPic[j].shopee;
+                        }
+                    }
+                    else {
+                        iserr = true;
+                        Tool.at("图片属性个数不一样");
                     }
                 }
-                /////////////////////////////////////////////
-                if (isImg) {
-                    for (let j = 0; j < arr[i].value_list.length; j++) {
-                        arr[i].value_list[j].image_id = oo.attrPic[j].shopee;
-                    }
-                }
+                /////////////////////////////////////////////////////
             }
-            oo.product_info = {
-                std_tier_variation_list: arr
-            };//修改属性图片
-            this.e02(model_list, oo)
+            if (iserr == false) {
+                oo.product_info = { std_tier_variation_list: arr };//修改属性图片
+                this.e02(model_list, oo);
+            }
         },
         e02: function (arr, oo) {
             let model_list = [];

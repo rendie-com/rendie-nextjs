@@ -8,12 +8,14 @@ var fun =
     a01: function () {
         this.obj.A2 = this.obj.Aarr.length;
         //obj.params.site       站点
+        //obj.params.num        第几个店铺
         let html = Tool.header(obj.params.return, 'Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 标题_更新数量') + '\
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\
-		        <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr></tbody>\
-		        <tr><td class="right w150">状态进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
+		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr></tbody>\
+		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
+		        <tr><td class="right">状态进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr></tbody>\
             </table>\
         </div>'
@@ -25,7 +27,7 @@ var fun =
     a03: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + Tool.siteNum(obj.params.site, obj.params.num),
             sql: "select count(1) as total FROM @.table  where " + this.obj.Aarr[this.obj.A1 - 1][2],
         }]
         $("#state").html("正在统计数量");
@@ -38,7 +40,7 @@ var fun =
         this.a02();
     },
     a05: function () {
-        config[obj.params.site].shopPro_title_count = this.obj.A2arr;
+        config[Tool.siteNum(obj.params.site, obj.params.num)].shopPro_title_count = this.obj.A2arr;
         let data = [{
             action: "fs",
             fun: "writeFile",
