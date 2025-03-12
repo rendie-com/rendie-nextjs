@@ -3,7 +3,7 @@ var fun =
 {
     obj:
     {
-        A1: 1, Aarr: ["tw", "my", "br"],
+        A1: 1, Aarr: [],
         B1: 1, B2: 0,
         C1: 1, C2: 0, Carr: [],
         seller: {},
@@ -15,6 +15,7 @@ var fun =
             <table class="table table-hover align-middle mb-0">\
                 <tbody>\
                 <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
+                <tr><td class="right">站点：</td><td id="site"></td><td></td></tr>\
                 <tr><td class="right">站点进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
                 <tr><td class="right">商品条进进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
@@ -26,17 +27,35 @@ var fun =
         Tool.html(this.a02, this, html)
     },
     a02: function () {
-        Tool.login.a01(this.a03, this)
+        let data = [{
+            action: "sqlite",
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
+        }]
+        Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
+        let config = JSON.parse(t[0][0].config), Aarr = [];
+        for (let k in config) {
+            for (let i = 0; i < config[k].length; i++) {
+                Aarr.push([k, config[k][i].shopId, i + 1]);
+            }
+        }
+        this.obj.Aarr = Aarr;
+        this.obj.A2 = Aarr.length;
+        Tool.login.a01(this.a04, this);
+    },
+    a04: function (t) {
         this.obj.seller = t
-        this.a04();
+        this.d01();
     },
-    a04: function () {
-        Tool.x1x2("A", this.obj.A1, this.obj.Aarr.length, this.a05, this)
+    ///////////////////////////////////////////////////////
+    d01: function () {
+        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d02, this)
     },
-    a05: function () {
-        let site = this.obj.Aarr[this.obj.A1 - 1]
+    d02: function () {
+        let Aarr = this.obj.Aarr[this.obj.A1 - 1]
+        $("#site").html(Aarr[2] + "." + Tool.site(Aarr[0]));
         let arr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
@@ -44,15 +63,15 @@ var fun =
             "page_size=12",
             "list_type=deboosted",
             "count_list_types=sold_out,banned,deboosted,deleted,unlisted,reviewing,unpublished",
-            "cnsc_shop_id=" + this.obj.seller[site].shopId,
-            "cbsc_shop_region=" + site
+            "cnsc_shop_id=" + Aarr[1],
+            "cbsc_shop_region=" + Aarr[0]
         ]
         let url = "https://seller.shopee.cn/api/v3/mpsku/list/search_deboosted_product_list?" + arr.join("&")
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
         $("#state").html("正在获取第" + this.obj.B1 + "页商品。。。");
-        gg.getFetch(url,"json", this.a06, this);
+        gg.getFetch(url, "json", this.d03, this);
     },
-    a06: function (oo) {
+    d03: function (oo) {
         if (oo.code == 0) {
             if (!oo.data.page_info.page_size) oo.data.page_info.page_size = 1;//说明：这里这么写，是因为，没有测式数据，不知道下一页是什么样子。
             this.obj.B2 = Math.ceil(oo.data.page_info.total / oo.data.page_info.page_size)
@@ -60,14 +79,14 @@ var fun =
                 this.obj.Carr = oo.data.products
                 this.obj.C2 = oo.data.products.length;
             }
-            this.d01()
+            this.e01()
         }
         else if (oo.code == 429) {
             $("#state").html("请不要要求太频繁");
             //Tool.Time("1" 500,,this.a07, this,);
         }
         else {
-            Tool.pre(["出错", oo])
+            Tool.pre(["出错", oo]);
         }
     },
     /////////////////////////////////
@@ -79,13 +98,13 @@ var fun =
         return proid;
     },
     ///////////////////////////////////
-    d01: function () {
-        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d02, this, this.e02)
+    e01: function () {
+        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.e02, this, this.f02)
     },
-    d02: function () {
-        Tool.x1x2("C", this.obj.C1, this.obj.C2, this.d03, this, this.e01)
+    e02: function () {
+        Tool.x1x2("C", this.obj.C1, this.obj.C2, this.e03, this, this.f01)
     },
-    d03: function () {
+    e03: function () {
         let data = [], products = this.obj.Carr[this.obj.C1 - 1];
         if (products.deboosted_infos.reasons) {
             //将shopee给的类目ID,翻译成中文.
@@ -108,37 +127,39 @@ var fun =
                 }
             ]
         }
-        this.d04(data, products)
+        this.e04(data, products)
     },
-    d04: function (data1, products) {
-        let site = this.obj.Aarr[this.obj.A1 - 1]
+    e04: function (data1, products) {
+        let Aarr = this.obj.Aarr[this.obj.A1 - 1]
+        let siteNum = Tool.siteNum(Aarr[0], Aarr[2])
         let data2 = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + site,
+            database: "shopee/商品/店铺商品/" + siteNum,
             sql: "select " + Tool.fieldAs("fromid,proid") + " FROM @.table where @.fromid=" + products.id,
         },
         {
             action: "sqlite",
             database: "shopee/商品/违规或删除",
-            sql: "select 1 from @.table where @.site='" + site + "' and @.productId=" + products.id,
+            sql: "select 1 from @.table where @.site='" + siteNum + "' and @.productId=" + products.id,
         }].concat(data1)
-        Tool.ajax.a01(data2, this.d05, this, products)
+        Tool.ajax.a01(data2, this.e05, this, products)
     },
-    d05: function (t, products) {
+    e05: function (t, products) {
         let category_path = [];
         for (let i = 2; i < t.length; i++) {
             category_path.push(t[i][0].name)
         }
         let explanation = Tool.rpsql(products.deboosted_infos.reasons[0].explanation + "<hr/>" + products.deboosted_infos.reasons[0].hint_message + " " + category_path.join(" &gt; "));
-        this.d06(t, products, explanation)
+        this.e06(t, products, explanation)
     },
-    d06: function (t, products, explanation) {
+    e06: function (t, products, explanation) {
         let proid = this.b01(products.id, t[0][0])
         if (proid == "'【proid】丢失'") {
             Tool.pre(proid)
         }
         else {
-            let site = this.obj.Aarr[this.obj.A1 - 1]
+            let Aarr = this.obj.Aarr[this.obj.A1 - 1]
+            let siteNum = Tool.siteNum(Aarr[0], Aarr[2])
             let arrL = [
                 "@.productId",//商品ID
                 "@.proid",//商品编码
@@ -165,7 +186,7 @@ var fun =
                 products.deboosted_infos.reasons[0].deboost_type,//违规类型
                 Tool.rpsql(products.deboosted_infos.reasons[0].description),//违规原因
                 explanation,//建议
-                "'" + site + "'"//站点
+                "'" + siteNum + "'"//站点
             ];
             let sql = ""
             if (t[1].length == 0) {
@@ -173,7 +194,7 @@ var fun =
 
             }
             else {
-                sql = "update @.table set @.penalty_type=" + products.deboosted_infos.reasons[0].deboost_type + ",@.explanation=" + explanation + ",@.proid=" + proid + " where @.site='" + site + "' and @.productId=" + products.id
+                sql = "update @.table set @.penalty_type=" + products.deboosted_infos.reasons[0].deboost_type + ",@.explanation=" + explanation + ",@.proid=" + proid + " where @.site='" + siteNum + "' and @.productId=" + products.id
             }
             let data = [{
                 action: "sqlite",
@@ -181,31 +202,31 @@ var fun =
                 sql: sql,
             }]
             $("#state").html("正在更新本地商品状态。。。");
-            Tool.ajax.a01(data, this.d07, this)
+            Tool.ajax.a01(data, this.e07, this)
         }
     },
-    d07: function (t) {
+    e07: function (t) {
         if (t[0].length == 0) {
             this.obj.C1++
-            this.d02()
+            this.e02()
         }
         else {
             Tool.pre(["出错", t])
         }
     },
     //////////////////////////////////////
-    e01: function () {
+    f01: function () {
         this.obj.C1 = 1; this.obj.C2 = 0; this.obj.Carr = [];
         $("#C1").css("width", "0%"); $("#C1,#C2").html("");
         this.obj.B1++;
         $("#state").html("正在进入第" + this.obj.B1 + "页。。。");
-        this.d01();
+        this.e01();
     },
-    e02: function () {
+    f02: function () {
         this.obj.B1 = 1; this.obj.B2 = 0;
         $("#B1").css("width", "0%"); $("#B1,#B2").html("");
         this.obj.A1++;
-        this.a04();
+        this.d01();
     },
 }
 fun.a01();

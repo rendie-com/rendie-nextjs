@@ -3,11 +3,12 @@ Object.assign(Tool, {
     upPic://上传图片返回,上传好的图片地址。
     {
         //说明：当图片上传到【Shopee】时，不是正方形的图片，【Shopee】会自动转为正方形图片。
-        a01: function (pic, seller, site, next, This, t) {
+        a01: function (pic, seller, site, num, next, This, t) {
             let oo = {
                 pic: pic,
                 seller: seller,
                 site: site,
+                num: num,
                 next: next,
                 This: This,
                 t: t
@@ -38,7 +39,7 @@ Object.assign(Tool, {
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
                 "ratio=1",
-                "cnsc_shop_id=" + oo.seller[oo.site].shopId,
+                "cnsc_shop_id=" + oo.seller[oo.site][Tool.int(oo.num)-1].shopId,
                 "cbsc_shop_region=" + oo.site
             ]
             let url = "https://seller.shopee.cn/api/v3/general/upload_image/" + arr.join("&");
@@ -53,7 +54,7 @@ Object.assign(Tool, {
                 oo.next.apply(oo.This, [t.data.resource_id, oo.t]);
             }
             else {
-                Tool.pre(["上传图片出错", t])
+                Tool.pre(["上传图片出错", t]);
             }
         },
     },

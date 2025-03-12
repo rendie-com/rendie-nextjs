@@ -48,10 +48,10 @@
             path + '全球商品/更多/发布到【店铺商品】中去.js'
         ])); break;
         case "js15": Tool.scriptArr(["admin/js/Shopee/common.js", path + 'common.js', path + '店铺商品/config.js', path + '店铺商品/状态/更新数量.js']); break;
-        case "js16": Tool.scriptArr(loginPath.concat([path + '店铺商品/更多/获取【店铺商品】信息.js'])); break;
+        case "js16": Tool.scriptArr(loginPath.concat(["admin/js/Shopee/common.js", path + '店铺商品/更多/获取【店铺商品】信息.js'])); break;
         case "js17": Tool.scriptArr(loginPath.concat([path + 'common.js', path + '店铺商品/状态/下架.js'])); break;
         case "js18": Tool.scriptArr(loginPath.concat([path + 'common.js', path + '店铺商品/状态/上架.js'])); break;
-        case "js19": Tool.scriptArr([path + 'common.js', path + '违规或删除/config.js', path + '违规或删除/index.js']); break;
+        case "js19": Tool.scriptArr(["admin/js/Shopee/common.js", path + 'common.js', path + '违规或删除/config.js', path + '违规或删除/index.js']); break;
         case "js20": Tool.scriptArr(loginPath.concat([path + '违规或删除/获取【违规或删除】信息.js'])); break;
         case "js21": Tool.scriptArr([path + 'common.js', path + '违规或删除/config.js', path + '违规或删除/状态_更新数量.js']); break;
         case "js22": Tool.scriptArr([path + '图片/index.js']); break;
@@ -108,6 +108,7 @@
                 href: "../../../" + path + '全球商品_修改/common/视频.css',
             }).appendTo('head');
             Tool.scriptArr([
+                "admin/js/Shopee/common.js",
                 path + '全球商品/config.js',
                 path + '全球商品/common_绑定类目.js',
                 path + 'common.js',
@@ -170,14 +171,15 @@
         ])); break;
         case "js49": Tool.scriptArr(loginPath.concat([
             path + 'common.js',
-            path + '店铺商品/为该站点创建类目/common_创建热门关键词类目.js',
-            path + '店铺商品/为该站点创建类目/common_创建单位重量类目.js',
-            path + '店铺商品/为该站点创建类目/common_创建价格类目.js',
-            path + '店铺商品/为该站点创建类目/common_创建最低购买数量类目.js',
-            path + '店铺商品/为该站点创建类目/common_创建新品类目.js',
-            path + '店铺商品/为该站点创建类目/index.js'
+            path + '店铺商品/更多/为该站点创建类目/common/删除站点类目.js',
+            path + '店铺商品/更多/为该站点创建类目/common/创建热门关键词类目.js',
+            path + '店铺商品/更多/为该站点创建类目/common/创建单位重量类目.js',
+            path + '店铺商品/更多/为该站点创建类目/common/创建价格类目.js',
+            path + '店铺商品/更多/为该站点创建类目/common/创建最低购买数量类目.js',
+            path + '店铺商品/更多/为该站点创建类目/common/创建新品类目.js',
+            path + '店铺商品/更多/为该站点创建类目/index.js'
         ])); break;
-        case "js50": Tool.scriptArr(loginPath.concat([path + '店铺商品/更多/删除该站点类目.js'])); break;
+        case "js50": ; break;
         case "js51": Tool.scriptArr([
             path + 'common.js',
             "admin/js/Shopee/common.js",

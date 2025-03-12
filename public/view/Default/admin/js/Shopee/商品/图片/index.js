@@ -61,7 +61,7 @@ var fun =
         let html = Tool.header2(obj.params.jsFile) + '\
         <div class="p-2">\
             <div style="top:6px;position:relative;">'+ this.b01() + '</div>\
-            <ul class="makeHtmlTab" style="padding-left:20px;">\
+            <ul class="makeHtmlTab" style="padding-left:25px;">\
                 <li'+ (obj.params.database == "shopee首图" ? ' class="hover"' : "") + ' onclick="Tool.main(\'?jsFile=js28&database=shopee首图\')">shopee首图</li>\
                 <li'+ (obj.params.database == "shopee放大镜图" ? ' class="hover"' : "") + ' onclick="Tool.main(\'?jsFile=js28&database=shopee放大镜图\')">shopee放大镜图</li>\
                 <li'+ (obj.params.database == "1688属性图" ? ' class="hover"' : "") + ' onclick="Tool.main(\'?jsFile=js30&database=1688属性图\')">1688属性图片</li>\

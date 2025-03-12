@@ -34,7 +34,9 @@ Object.assign(Tool, {
             }
         },
         a04: function (src, oo) {
-            oo.pic_shopee[oo.pic[this.obj.B1 - 1]] = src;
+            if (src) {//一个橡素的图片是上传不了的。
+                oo.pic_shopee[oo.pic[this.obj.B1 - 1]] = src;
+            }
             this.obj.B1++;
             this.a02(oo);
         },

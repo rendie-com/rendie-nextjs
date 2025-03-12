@@ -35,6 +35,10 @@ var fun =
             action: "sqlite",
             database: "shopee/商品/违规或删除",
             sql: "select " + Tool.fieldAs("site,productid,proid,status,penalty_type,pic,name,myexperience,description,explanation,banned_time,uptime,addtime") + " FROM @.table" + this.b08() + " order by @.id desc" + Tool.limit(10, obj.params.page),
+        }, {
+            action: "sqlite",
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
@@ -47,28 +51,28 @@ var fun =
                 <td>'+ this.b03(arr[i].pic) + '</td>\
                 <td class="left p-0">'+ this.b09(arr[i].productid, arr[i].proid, arr[i].name, arr[i].description, arr[i].explanation) + '</td>\
                 <td class="p-0">'+ this.b04(arr[i].addtime, arr[i].uptime, arr[i].banned_time, arr[i].myexperience, arr[i].productid) + '</td>\
-                <td class="center">'+ this.b10(arr[i].site) + '</td>\
+                <td class="center">'+ Tool.site(arr[i].site) + '</td>\
                 <td>'+ this.b05(arr[i].status) + '</td>\
                 <td style="padding-left:25px;position:relative;">'+ this.b11(arr[i].penalty_type) + '</td>\
-           </tr>'
+           </tr>';
         }
         let html = Tool.header2(obj.params.jsFile) + '\
 		<div class="p-2">\
             <div class="m-3">注：这里的商品，不会随着商品的删除而删除。主要目的是禁限商品用的。</div>\
 			'+ this.b06() + '\
 			<table class="table align-top table-hover">\
-				<thead class="table-light">'+ this.b01() + '</thead>\
+				<thead class="table-light">'+ this.b01(t[2][0].config) + '</thead>\
 				<tbody>'+ html1 + '</tbody>\
 			</table>' + Tool.page(t[0][0].total, 10, obj.params.page) + '\
 		</div>'
         Tool.html(null, null, html)
     },
-    b01: function () {
+    b01: function (seller) {
         let html = '\
         <tr>\
           <th style="padding-left: 30px;position: relative;" class="w220 left" colspan="2">'+ this.b02() + '商品信息</th>\
           <th class="w200 center">时间 / 我的心得</th>\
-          <th class="w130 p-0">'+ this.b13(obj.params.site, "site") + '</th>\
+          <th class="w130 p-0">'+ this.b13(obj.params.site, "site", seller) + '</th>\
           <th class="w130 p-0">'+ this.b12(obj.params.status, "status", config.bannedPro_status_count) + '</th>\
           <th class="w200 p-0">'+ this.b14(obj.params.penalty_type, "penalty_type", config.bannedPro_penalty_type_count) + '</th>\
         </tr>'
@@ -161,22 +165,21 @@ var fun =
 		</ul>'
         return '\
         <table class="table mb-0 border">\
-            <tr><td class="right w100" style="padding-left:25px;position:relative;">'+ str1 + '商品ID：</td><td class="p-0">' + this.b15(productid, proid) + '</td></tr>\
+            <tr><td class="right w100" style="padding-left:25px;position:relative;">'+ str1 + '商品ID：</td><td class="p-0">' + this.b10(productid, proid) + '</td></tr>\
             <tr><td class="right">商品名称：</td><td><a href="https://seller.shopee.cn/portal/product/'+ productid + '" target="_blank">' + name + '</a></td></tr>\
             <tr><td class="right">违规原因：</td><td>' + description + '</td></tr>\
             <tr><td class="right">建议：</td><td>' + explanation + '</td></tr>\
         </table>'
     },
-    b10: function (val) {
-        let name = "未知：" + val
-        switch (val) {
-            case "tw": name = "台湾虾皮"; break;
-            case "my": name = "马来西亚"; break;
-            case "br": name = "巴西"; break;
-            case "mx": name = "墨西哥"; break;
-            case "sg": name = "新加坡"; break;
-        }
-        return name
+    b10: function (productid, proid) {
+        return '\
+        <table class="table mb-0">\
+            <tr>\
+            <td class="w150">'+ productid + '</td>\
+            <td class="right w150">商品编码：</td>\
+            <td class="p-0"><input type="text" class="form-control w200" value="'+ proid + '" onblur="fun.c03($(this),\'proid\',' + productid + ')" disabled></td>\
+            </tr>\
+        </table>'
     },
     b11: function (val) {
         let name = ""
@@ -209,13 +212,19 @@ var fun =
           ' + nArr.join("") + '\
         </select>';
     },
-    b13: function (val, name) {
+    b13: function (val, name, seller) {
+        let siteObj = JSON.parse(seller)
+        let optionArr = [];
+        for (let k in siteObj) {
+            for (let i = 0; i < siteObj[k].length; i++) {
+                let val2 = Tool.siteNum(k, (i + 1));
+                optionArr.push('<option value="' + val2 + '" ' + (val2 == val ? 'selected="selected"' : '') + '>' + Tool.site(k) + "（" + siteObj[k][i].shopName + '）</option>');
+            }
+        }
         return '\
         <select onChange="Tool.open(\''+ name + '\',this.options[this.selectedIndex].value)" class="form-select">\
             <option value="">来源站点</option>\
-            <option value="tw" '+ (val == "tw" ? 'selected="selected"' : '') + '>台湾虾皮</option>\
-            <option value="my" '+ (val == "my" ? 'selected="selected"' : '') + '>马来西亚</option>\
-            <option value="br" '+ (val == "br" ? 'selected="selected"' : '') + '>巴西</option>\
+             ' + optionArr.join("") + '\
         </select>'
     },
     b14: function (val, name, bannedPro_penalty_type_count) {
@@ -229,16 +238,6 @@ var fun =
             <option value="-1">更新数量</option>\
             ' + nArr.join("") + '\
 		</select>'
-    },
-    b15: function (productid, proid) {
-        return '\
-        <table class="table mb-0">\
-            <tr>\
-            <td class="w150">'+ productid + '</td>\
-            <td class="right w150">商品编码：</td>\
-            <td class="p-0"><input type="text" class="form-control w200" value="'+ proid + '" onblur="fun.c03($(this),\'proid\',' + productid + ')" disabled></td>\
-            </tr>\
-        </table>'
     },
     /////////////////////////////////////////////////
     c01: function (val) {

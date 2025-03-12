@@ -11,16 +11,23 @@ Object.assign(Tool, {
         </header>'
         return html;
     },
-    tab: function (jsFile, site) {
-        let html = '\
-       <ul class="makeHtmlTab">\
-            <li'+ (site == "sg" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=sg\')">新加坡</li>\
-            <li'+ (site == "tw" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=tw\')">台湾虾皮</li>\
-            <li'+ (site == "my" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=my\')">马来西亚</li>\
-            <li'+ (site == "br" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=br\')">巴西</li>\
-            <li'+ (site == "mx" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=mx\')">墨西哥</li>\
-        </ul>'
-        return html;
+    siteLanguage: function (site) {
+        let language
+        switch (site) {
+            case "tw": language = "tw"; break;
+            case "ph":
+            case "sg":
+            case "my":
+                language = "en"; break;
+            case "br": language = "pt"; break;
+            case "cl":
+            case "co":
+            case "mx":
+                language = "es"; break;
+            case "vn": language = "vi"; break;
+            case "th": language = "th"; break;
+        }
+        return language
     },
     BeforeReview: [
         [0, "未更新"],
@@ -39,7 +46,8 @@ Object.assign(Tool, {
         [13, "Option name length"],
         [14, "variation is out of limit7"],
         [15, "发货天数超过4天"],
-        [16, "图片出错"]
+        [16, "图片出错"],
+        [17, "ps_basicservice_error_10025"],
     ],
     penalty_type: [
         [0, "未违规"],
@@ -50,7 +58,16 @@ Object.assign(Tool, {
         [5, "资料不足"],
         [6, "改善商城商品"],
         [7, "其他上架规范"],
-        [8, "发布商品失败"]
+        [8, "发布商品失败"],
+        [9, "发布商品失败"],
+        [10, "发布商品失败"],
+        [11, "发布商品失败"],
+        [12, "发布商品失败"],
+        [13, "发布商品失败"],
+        [14, "发布商品失败"],
+        [15, "发布商品失败"],
+        [16, "发布商品失败"],
+        [17, "发布商品失败"],
     ],
     ManualReview_1688: [
         [0, "未审核"],

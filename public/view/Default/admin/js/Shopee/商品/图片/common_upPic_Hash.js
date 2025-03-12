@@ -7,7 +7,7 @@ Object.assign(Tool, {
                 fromid: fromid,
                 url: url,
                 domid2: domid2,
-                seller:seller,
+                seller: seller,
                 next: next,
                 This: This,
                 t: t
@@ -17,16 +17,24 @@ Object.assign(Tool, {
         },
         a02: function (oo) {
             $("#state").html("正在上传图片...");
-            Tool.upPic.a01(oo.url, oo.seller, "my", this.a03, this, oo);//上传图片
+            Tool.getImgBase64.a01(oo.url, this.a03, this, oo);
         },
-        a03: function (src, oo) {
+        a03: function (t, oo) {
+            if (t.width < 2 || t.height < 2) {
+                Tool.apply(false, oo.next, oo.This, oo.t);
+            }
+            else {
+                Tool.upPic.a01(oo.url, oo.seller, "my", 1, this.a04, this, oo);//上传图片
+            }
+        },
+        a04: function (src, oo) {
             oo.src = src;//返回值
-            $(oo.domid2).append(this.b01(src))
+            $(oo.domid2).append(this.b01(src));
             let url = "https://s-cf-sg.shopeesz.com/file/" + src;
             $("#state").html("正在新图Base64...");
-            Tool.getImgBase64.a01(url, this.a04, this, oo)
+            Tool.getImgBase64.a01(url, this.a05, this, oo);
         },
-        a04: function (t, oo) {
+        a05: function (t, oo) {
             if (t) {
                 oo.shopee_img = {
                     size: Tool.getBase64ImageSize(t.base64),
@@ -35,14 +43,14 @@ Object.assign(Tool, {
                     height: t.height
                 }
                 $("#state").html("正在获取【均值哈希】...");
-                Tool.GetAvgHash.a01(t.base64, this.a05, this, oo)
+                Tool.GetAvgHash.a01(t.base64, this.a06, this, oo)
             }
             else {
                 $("#state").html("图片403错误，延时1秒再打开。");
                 //Tool.Time("name", 1000, this.e01, this)
             }
         },
-        a05: function (t, oo) {
+        a06: function (t, oo) {
             let table = this.b03(oo.domid2)
             let data = [{
                 action: "sqlite",
@@ -54,21 +62,10 @@ Object.assign(Tool, {
                     sql: "insert into @." + table + "(@.fromid,@.src,@.hash,@.addtime,@.width,@.height,@.size)values(" + oo.fromid + ",'" + oo.shopee_img.src + "','" + t + "'," + Tool.gettime("") + "," + oo.shopee_img.width + "," + oo.shopee_img.height + "," + oo.shopee_img.size + ")"
                 }]
             }]
-            Tool.ajax.a01(data, this.a06, this, oo);
+            Tool.ajax.a01(data, this.a07, this, oo);
         },
-        a06: function (t, oo) {
-            if (t[0][0].list) {
-                if (t[0][0].list[0].length == 0) {
-                    Tool.apply(oo.src, oo.next, oo.This, oo.t)
-                }
-                else {
-                    Tool.pre(["插入图片出错001:", t])
-                }
-            }
-            else {
-                $("#state").html("添加图片出错,延时1秒再继续...");
-                Tool.Time("name", 1000, this.a02, this, oo)
-            }
+        a07: function (t, oo) {
+            Tool.apply(oo.src, oo.next, oo.This, oo.t);
         },
         /////////////////////////////
         b01: function (src) {//上传后图片
