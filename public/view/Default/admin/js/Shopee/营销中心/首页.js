@@ -11,7 +11,7 @@ var fun =
         this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num)
         //////////////////////////////////////////////////////////
         let data = [{
-            action: "sqlite",
+            action: "${default_db}",
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]

@@ -1,24 +1,29 @@
 'use strict';
 var fun =
 {
+    obj: {
+        siteNum: "",
+    },
     a01: function () {
         //obj.params.jsFile        选择JS文件
         obj.params.site = obj.params.site ? obj.params.site : "sg";//站点
         obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页
         obj.params.status = obj.params.status ? obj.params.status : "";//状态
+        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
+        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num)
         this.a02();
     },
     a02: function () {
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/营销中心/店内秒杀/" + obj.params.site,
+            database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/店内秒杀/" + obj.params.site + ".db"],
-                database: "shopee/营销中心/店内秒杀/" + obj.params.site,
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/店内秒杀/" + this.obj.siteNum + ".db"],
+                database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -27,16 +32,21 @@ var fun =
         let where = this.b03();
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/店内秒杀/" + obj.params.site,
+            database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
             sql: "select count(1) as total FROM @.table" + where,
         }, {
             action: "sqlite",
-            database: "shopee/营销中心/店内秒杀/" + obj.params.site,
+            database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
             sql: "select " + Tool.fieldAs("type,item_count,status,start_time,end_time,addtime,uptime") + " FROM @.table" + where + " order by @.addtime desc " + Tool.limit(10, obj.params.page),
+        }, {
+            action: "${default_db}",
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
+        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -49,7 +59,7 @@ var fun =
            </tr>'
         }
         let html = Tool.header(obj.params.jsFile, obj.params.site) + '\
-        <div class="p-2">'+ Tool.header3(obj.params.jsFile, obj.params.site) + '\
+        <div class="p-2">'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + '\
            <table class="table align-middle table-hover center">\
   			    <thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\
@@ -80,7 +90,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js11&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取【店内秒杀】信息</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js11&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取【店内秒杀】信息</a></li>\
         </ul>'
     },
     b03: function () {

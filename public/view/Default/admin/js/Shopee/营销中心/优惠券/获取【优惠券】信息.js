@@ -5,6 +5,7 @@ var fun =
     {
         A1: 1, A2: 0,// 页进度
         seller: {},
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.site       站点
@@ -13,6 +14,7 @@ var fun =
         <table class="table table-hover">\
             <tbody>\
    		        <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
                 <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
                 <tr><td class="right">页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
@@ -35,7 +37,7 @@ var fun =
             "offset=" + ((this.obj.A1 - 1) * 10),//第一页为“0”    第二页为“10”        第三页为：“20”
             "limit=10",
             "promotion_type=0",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
+            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
             "cbsc_shop_region=" + obj.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v3/voucher/list/?" + arr.join("&")
@@ -64,7 +66,7 @@ var fun =
         }
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/优惠券/" + obj.params.site,
+            database: "shopee/营销中心/优惠券/" + this.obj.siteNum,
             sql: "select @.voucher_id as voucher_id from @.table where @.voucher_id in(" + voucher_idArr.join(",") + ")",
         }]
         let oo = {
@@ -88,14 +90,14 @@ var fun =
             if (arr1.indexOf(arr2[i]) == -1) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/优惠券/" + obj.params.site,
+                    database: "shopee/营销中心/优惠券/" + this.obj.siteNum,
                     sql: oo.insertArr[i],
                 })
             }
             else {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/优惠券/" + obj.params.site,
+                    database: "shopee/营销中心/优惠券/" + this.obj.siteNum,
                     sql: oo.updateArr[i],
                 })
             }

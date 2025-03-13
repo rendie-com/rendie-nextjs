@@ -8,6 +8,7 @@ var fun =
         obj.params.field = obj.params.field ? obj.params.field : "1";//搜索字段
         obj.params.searchword = obj.params.searchword ? obj.params.searchword : "";//搜索关键词
         obj.params.status = obj.params.status ? obj.params.status : "";//状态
+        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
         this.a02();
     },
     a02: function () {
@@ -35,10 +36,15 @@ var fun =
             action: "sqlite",
             database: "shopee/营销中心/折扣/" + obj.params.site,
             sql: "select " + Tool.fieldAs("title,status,images,start_time,end_time,addtime") + " FROM @.table" + where + " order by @.addtime desc " + Tool.limit(10, obj.params.page),
+        }, {
+            action: "${default_db}",
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
+        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -51,7 +57,7 @@ var fun =
         }
         let html = Tool.header(obj.params.jsFile, obj.params.site) + '\
         <div class="p-2">\
-            '+ Tool.header3(obj.params.jsFile, obj.params.site) + this.b06() + '\
+            '+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b06() + '\
            <table class="table align-middle table-hover">\
   			    <thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\

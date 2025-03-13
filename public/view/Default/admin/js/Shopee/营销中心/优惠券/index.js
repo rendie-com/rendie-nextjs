@@ -1,6 +1,9 @@
 'use strict';
 var fun =
 {
+    obj: {
+        siteNum: "",
+    },
     a01: function () {
         //obj.params.jsFile        选择JS文件
         obj.params.site = obj.params.site ? obj.params.site : "sg";//站点
@@ -8,19 +11,21 @@ var fun =
         obj.params.field = obj.params.field ? obj.params.field : "1";//搜索字段
         obj.params.searchword = obj.params.searchword ? obj.params.searchword : "";//搜索关键词
         obj.params.fe_status = obj.params.fe_status ? obj.params.fe_status : "";//状态	
+        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
+        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num)
         this.a02();
     },
     a02: function () {
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/营销中心/优惠券/" + obj.params.site,
+            database: "shopee/营销中心/优惠券/" + this.obj.siteNum,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/优惠券/" + obj.params.site + ".db"],
-                database: "shopee/营销中心/优惠券/" + obj.params.site,
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/优惠券/" + this.obj.siteNum + ".db"],
+                database: "shopee/营销中心/优惠券/" + this.obj.siteNum,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -28,16 +33,21 @@ var fun =
     a03: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/优惠券/" + obj.params.site,
+            database: "shopee/营销中心/优惠券/" + this.obj.siteNum,
             sql: "select count(1) as total FROM @.table" + this.b11(),
         }, {
             action: "sqlite",
-            database: "shopee/营销中心/优惠券/" + obj.params.site,
+            database: "shopee/营销中心/优惠券/" + this.obj.siteNum,
             sql: "select " + Tool.fieldAs("rule,name,voucher_code,fe_display_coin_amount,value,discount,usage_quantity,fe_status,start_time,end_time,uptime,addtime") + " FROM @.table" + this.b11() + Tool.limit(10, obj.params.page),
+        }, {
+            action: "${default_db}",
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
+        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -59,7 +69,7 @@ var fun =
            </tr>'
         }
         let html = Tool.header(obj.params.jsFile, obj.params.site) + '\
-        <div class="p-2">'+ Tool.header3(obj.params.jsFile, obj.params.site) + this.b09() + '\
+        <div class="p-2">'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b09() + '\
            <table class="table align-middle center table-hover">\
   			    <thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\
@@ -95,7 +105,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js03&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取【优惠券】信息</a></li>\
+            <li onClick="Tool.openR(\'?jsFile=js03&site='+ obj.params.site + '&num='+ obj.params.num + '\');"><a class="dropdown-item pointer">*获取【优惠券】信息</a></li>\
 		</ul>'
     },
     b03: function (name, voucher_code, value) {
@@ -258,7 +268,7 @@ var fun =
     c02: function () {
         let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
         if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
+            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&num="+ obj.params.num + "&page=1&field=" + field + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },
 }

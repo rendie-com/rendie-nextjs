@@ -5,15 +5,15 @@ var fun =
     {
         A1: 1, A2: 0,
         B1: 1, B2: 0,
-        start_time: config[obj.params.site].discount_time,
+        start_time: 0,
         end_time: 0,
         siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
-
         //obj.params.jsFile         选择JS文件        
         //obj.params.site           站点
         //obj.params.return         返回URL 
+        this.obj.start_time = config[this.obj.siteNum].discount_time
         if (!this.obj.start_time) { this.obj.start_time = 0 }
         if (this.obj.start_time < Tool.gettime("")) {
             this.obj.start_time = Tool.gettime("") + 60 * 60 * 2//初始化 开始时间
