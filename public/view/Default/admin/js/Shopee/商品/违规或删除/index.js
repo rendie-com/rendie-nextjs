@@ -36,7 +36,7 @@ var fun =
             database: "shopee/商品/违规或删除",
             sql: "select " + Tool.fieldAs("site,productid,proid,status,penalty_type,pic,name,myexperience,description,explanation,banned_time,uptime,addtime") + " FROM @.table" + this.b08() + " order by @.id desc" + Tool.limit(10, obj.params.page),
         }, {
-            action: "sqlite",
+            action: "${default_db}",
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]

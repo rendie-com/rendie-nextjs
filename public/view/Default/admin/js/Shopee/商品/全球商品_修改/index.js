@@ -118,7 +118,7 @@ var fun =
                 sql: "select @.cn_keyword as br_keyword_cn_keyword FROM @.table where @.keyword='${br_ads_key}'",
             }]
         }, {
-            action: "sqlite",
+            action: "${default_db}",
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]

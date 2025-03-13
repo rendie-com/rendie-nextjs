@@ -68,8 +68,8 @@ let config={
     "shopPro_status_count": [
       0,
       0,
-      0,
-      103,
+      5,
+      98,
       0,
       0,
       0,
@@ -133,13 +133,13 @@ let config={
     "shopPro_status_count": [
       0,
       0,
-      4,
-      91,
+      0,
+      100,
       0,
       0,
       0,
       0,
-      492
+      482
     ],
     "shopPro_MinimumOrder_count": [
       84,
@@ -459,12 +459,12 @@ let config={
       0,
       0,
       0,
-      1000,
+      996,
       0,
       0,
       0,
       0,
-      60
+      62
     ],
     "shopPro_MinimumOrder_count": [
       266,
