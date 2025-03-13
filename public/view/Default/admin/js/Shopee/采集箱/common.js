@@ -20,12 +20,12 @@ Object.assign(Tool, {
   header4_b01: function () {
     return '\
     <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
-    <ul class="dropdown-menu">\
-        <li onClick="Tool.openR(\'?jsFile=js06&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*从店铺中获取粉丝</a></li>\
-        <li onClick="Tool.openR(\'?jsFile=js07&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*取消关注和关注</a></li>\
-        <li onClick="Tool.openR(\'?jsFile=js08&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取关注我的用户</a></li>\
-        <li onClick="Tool.openR(\'?jsFile=js09&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取我关注的用户</a></li>\
-        <li onClick="Tool.openR(\'?jsFile=js10&table=table&database=shopee/采集箱/粉丝/' + obj.params.site + '&count=100&field=rd_userid\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
-    </ul>'
+		<ul class="dropdown-menu">\
+        <li onClick="Tool.openR(\'?jsFile=js06&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*从店铺中获取粉丝</a></li>\
+        <li onClick="Tool.openR(\'?jsFile=js07&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*取消关注和关注</a></li>\
+        <li onClick="Tool.openR(\'?jsFile=js08&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取关注我的用户</a></li>\
+        <li onClick="Tool.openR(\'?jsFile=js09&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取我关注的用户</a></li>\
+        <li onClick="Tool.openR(\'?jsFile=js10&table=table&database=shopee/采集箱/粉丝/' + obj.params.site + '&num=' + obj.params.num + '&count=100&field=rd_userid\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+		</ul>'
   },
 })

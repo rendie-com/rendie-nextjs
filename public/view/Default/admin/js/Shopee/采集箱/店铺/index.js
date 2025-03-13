@@ -42,7 +42,7 @@ var fun =
             database: "shopee/采集箱/店铺/" + this.obj.siteNum,
             sql: "select " + Tool.fieldAs("shopname,follower_count,get_follower_time,following_count,is_official_shop,last_login_time,nickname,portrait,products,response_rate,response_time,shop_rating,shopee_verified_flag,show_official_shop_label,show_shopee_verified_label,userid,shopid,username,is_in_fss,ps_plus,rating_good,rating_normal,rating_bad,is_shopee_choice,shop_location") + " FROM @.table" + where + " order by @.get_follower_time desc" + Tool.limit(this.obj.size, obj.params.page),
         }, {
-            action: "sqlite",
+            action: "${default_db}",
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]

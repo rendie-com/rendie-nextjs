@@ -41,7 +41,7 @@ var fun =
             database: "shopee/采集箱/商品/" + this.obj.siteNum,
             sql: "select count(1) as Count FROM @.table" + this.b03(),
         }, {
-            action: "sqlite",
+            action: "${default_db}",
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]

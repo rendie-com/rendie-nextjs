@@ -6,6 +6,7 @@
         B1: 1, B2: 1,
         shopId: 0,
         dbnameObj: {},
+        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
     },
     a01: function () {
         //obj.params.jsFile         选择JS文件
@@ -19,6 +20,7 @@
             <table class="table table-hover align-middle">\
             <tbody>\
 		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+ 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
 		        <tr><td class="right">店铺ID：</td><td colspan="2" id="shopId"></td></tr>\
 		        <tr><td class="right">数据库进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">粉丝页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
@@ -32,7 +34,7 @@
         Tool.login.a01(this.a04, this);
     },
     a04: function (t) {
-        this.obj.shopId = t[obj.params.site].shopId;
+        this.obj.shopId = t[obj.params.site][Tool.int(obj.params.num) - 1].shopId;
         $("#shopId").html(this.obj.shopId)
         this.a05();
     },
@@ -42,7 +44,7 @@
     a06: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/粉丝/" + obj.params.site + "/" + (this.obj.A1.toString().padStart(3, '0')),
+            database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + (this.obj.A1.toString().padStart(3, '0')),
             sql: "update @.table set @.is_following=0 where @.is_following=1",
         }]
         //清空【我的粉丝】
@@ -67,7 +69,7 @@
             if (!t.data.nomore) { this.obj.B2++; }
             if (t.data.accounts) {
                 //@.is_following        表示是否为我的粉丝
-                Tool.accounts.a01(t.data.accounts, {}, "@.is_following", obj.params.site, this.d04, this)
+                Tool.accounts.a01(t.data.accounts, {}, "@.is_following", this.obj.siteNum, this.d04, this)
             }
             else {
                 $("#state").html("店铺的粉丝隐藏了，跳过。。。")
@@ -93,8 +95,8 @@
     },
     ////////////////////////////////////////////////////
     e01: function () {
-        if (!config[obj.params.site]) { config[obj.params.site] = {}; }
-        config[obj.params.site].is_following = this.obj.dbnameObj;
+        if (!config[this.obj.siteNum]) { config[this.obj.siteNum] = { is_following: {}, is_my_following: {} }; }
+        config[this.obj.siteNum].is_following = this.obj.dbnameObj;
         let data = [{
             action: "fs",
             fun: "writeFile",

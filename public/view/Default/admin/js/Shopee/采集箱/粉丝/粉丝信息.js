@@ -48,7 +48,7 @@ var fun =
             database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + obj.params.dbname,
             sql: "select " + Tool.fieldAs("id,last_active_time,follow_time,userid,shopid,status,follow_count,notFollow_count,is_preferred_plus,is_official_shop,is_shopee_verified,is_following,is_my_following,is_seller,portrait,shopname,username") + " FROM @.table" + where + this.b14() + Tool.limit(10, obj.params.page, "sqlite"),
         }, {
-            action: "sqlite",
+            action: "${default_db}",
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
@@ -109,15 +109,12 @@ var fun =
         return html;
     },
     b02: function () {
-        return '\
-        <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
-		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js06&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*从店铺中获取粉丝</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js07&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*取消关注和关注</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js08&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取关注我的用户</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js09&site='+ obj.params.site + '\');"><a class="dropdown-item pointer">*获取我关注的用户</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js10&table=table&database=shopee/采集箱/粉丝/' + obj.params.site + '&count=100&field=rd_userid\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
-		</ul>'
+        let str = '', dbname;
+        for (let i = 0; i < 100; i++) {
+            dbname = (i + 1).toString().padStart(3, '0')
+            str += '<li class="dropdown-item pointer" onclick="fun.c05(\'' + dbname + '\')">【' + dbname + '】</li>'
+        }
+        return '<ul class="dropdown-menu">' + str + '</ul>'
     },
     b03: function () {
         let arr = [];
@@ -166,7 +163,7 @@ var fun =
         return '\
         <div class="input-group w-50 m-2">\
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dbname" value="'+ obj.params.dbname + '">【' + obj.params.dbname + '】库数库</button>\
-            '+ this.b15(obj.params.dbname) + '\
+            '+ this.b02(obj.params.dbname) + '\
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b05(obj.params.field) + '</button>\
             <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c01(1)">用户ID</li>\
@@ -250,14 +247,6 @@ var fun =
             }
         }
         return where;
-    },
-    b15: function () {
-        let str = '', dbname;
-        for (let i = 0; i < 100; i++) {
-            dbname = (i + 1).toString().padStart(3, '0')
-            str += '<li class="dropdown-item pointer" onclick="fun.c05(\'' + dbname + '\')">【' + dbname + '】</li>'
-        }
-        return '<ul class="dropdown-menu">' + str + '</ul>'
     },
     ///////////////////////////
     c01: function (val) {
