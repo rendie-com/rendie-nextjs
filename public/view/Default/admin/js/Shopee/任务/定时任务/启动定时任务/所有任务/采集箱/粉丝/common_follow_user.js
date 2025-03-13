@@ -38,15 +38,20 @@ Object.assign(Tool, {
                 this.d01(oo);
             }
             else if (t.error == "error_bad_gateway") {
-                Tool.Time("name", 200, this.a02, this, oo)
+                $("#state").html("1.出错正在重试" + t.error)
+                Tool.Time("name", 2000, this.a02, this, oo)
             }
             else if (t.message == "current shop can not access the current api") {
-                Tool.Time("name", 200, this.a02, this, oo)
+                $("#state").html("2.出错正在重试" + t.error)
+                Tool.Time("name", 2000, this.a02, this, oo)
             }
             else if (t.message == "dependency error") {
-                Tool.Time("name", 200, this.a02, this, oo)
+                $("#state").html("3.可能是找不到的用户ID.---给过。")
+                //Tool.Time("name", 2000, this.a02, this, oo)
+                this.d01(oo);
             } else if (t.message == "illegal request") {
-                Tool.Time("name", 200, this.a02, this, oo)
+                $("#state").html("4.出错正在重试" + t.error)
+                Tool.Time("name", 2000, this.a02, this, oo)
             }
             else {
                 Tool.pre(["出错2025.2.6", t])
