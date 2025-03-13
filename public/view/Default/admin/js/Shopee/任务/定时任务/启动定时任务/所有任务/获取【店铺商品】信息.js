@@ -2,18 +2,20 @@
 var task = {
     obj:
     {
-        C1: 1, C2: 0,
+        D1: 1, D2: 0,
     },
-    a01: function (seller, site, next, This, t) {
+    a01: function (seller, site, num, next, This, t) {
         let oo = {
             seller: seller,
             site: site,
+            num: num,
             next: next,
             This: This,
-            t: t
+            t: t,
+            siteNum: Tool.siteNum(site, num),
         }
         $("#tbody").html('\
-        <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
+        <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('D') + '</tr>\
         <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>\
         <tr><td class="right">更新字段：</td><td id="updateFields" colspan="2"></td></tr>');
         this.a02(oo);
@@ -23,10 +25,10 @@ var task = {
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "update @.table set @.is" + oo.site + "=0",
+            sql: "update @.table set @.is" + oo.siteNum + "=0",
         }, {
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + oo.site,
+            database: "shopee/商品/店铺商品/" + oo.siteNum,
             sql: "update @.table set @.status=0",
         }]
         Tool.ajax.a01(data, this.a03, this, oo);
@@ -106,21 +108,21 @@ var task = {
         let arr = [
             "SPC_CDS=" + oo.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "page_number=" + this.obj.C1,
+            "page_number=" + this.obj.D1,
             "page_size=12",
             "list_type=all",
             "count_list_types=sold_out,banned,deboosted,deleted,unlisted,reviewing",
-            "cnsc_shop_id=" + oo.seller[oo.site].shopId,
+            "cnsc_shop_id=" + oo.seller[oo.site][oo.num - 1].shopId,
             "cbsc_shop_region=" + oo.site
         ]
         let url = "https://seller.shopee.cn/api/v3/mpsku/list/get_product_list?" + arr.join("&")
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
-        $("#state").html("正在获取第" + this.obj.C1 + "页商品。。。");
+        $("#state").html("正在获取第" + this.obj.D1 + "页商品。。。");
         gg.getFetch(url, "json", this.d02, this, oo);
     },
     d02: function (o1, o2) {
         if (o1.code == 0) {
-            this.obj.C2 = Math.ceil(o1.data.page_info.total / o1.data.page_info.page_size)
+            this.obj.D2 = Math.ceil(o1.data.page_info.total / o1.data.page_info.page_size)
             o2.products = o1.data.products
             this.d03(o2)
         }
@@ -138,7 +140,7 @@ var task = {
         }
     },
     d03: function (oo) {
-        Tool.x1x2("C", this.obj.C1, this.obj.C2, this.d04, this, this.e01, oo)
+        Tool.x1x2("D", this.obj.D1, this.obj.D2, this.d04, this, this.e01, oo)
     },
     d04: function (oo) {
         let arrL = [
@@ -180,23 +182,23 @@ var task = {
             }
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + oo.site,
+                database: "shopee/商品/店铺商品/" + oo.siteNum,
                 sql: "select @.fromid as fromid from @.table where @.fromid=" + oo.products[i].id,
                 list: [{
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + oo.site,
+                    database: "shopee/商品/店铺商品/" + oo.siteNum,
                     sql: "update @.table set " + updateArr.join(",") + "  where @.fromid=" + oo.products[i].id,
                 }],
                 elselist: [{
                     action: "sqlite",
-                    database: "shopee/商品/店铺商品/" + oo.site,
+                    database: "shopee/商品/店铺商品/" + oo.siteNum,
                     sql: "insert into @.table(@.self_uptime," + arrL.join(",") + ")values(" + Tool.gettime("") + "," + arrR.join(",") + ")",
                 }]
             })
             data.push({
                 action: "sqlite",
                 database: "shopee/商品/全球商品",
-                sql: "update @.table set @.is" + oo.site + "=1 where @.proid=" + Tool.rpsql(oo.products[i].parent_sku),
+                sql: "update @.table set @.is" + oo.siteNum + "=1 where @.proid=" + Tool.rpsql(oo.products[i].parent_sku),
             })
         }
         $("#updateFields").html(this.b03(arrL));
@@ -216,18 +218,18 @@ var task = {
             Tool.pre(["有出错", t]);
         }
         else {
-            this.obj.C1++;
-            $("#state").html("正在进入第" + this.obj.C1 + "页。。。");
+            this.obj.D1++;
+            $("#state").html("正在进入第" + this.obj.D1 + "页。。。");
             Tool.Time("name", 0, this.d01, this, oo);
         }
     },
     //////////////////////////////
     e01: function (oo) {
         this.obj = {
-            C1: 1, C2: 0,
+            D1: 1, D2: 0,
         }
-        $("#C1").css("width", "0%");
-        $("#C1,#C2").html("");
+        $("#D1").css("width", "0%");
+        $("#D1,#D2").html("");
         oo.next.apply(oo.This, [oo.t]);
     },
 }
