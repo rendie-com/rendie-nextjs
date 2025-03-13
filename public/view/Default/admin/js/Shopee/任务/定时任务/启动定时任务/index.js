@@ -57,7 +57,7 @@ var fun =
     //////////////////////////////////////
     c01: function () {
         if (!this.obj.stop) {
-            Tool.Time("time", 1000, this.c02, this);
+            Tool.Time("time1", 1000, this.c02, this);
         }
     },
     c02: function () {
