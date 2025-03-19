@@ -11,8 +11,7 @@ Object.assign(Tool, {
             for (let k in dbnameObj) {
                 Farr.push(k)
             }
-            this.obj.Farr = Farr;
-            this.obj.F2 = Farr.length;
+            this.obj.Farr = Farr; this.obj.F2 = Farr.length;
             this.a02(oo);
         },
         a02: function (oo) {
@@ -39,7 +38,7 @@ Object.assign(Tool, {
         },
         ////////////////////
         d01: function (oo) {
-            if (this.obj.G1 <= this.obj.H2 - 1) {
+            if (this.obj.G1 <= this.obj.H2 - 2) {
                 $("#state").html("不用取关了")
                 this.e01(oo)
             }
@@ -109,9 +108,7 @@ Object.assign(Tool, {
             this.a02(oo);
         },
         f02: function (oo) {
-            this.obj.F1 = 1
-            this.obj.F2 = 0
-            this.obj.Farr = []
+            this.obj.F1 = 1; this.obj.F2 = 0; this.obj.Farr = [];
             oo.next.apply(oo.This, [oo.t])
         },
     }
