@@ -38,7 +38,7 @@ Object.assign(Tool, {
         },
         ////////////////////
         d01: function (oo) {
-            if (this.obj.G1 <= this.obj.H2 - 2) {
+            if (this.obj.G1 <= this.obj.H2 - 1) {
                 $("#state").html("不用取关了")
                 this.e01(oo)
             }
