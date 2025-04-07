@@ -265,12 +265,12 @@ var fun =
     },
     c03: function (This, val1, id) {
         let val2 = This.val(), timestamp = 0;
-        if (val2 != " " && val2) { timestamp = new Date(val2).getTime() / 1000; }
+        if (val2 != " " && val2 && val2 != "0") { timestamp = new Date(val2).getTime() / 1000; }
         if (timestamp != val1) {
             This.attr("disabled", true);
             let data = [{
                 action: "sqlite",
-                database: "shopee/采集箱/粉丝/" + obj.params.site + "/" + obj.params.dbname,
+                database: "shopee/采集箱/粉丝/" + Tool.siteNum(obj.params.site, obj.params.num) + "/" + obj.params.dbname,
                 sql: "update @.table set @.follow_time=" + timestamp + " where @.id=" + id,
             }]
             Tool.ajax.a01(data, this.c04, this, This);
