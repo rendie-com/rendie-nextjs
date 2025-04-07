@@ -76,7 +76,7 @@ var fun =
                 <td class="p-0">'+ this.b07(arr[i].last_active_time, arr[i].follow_time, arr[i].id) + '</td>\
             </tr>'
         }
-        let html = Tool.header2(obj.params.jsFile, obj.params.site) + '\
+        let html = Tool.header2(obj.params.jsFile, obj.params.site, obj.params.num) + '\
         <div class="p-2">\
             '+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + Tool.header4(obj.params.site, 2) + this.b06() + '\
         	<table class="table align-middle table-hover center">\
@@ -111,10 +111,10 @@ var fun =
     b02: function () {
         let str = '', dbname;
         for (let i = 0; i < 100; i++) {
-            dbname = (i + 1).toString().padStart(3, '0')
+            dbname = (i + 1).toString().padStart(3, '0');
             str += '<li class="dropdown-item pointer" onclick="fun.c05(\'' + dbname + '\')">【' + dbname + '】</li>'
         }
-        return '<ul class="dropdown-menu">' + str + '</ul>'
+        return '<ul class="dropdown-menu">' + str + '</ul>';
     },
     b03: function () {
         let arr = [];
@@ -151,7 +151,7 @@ var fun =
     b05: function (val) {
         let name = "";
         switch (val) {
-            case "1": name = "用户ID"; break;
+            case "1": name = "用户ID（自动选择数据库）"; break;
             case "2": name = "店铺ID"; break;
             case "3": name = "店铺名称"; break;
             case "4": name = "用户名"; break;
@@ -166,7 +166,7 @@ var fun =
             '+ this.b02(obj.params.dbname) + '\
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b05(obj.params.field) + '</button>\
             <ul class="dropdown-menu">\
-                <li class="dropdown-item pointer" onclick="fun.c01(1)">用户ID</li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(1)">用户ID（自动选择数据库）</li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)">店铺ID</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(3)">店铺名称</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(4)">用户名称</a></li>\
@@ -242,8 +242,8 @@ var fun =
                 case "2":
                 case "3":
                 case "4":
-                    where = " order by @.last_active_time asc"; break;//
-                case "2": where = " order by @.follow_time desc"; break;//
+                    where = " order by @.last_active_time asc"; break;
+                case "2": where = " order by @.follow_time desc"; break;
             }
         }
         return where;
@@ -259,13 +259,15 @@ var fun =
             alert("【商品ID】或【商品ID】必须是数字。")
         }
         else if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
+            if (field == "1") { obj.params.dbname = Tool.remainder3(Tool.int(searchword), 100); }
+            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&dbname=" + obj.params.dbname + "&num=" + obj.params.num + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },
-    c03: function (This, val, id) {
-        This.attr("disabled", true);
-        const timestamp = new Date(This.val()).getTime() / 1000;
-        if (timestamp != val && val != "") {
+    c03: function (This, val1, id) {
+        let val2 = This.val(), timestamp = 0;
+        if (val2 != " " && val2) { timestamp = new Date(val2).getTime() / 1000; }
+        if (timestamp != val1) {
+            This.attr("disabled", true);
             let data = [{
                 action: "sqlite",
                 database: "shopee/采集箱/粉丝/" + obj.params.site + "/" + obj.params.dbname,

@@ -38,9 +38,9 @@ var fun =
               <td>'+ dbname + '</td>\
               <td>'+ (is_following ? is_following : '') + '</td>\
               <td>'+ is_my_following + '</td>\
-            </tr>'
+            </tr>';
         }
-        let html = Tool.header2(obj.params.jsFile, obj.params.site) + '\
+        let html = Tool.header2(obj.params.jsFile, obj.params.site, obj.params.num) + '\
         <div class="p-2">\
             '+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + Tool.header4(obj.params.site, 1) + '\
         	<table class="table align-middle table-hover center">\

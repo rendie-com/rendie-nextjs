@@ -73,7 +73,7 @@ var fun =
                 <td class="p-0">'+ this.b07(arr[i].last_login_time, arr[i].get_follower_time) + '</td>\
             </tr>'
         }
-        let html = Tool.header2(obj.params.jsFile, obj.params.site) + '\
+        let html = Tool.header2(obj.params.jsFile, obj.params.site,obj.params.num) + '\
 		<div class="p-2">\
 			'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b06() + '\
 			<table class="table align-middle table-hover center">\
