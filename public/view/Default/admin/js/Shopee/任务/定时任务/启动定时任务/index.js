@@ -5,7 +5,8 @@ var fun =
         A1: 1, A2: 0, Aobj: {},
         B1: 1, B2: 0, Barr: [],
         C1: 1, C2: 0,
-        seller: {}, site: "",
+        seller: {}, 
+        site: "",
         runtime: 0,//运行时时间
         stop: false,
     },

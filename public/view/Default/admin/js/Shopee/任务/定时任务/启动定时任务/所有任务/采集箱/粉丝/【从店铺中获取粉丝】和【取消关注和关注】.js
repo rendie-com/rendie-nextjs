@@ -98,10 +98,11 @@ var task = {
     d02: function (oo) {
         let url = "https://" + (oo.site == "tw" ? "xiapi" : oo.site) + ".xiapibuy.com/api/v4/pages/get_follower_list?limit=20&offset=" + ((this.obj.E1 - 1) * 20) + "&shopid=" + this.obj.Cobj.shopid
         $("#url").html(url);
-        $("#state").html("正在获取店铺的粉丝。。。")
+        $("#state").html("正在获取店铺的粉丝。。。【" + oo.site + "】")
         gg.getFetch(url, "json", this.d03, this, oo)
     },
     d03: function (t, oo) {
+        $("#state").html("已获取店铺的粉丝。")
         if (t.data) {
             if (t.data.accounts) {
                 if (t.data.accounts[0].last_active_time < this.obj.Cobj.get_follower_time) {
