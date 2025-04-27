@@ -108,7 +108,7 @@ var task = {
     },
     d03: function (t, oo) {
         $("#state").html("已获取店铺的粉丝。")
-        if (t.data) {
+        if (t && t.data) {
             if (t.data.accounts) {
                 if (t.data.accounts[0].last_active_time < this.obj.Cobj.get_follower_time) {
                     //表示活跃时间小于我的采集时间，就不用采集了。
