@@ -3,9 +3,9 @@ var fun =
     obj:
     {
         A1: 1, A2: 0, Aobj: {},
-        B1: 1, B2: 0, Barr: [],
-        C1: 1, C2: 0,
-        seller: {}, 
+        B1: 5, B2: 0, Barr: [],
+        C1: 2, C2: 0,
+        seller: {},
         site: "",
         runtime: 0,//运行时时间
         stop: false,
@@ -139,12 +139,13 @@ var fun =
     f02: function (t) {
         if (t[0].length == 0) {
             this.obj.B1 = 1;
-            $("#B1").css("width", "0%"); $("#B1,#B2,#site").html("");
+            $("#B1").css("width", "0%");
+            $("#B1,#B2,#site").html("");
             this.obj.A1++;
             this.d01();
         }
         else {
-            Tool.pre(["出错2024.12.21-16:03", t])
+            Tool.pre(["出错2024.12.21-16:03", t]);
         }
     },
     f03: function () {
