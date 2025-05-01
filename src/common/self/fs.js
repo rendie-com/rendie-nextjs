@@ -138,6 +138,7 @@ export const self_fs = {
           resolve("创建目录失败:" + err1);
         } else {
           //下载 
+         
           axios({
             url,
             method: 'GET',
@@ -161,8 +162,9 @@ export const self_fs = {
               writer.close();
             });
           }).catch((error) => {
+            console.log(error)
             // 这里可以处理下载失败的情况
-            resolve(error.status);
+            resolve("error:"+error.status);
           });
         }
       })

@@ -6,9 +6,9 @@ import { fun } from '../../common/fun.js'
 
 export const config = {
   api: {
-    responseLimit: '5mb',
+    responseLimit: '10mb',
     bodyParser: {
-      sizeLimit: '5mb',
+      sizeLimit: '10mb',
     },
   },
 };
