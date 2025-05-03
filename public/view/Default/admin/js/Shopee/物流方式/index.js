@@ -10,7 +10,6 @@ var fun =
         }
     },
     a02: function () {
-        //obj.params.jsFile     表示选择JS文件
         let data = [{
             action: "fs",
             fun: "access_sqlite",
@@ -30,12 +29,16 @@ var fun =
             action: "sqlite",
             database: "shopee/物流方式",
             sql: "select " + Tool.fieldAs("id,name,cn_name,currency_unit,currency_symbol,description,cargo_types") + " FROM @.table" + (obj.params.site ? " where @.id=" + obj.params.site : ""),
+        }, {
+            action: "sqlite",
+            database: "shopee/物流方式",
+            sql: "select " + Tool.fieldAs("id,cn_name") + " FROM @.table",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
         let arr1 = t[0];
-        let html = "", platform = [];
+        let html = "";
         for (let i = 0; i < arr1.length; i++) {
             html += '\
             <tr>\
@@ -45,32 +48,31 @@ var fun =
                 <td>'+ arr1[i].currency_symbol + '</td>\
                 <td class="p-0">'+ this.b03(arr1[i].cargo_types, arr1[i].description, arr1[i].cn_name) + '</td>\
             </tr>';
-            platform.push([arr1[i].id, arr1[i].cn_name])
+           
         }
         html = '\
         <header class="panel-heading">Shopee &gt; 物流方式</header>\
 		<div class="p-2">\
 			<table class="table center align-middle table-striped">\
-				<thead class="table-light">'+ this.b01(platform) + '</thead>\
+				<thead class="table-light">'+ this.b01(t[1]) + '</thead>\
 				<tbody>'+ html + '</tbody>\
 			</table><div class="p-2 m-2">Shopee普货指的是尺寸和重量都较小的商品，而特货则是指尺寸和重量较大的商品。</div>\
 		</div>'
         Tool.html(null, null, html)
     },
     ////////////////////////////////////////////////////////////////////
-    b01: function (platform) {
-
+    b01: function (arr) {        
         let html = '\
         <tr>\
             <th style="padding-left:25px;position: relative;">'+ this.b02() + '国家代码</th>\
-            <th class="p-0">'+ this.b07(obj.params.site, platform) + '</th>\
+            <th class="p-0">'+ this.b07(obj.params.site, arr) + '</th>\
             <th>货币单位</th>\
             <th>货币符号</th>\
             <th></th>\
         </tr>'
         return html;
     },
-    b02: function () {
+    b02: function () {        
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
@@ -199,7 +201,7 @@ var fun =
     b07: function (val, arr) {
         let nArr = [];
         for (let i = 0; i < arr.length; i++) {
-            nArr.push('<option value="' + arr[i][0] + '" ' + (arr[i][0] == val ? 'selected="selected"' : '') + '>' + arr[i][1] + '</option>');
+            nArr.push('<option value="' + arr[i].id + '" ' + (""+arr[i].id == val ? 'selected="selected"' : '') + '>' + arr[i].cn_name + '</option>');
         }
         return '\
         <select onChange="Tool.open(\'site\',this.options[this.selectedIndex].value)" class="form-select">\
