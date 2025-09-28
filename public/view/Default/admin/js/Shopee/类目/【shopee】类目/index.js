@@ -3,25 +3,12 @@ var fun =
 {
   a01: function () {
     //o.params.jsFile     表示选择JS文件
-    // let data = [{
-    //   action: "fs",
-    //   fun: "access_sqlite",
-    //   database: "shopee/类目/类目",
-    //   mode: 0,
-    //   elselist: [{
-    //     action: "fs",
-    //     fun: "download_sqlite",
-    //     urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/类目/类目.db"],
-    //     database: "shopee/类目/类目"
-    //   }]
-    // }]
-    // Tool.ajax.a01(data, this.a02, this);
-    this.a02()
+    Tool.download_sqlite.a01(["shopee/类目/index"], this.a02, this)
   },
   a02: function (t) {
     let data = [{
       action: "sqlite",
-      database: "shopee/类目/类目",
+      database: "shopee/类目/index",
       sql: "select " + Tool.fieldAs("id,isleaf,hide,sort,count1,count2,count3,name,enname,fromid") + " FROM @.table where @.upid=0 order by @.sort asc",
     }]
     Tool.ajax.a01(data, this.a03, this);
