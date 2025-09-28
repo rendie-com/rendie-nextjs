@@ -13,21 +13,9 @@ var fun =
                 this.a03();
         }
     },
-    // a02: function () {
-    //     let data = [{
-    //         action: "fs",
-    //         fun: "access_sqlite",
-    //         database: "shopee/品牌",
-    //         mode: 0,
-    //         elselist: [{
-    //             action: "fs",
-    //             fun: "download_sqlite",
-    //             urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/品牌.db"],
-    //             database: "shopee/品牌",
-    //         }]
-    //     }]
-    //     Tool.ajax.a01(data, this.a03, this);
-    // },
+    a02: function () {
+        Tool.download_sqlite.a01(["shopee/品牌/index"], this.a03, this);
+    },
     a03: function (t) {
         let where = this.b03();
         let data = [{
