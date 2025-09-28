@@ -1,29 +1,17 @@
 'use strict';
 var fun =
 {
-	obj: {
-		DEFAULT_DB: "",
-	},
 	a01: function () {
-		//obj.params.jsFile			选择JS文件
-		//obj.params.id				选择JS文件
+		//o.params.jsFile			选择JS文件
+		//o.params.id				选择JS文件
 		this.a02()
 	},
 	a02: function () {
-		let data = [{
-			action: "process",
-			fun: "env",
-			name: "NEXTJS_CONFIG_DEFAULT_DB"
-		}]
-		Tool.ajax.a01(data, this.a03, this);
+		Tool.ajax.a01(this.b02(o.DEFAULT_DB, o.params.id), this.a03, this);
 	},
 	a03: function (t) {
-		this.obj.DEFAULT_DB = t[0];
-		Tool.ajax.a01(this.b02(t[0], obj.params.id), this.a04, this);
-	},
-	a04: function (t) {
-		let oo = Tool.getObj(t[1], this.obj.DEFAULT_DB);
-		let html = Tool.header(obj.params.return, '系统 &gt; 系统账号 &gt; 修改') + '\
+		let oo = Tool.getObj(t[1], o.DEFAULT_DB);
+		let html = Tool.header(o.params.return, '系统 &gt; 系统账号 &gt; 修改') + '\
 		<div class="p-2">\
 		<table class="table table-hover align-middle">\
 			<tbody>\
@@ -150,7 +138,7 @@ var fun =
 	/////////////////////////////////////////////////////
 	c01: function (This, id, name) {
 		This.attr("disabled", true);
-		let data = [], DEFAULT_DB = this.obj.DEFAULT_DB;
+		let data = [], DEFAULT_DB = o.DEFAULT_DB;
 		if (DEFAULT_DB == "dynamodb") {
 			data = [{
 				action: DEFAULT_DB,
@@ -185,7 +173,7 @@ var fun =
 		let val = This.val()
 		if (val) {
 			This.attr("disabled", true);
-			let data = [], DEFAULT_DB = this.obj.DEFAULT_DB, pwd = forge_sha256(name + val);;
+			let data = [], DEFAULT_DB = o.DEFAULT_DB, pwd = forge_sha256(name + val);;
 			if (DEFAULT_DB == "dynamodb") {
 				data = [{
 					action: DEFAULT_DB,

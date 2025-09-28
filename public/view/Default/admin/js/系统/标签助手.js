@@ -1,6 +1,12 @@
 'use strict';
 var fun =
 {
+	/*
+<script src="/plugins/codemirror-5.65.11/lib/codemirror.js"></script>
+<link rel=stylesheet href="/plugins/codemirror-5.65.11/lib/codemirror.css">
+<script src="/plugins/codemirror-5.65.11/mode/htmlmixed/htmlmixed.js"></script>
+<script type="text/javascript" src="/plugins/clipboard.js-master/dist/clipboard.min.js"></script>
+	*/
     a01: function () {
         this.a02()
     },

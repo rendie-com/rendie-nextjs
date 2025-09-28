@@ -2,14 +2,14 @@
 var fun =
 {
     a01: function () {       
-        obj.params.folder = obj.params.folder ? obj.params.folder : "./"//站点根目录
+        o.params.folder = o.params.folder ? o.params.folder : "./"//站点根目录
         this.a02()
     },
     a02: function () {
         let data = [{
             action: "fs",
             fun: "readdir",
-            path: obj.params.folder,
+            path: o.params.folder,
 
         },{
             action: "process",
@@ -21,18 +21,18 @@ var fun =
     },
     a03: function (t) {   
         t[1]=t[1].replace(/\\/g, "\/")+"/"
-        if(obj.params.folder=="./"){obj.params.folder = t[1];}       
+        if(o.params.folder=="./"){o.params.folder = t[1];}       
         let data1 = [],data2 = [],arr = t[0].sort()
         for (let i = 0; i < arr.length; i++) {
             data1.push({
                 action: "fs",
                 fun: "stat",
-                path: obj.params.folder+"/"+ arr[i],
+                path: o.params.folder+"/"+ arr[i],
             })
             data2.push({
                 action: "fs",
                 fun: "access",
-                path: obj.params.folder+"/" + arr[i],
+                path: o.params.folder+"/" + arr[i],
                 mode: 2,
             })
         }        
@@ -45,11 +45,11 @@ var fun =
         Tool.ajax.a01(data3, this.a04, this, oo);
     },
     a04: function (t1,oo) {            
-        let html1 = this.b01(t1,oo.readdir,obj.params.folder);
+        let html1 = this.b01(t1,oo.readdir,o.params.folder);
         let html2 = '\
         <header class="panel-heading">文件管理</header>\
         <div class="p-2">\
-            '+this.b03(oo.cwd,"",obj.params.folder,oo.__dirname)+'\
+            '+this.b03(oo.cwd,"",o.params.folder,oo.__dirname)+'\
             <table class="table table-hover align-middle center">\
                 <thead class="table-light">\
                     <tr>\
@@ -68,7 +68,7 @@ var fun =
             </table>\
                     <div class="input-group">\
                     <input type="file" class="form-control" id="UploadFile">\
-                    <button type="button" class="btn btn-outline-secondary" onclick="fun.c01($(this),\''+ obj.params.folder + '\');">开始上传</button>\
+                    <button type="button" class="btn btn-outline-secondary" onclick="fun.c01($(this),\''+ o.params.folder + '\');">开始上传</button>\
                     </div>\
         </div>'
         Tool.html(null, null, html2)
@@ -81,7 +81,7 @@ var fun =
                 <tr>\
                    <td>'+(folder.length+1)+'</td>\
                    <td class="left" style="padding-left:25px;position: relative;">'+this.b05()+'\
-                        <a onclick="Tool.main(\'?folder='+ folderPath+arr2[i]+"/"+ '\');" href=\'javascript:\'>\
+                        <a onclick="Tool.main(\'folder='+ folderPath+arr2[i]+"/"+ '\');" href=\'javascript:\'>\
                             <img src="/'+ o.path + 'admin/img/icon/folder.gif" class="w20 mx-1">' + arr2[i] + '\
                         </a>\
                     </td>\
@@ -118,7 +118,7 @@ var fun =
             }
             else {
                 pathArr.push(arr[i])
-                pathArr2.push('<a href="javascript:;"onclick="Tool.main(\'?folder=' + pathArr.join("/") + '/\');" class="m'+(i==0?'e':'')+'-1">' + arr[i] + '</a>')
+                pathArr2.push('<a href="javascript:;"onclick="Tool.main(\'folder=' + pathArr.join("/") + '/\');" class="m'+(i==0?'e':'')+'-1">' + arr[i] + '</a>')
                
             }
         }
@@ -136,11 +136,11 @@ var fun =
             <tr>\
                 <td class="right">快捷操作：</td>\
                 <td>\
-                    <a href="javascript:;" onclick="Tool.main(\'?folder=' +cwd + '\');" class="me-3">' + cwd.substring(0,cwd.length-1) + '</a>\
-                    <a href="javascript:;" onclick="Tool.main(\'?folder=' + cwd2 + '\');" class="me-3">' + cwd2.substring(0,cwd2.length-1) + '</a>\
-                    <a href="javascript:;" onclick="Tool.main(\'?folder=' + __dirname + '\');" class="me-3">' + __dirname.substring(0,__dirname.length-1) + '</a>\
-                    <a href="javascript:;" onclick="Tool.main(\'?folder=' + cwd3 + '\');" class="me-3">' + cwd3.substring(0,cwd3.length-1) + '</a>\
-                    <a href="javascript:;" onclick="Tool.main(\'?folder=/\');" class="me-3">根目录</a>\
+                    <a href="javascript:;" onclick="Tool.main(\'folder=' +cwd + '\');" class="me-3">' + cwd.substring(0,cwd.length-1) + '</a>\
+                    <a href="javascript:;" onclick="Tool.main(\'folder=' + cwd2 + '\');" class="me-3">' + cwd2.substring(0,cwd2.length-1) + '</a>\
+                    <a href="javascript:;" onclick="Tool.main(\'folder=' + __dirname + '\');" class="me-3">' + __dirname.substring(0,__dirname.length-1) + '</a>\
+                    <a href="javascript:;" onclick="Tool.main(\'folder=' + cwd3 + '\');" class="me-3">' + cwd3.substring(0,cwd3.length-1) + '</a>\
+                    <a href="javascript:;" onclick="Tool.main(\'folder=/\');" class="me-3">根目录</a>\
                 </td>\
             </tr>\
             <tr>\
@@ -158,7 +158,7 @@ var fun =
             strArr.shift();              
             for (let i = 0; i < strArr.length-2; i++) {
                 strArr[i]=Tool.Trim(strArr[i])            
-                nArr.push('<a href="javascript:;" onclick="Tool.main(\'?folder=' + strArr[i] + '/\');" class="m'+(i==0?'e':'')+'-1">' + strArr[i] + '</a>')
+                nArr.push('<a href="javascript:;" onclick="Tool.main(\'folder=' + strArr[i] + '/\');" class="m'+(i==0?'e':'')+'-1">' + strArr[i] + '</a>')
             }       
         }        
         return nArr.join("")       

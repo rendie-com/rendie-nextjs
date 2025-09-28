@@ -1,5 +1,6 @@
 'use strict';
 !function () {
+    //<link href="/plugins/jqvmap/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
     obj.arr[3] = obj.arr[3] ? obj.arr[3] : "-_-20";//选择JS文件
     let path = "admin/js/系统/IP库/"
     switch (obj.arr[3]) {

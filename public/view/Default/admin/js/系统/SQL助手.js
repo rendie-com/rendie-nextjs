@@ -1,6 +1,16 @@
 'use strict';
 var fun =
 {
+  /*
+  <script type="text/javascript" src="/<.Path/>admin/js/安装/默认表.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/安装/扩展表.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/安装/视频表.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/安装/敦煌表.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/安装/速卖通表.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/安装/商品表.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/安装/工具表.js"></script>
+<script type="text/javascript" src="/plugins/clipboard.js-master/dist/clipboard.min.js"></script>
+  */
     a01: function () {
         this.b02();
     },

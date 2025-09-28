@@ -1,40 +1,32 @@
 'use strict';
 var fun =
 {
+  obj: {
+    DEFAULT_DB: "",
+  },
   a01: function () {
-    obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-    if (obj.params.jsFile == "js01") {
+    o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+    if (o.params.jsFile == "js01") {
       Tool.scriptArr(['admin/js/系统/访问日志/从IP中获取【国家】【归属地】信息.js']);
     }
-    else if (obj.params.jsFile == "js02") {
+    else if (o.params.jsFile == "js02") {
       Tool.scriptArr(['../../plugins/ua-parser/ua-parser.min.js', 'admin/js/敦煌网/产品分析/图片访问日志/从【客户端信息】中获取【系统信息】.js']);
     }
     else {
-      obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页               
-      obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-      obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
-      let data = [{
-        action: "process",
-        fun: "env",
-        name: "NEXTJS_CONFIG_DEFAULT_DB"
-      }]
-      Tool.ajax.a01(data, this.a02, this);
+      o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页               
+      o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+      o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
+      this.a02()
     }
   },
-  a02: function (t) {
-    let data = [{
-      action: t[0],
-      database: "main",
-      sql: "select count(1) as total FROM @.loginlog" + this.b03(),
-    }, {
-      action: t[0],
-      database: "main",
-      sql: "select " + Tool.fieldAs("user,logintime,localip,os,browser,lang,url,useragent,fromurl,ip,des,asn,ct,resulttf,id") + " FROM @.loginlog" + this.b03() + " order by @.id desc" + Tool.limit(10, obj.params.page, t[0])
-    }]
-    Tool.ajax.a01(data, this.a03, this);
+  a02: function () {
+    let sessionObj = {}
+    let str = sessionStorage.getItem(window.location.pathname + o.params.jsFile)
+    if (str) sessionObj = JSON.parse(str)
+    Tool.ajax.a01(this.b04(t[0], sessionObj[o.params.page]), this.a03, this, sessionObj);
   },
-  a03: function (t) {
-    let html = '', arr = t[1];
+  a03: function (t, sessionObj) {
+    let html = '', arr = Tool.getArr(t[0], o.DEFAULT_DB);
     for (let i = 0; i < arr.length; i++) {
       html += '\
       <tr>\
@@ -42,10 +34,10 @@ var fun =
           <table class="table mb-0 table-bordered">\
           <tbody>\
           <tr>\
-            <td class="right w90">当前地址：</td><td><a href="'+ arr[i].url + '" target="_blank">' + arr[i].url + '</a></td>\
+            <td class="right w90">当前地址：</td><td><a href="'+ arr[i].origin + '" target="_blank">' + arr[i].origin + '</a></td>\
           </tr>\
           <tr>\
-            <td class="right">来源地址：</td><td><a href="'+ arr[i].fromurl + '" target="_blank">' + arr[i].fromurl + '</a></td>\
+            <td class="right">来源地址：</td><td><a href="'+ arr[i].referer + '" target="_blank">' + arr[i].referer + '</a></td>\
           </tr>\
           <tr>\
             <td class="right">客户信息：</td><td>'+ arr[i].useragent + '</td>\
@@ -59,8 +51,8 @@ var fun =
         <td class="p-0">\
           <table class="table mb-0 table-bordered">\
           <tbody>\
-            <tr><td title="操作员">'+ arr[i].user + '</td></tr>\
-            <tr><td title="操作结果">'+ (arr[i].resulttf == 0 ? '<font color="red">橾作失败</font>' : '橾作成功') + '</td></tr>\
+            <tr><td title="操作员">'+ arr[i].username + '</td></tr>\
+            <tr><td title="操作结果">'+ (arr[i].isstatus == 0 ? '<font color="red">橾作失败</font>' : '橾作成功') + '</td></tr>\
             <tr><td title="登陆时间">'+ Tool.js_date_time2(arr[i].logintime, "-") + '</td></tr>\
           </tbody>\
           </table>\
@@ -79,7 +71,7 @@ var fun =
           <tbody>\
             <tr><td title="公网IP">'+ arr[i].ip + Tool.IpQuery(arr[i].ip) + '</td></tr>\
 						<tr><td title="公网IP归属地">'+ (arr[i].asn ? "【" + arr[i].ct + "】" + arr[i].asn : '&nbsp;') + '</td></tr>\
-            <tr><td title="服务器局域网IP">'+ arr[i].localip + Tool.IpQuery(arr[i].localip) + '</td></tr>\
+            <tr><td title="服务器局域网IP">'+ (arr[i].localip ? arr[i].localip + Tool.IpQuery(arr[i].localip) : '&nbsp;') + '</td></tr>\
           </tbody>\
           </table>\
         </td>\
@@ -88,21 +80,21 @@ var fun =
     html = '\
     <header class="panel-heading">日志管理</header>\
     <div class="input-group w-50 m-2">\
-      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b02(obj.params.field) + '</button>\
+      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b02(o.params.field) + '</button>\
       <ul class="dropdown-menu">\
         <li class="dropdown-item pointer" onclick="fun.c01(1)" value="1">公网IP</li>\
         <li class="dropdown-item pointer" onclick="fun.c01(2)" value="2">服务器局域网IP</a></li>\
         <li class="dropdown-item pointer" onclick="fun.c01(3)" value="3">操作系统</a></li>\
         <li class="dropdown-item pointer" onclick="fun.c01(4)" value="4">浏览器</a></li>\
       </ul>\
-      <input type="text" class="form-control" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+      <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
       <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
     </div>\
     <div class="p-2">\
       <table class="table align-top center table-hover">\
         <thead class="table-light">'+ this.b01() + '</thead>\
         <tbody>'+ html + '</tbody>\
-      </table>' + Tool.page(t[0][0].total, 10, obj.params.page) + '\
+      </table>' + Tool.page2(sessionObj, t[0].LastEvaluatedKey, t[1], o.DEFAULT_DB, 5, o.params.page, o.params.jsFile) + '\
     </div>'
     Tool.html(null, null, html)
   },
@@ -136,15 +128,63 @@ var fun =
   },
   b03: function () {
     let str = ""
-    if (obj.params.searchword) {
-      switch (obj.params.field) {
-        case "1": str = " where @.ip like '%" + obj.params.searchword + "%'"; break;//公网IP
-        case "2": str = " where @.localip like '%" + obj.params.searchword + "%'"; break;//服务器局域网IP
-        case "3": str = " where @.os like '%" + obj.params.searchword + "%'"; break;//操作系统
-        case "4": str = " where @.browser like '%" + obj.params.searchword + "%'"; break;//浏览器
+    if (o.params.searchword) {
+      switch (o.params.field) {
+        case "1": str = " where @.ip like '%" + o.params.searchword + "%'"; break;//公网IP
+        case "2": str = " where @.localip like '%" + o.params.searchword + "%'"; break;//服务器局域网IP
+        case "3": str = " where @.os like '%" + o.params.searchword + "%'"; break;//操作系统
+        case "4": str = " where @.browser like '%" + o.params.searchword + "%'"; break;//浏览器
       }
     }
     return str;
+  },
+  b04: function (DEFAULT_DB, ExclusiveStartKey) {
+    let data = [], size = 5
+    if (DEFAULT_DB == "dynamodb") {
+      data = this.b05(size, DEFAULT_DB, ExclusiveStartKey)
+    }
+    else {
+      data = [{
+        action: DEFAULT_DB,
+        database: "main",
+        sql: "select " + Tool.fieldAs("username,logintime,localip,os,browser,lang,origin,useragent,referer,ip,des,asn,ct,isstatus,id") + " FROM @.loginlog" + this.b03() + " order by @.id desc" + Tool.limit(size, o.params.page, DEFAULT_DB)
+      }]
+      if (o.params.page == 1) {
+        data.push({
+          action: DEFAULT_DB,
+          database: "main",
+          sql: "select count(1) as Count FROM @.loginlog" + this.b03(),
+        })
+      }
+    }
+    return data;
+  },
+  b05: function (size, DEFAULT_DB, ExclusiveStartKey) {
+    let params = {
+      ProjectionExpression: 'username,logintime,localip,os,browser,lang,origin,useragent,referer,ip,des,asn,ct,isstatus,id', // 只获取这些字段
+      Limit: size, // 每页项目数上限
+      TableName: 'main_loginlog',
+    }
+    if (ExclusiveStartKey && o.params.page != 1) {//翻页
+      params.ExclusiveStartKey = ExclusiveStartKey;
+    }
+    let data = [{
+      action: DEFAULT_DB,
+      fun: "scan",
+      params: params,
+    }]
+    /////////////////////////////////////////////
+    if (o.params.page == 1) {
+      data.push({
+        action: DEFAULT_DB,
+        fun: "scan",
+        params: {
+          TableName: 'main_loginlog',
+          Select: 'COUNT' // 请求只返回项目总数
+        }
+      })
+    }
+    return data;
   },
   c01: function (val) {
     let name = this.b02("" + val)
@@ -156,7 +196,7 @@ var fun =
       alert("【商品ID】或【商品ID】必须是数字。")
     }
     else if (searchword) {
-      Tool.main("?jsFile=" + obj.params.jsFile + "&page=1&field=" + field + "&searchword=" + searchword);
+      Tool.main("jsFile=" + o.params.jsFile + "&page=1&field=" + field + "&searchword=" + searchword);
     } else { alert("请输入搜索内容"); }
   },
 }

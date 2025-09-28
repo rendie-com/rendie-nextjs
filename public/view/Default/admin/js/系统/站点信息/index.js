@@ -2,6 +2,13 @@
 var fun =
 {
     a01: function () {
+        /*
+        <script type="text/javascript" src="/<.Path/>admin/js/系统/站点信息/服务器操作.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/系统/站点信息/功能直达.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/系统/站点信息/坏境变量.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/系统/站点信息/缓存.js"></script>
+<script type="text/javascript" src="/<.Path/>admin/js/系统/站点信息/临时保存.js"></script>
+        */
         let str = '\
         {\
           "OSDes":"<.OSDes/>",\
@@ -18,7 +25,7 @@ var fun =
           "V":"<.V/>",\
           "CacheTime":"<.CacheTime/>",\
           "ClientInfo":"<.ClientInfo/>",\
-          <r:manager where=" where @.name='+ Tool.rpsql(Tool.getStorage("name")) + '" size=1>\
+          <r:manager where=" where @.name='+ Tool.rpsql(Tool.getStorage("username")) + '" size=1>\
 		    "LoginTime":"<:LoginTime/>",\
 		    "LoginIP":"<:LoginIP/>",\
 		    "LoginTimes":"<:LoginTimes/>",\
