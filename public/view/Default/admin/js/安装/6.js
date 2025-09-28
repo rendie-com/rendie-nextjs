@@ -123,6 +123,10 @@ var fun =
             //只有${100}
             this.g01(oo);
         }
+        else if (oo.database.indexOf("${1000}") != -1) {
+            //只有${1000}
+            this.g02(oo);
+        }
         else {
             //只有${sg|tw|th|my|vn|ph|br|mx|co|cl}
             this.f02(oo)
@@ -190,6 +194,20 @@ var fun =
             this.obj.C2 = 100;
         }
         let database = oo.database.replace("${100}", this.obj.Carr[this.obj.C1 - 1]);
+        this.f03(oo, database);
+    },
+    g02: function (oo) {
+        this.obj.B2 = 1
+        ////////////////////
+        if (this.obj.C2 == 0) {
+            let Carr = []
+            for (let i = 0; i < 1000; i++) {
+                Carr.push((i + 1).toString().padStart(4, '0'))
+            }
+            this.obj.Carr = Carr;
+            this.obj.C2 = 1000;
+        }
+        let database = oo.database.replace("${1000}", this.obj.Carr[this.obj.C1 - 1]);
         this.f03(oo, database);
     },
 }

@@ -3,7 +3,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "采集箱-粉丝-每个站点-100个数据库文件",
-        database: "shopee/采集箱/粉丝/${sg|tw|th|my|vn|ph|br|mx|co|cl}/${100}",//按【用户ID】划分100个文件
+        database: "shopee/采集箱/粉丝/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}/${100}",//按【用户ID】划分100个文件
         action: "sqlite",
         sql: [
             "create index userid ON @.table(@.userid)"

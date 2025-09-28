@@ -51,16 +51,19 @@ Object.assign(gg, {
         let oo = { action: "typeFetch", url: url, type: type, data: data }
         this.postMessage(next, This, t, oo)
     },
-    ////////////////////////////////////////////////
-    //设置Headers信息get请求返回html            gg.setHeaders_getHtml("https://www.aliexpress.com/item/1005002156462954.html",{},this.c01,this,t)
-    //setHeaders_getHtml: function (url, headers, next, This, t) {
-    //     let oo = { action: "setHeaders_getHtml", url: url, headers: headers }
-    //     this.postMessage(next, This, t, oo)
-    //},
-    ////返回值必须是Json,否则出错  (注：有的网站还必须要你Json提交，否则它给你报错)
-    ////设置Headers信息post请求返回json		    gg.setHeaders_postHtml("https://www.aliexpress.com/item/1005002156462954.html",{},{},this.c01,this)
-    //setHeaders_postHtml: function (url, headers, data, next, This, t) {
-    //    let oo = { action: "setHeaders_postHtml", url: url, headers: headers, data: data }
-    //    this.postMessage(next, This, t, oo)
-    //}
-}) 
+    /*
+        let body ="type=offer&cargoIdentity=731977718761&returnType=url&needTotalPrice=false&promotionSwitch=false&_csrf_token=cc736af52943226daac3c4a9a12d0275&t=1747833991058&purchaseType=&ext=%7B%22sceneCode%22%3A%22offerdetail%3Apc%3BipvId%3A213e360e17478339511078151eb68f%22%7D&specData=%5B%7B%22amount%22%3A1%2C%22specId%22%3A%227a5283b560ccdd0d80c29db04a761e49%22%2C%22selectedTradeServices%22%3A%5B%5D%7D%2C%7B%22amount%22%3A1%2C%22specId%22%3A%222cf1cfa58419fea7f98cabf857c1f039%22%2C%22selectedTradeServices%22%3A%5B%5D%7D%5D"
+        gg.formDataFetch(url, data,"gbk", this.e02, this)
+    */
+    postBodyFetch: function (url, body, type, next, This, t) {
+        let oo = { action: "postBodyFetch", url: url, body: body, type: type }
+        this.postMessage(next, This, t, oo)
+    },
+})
+////////////////////////////////////////////////
+////返回值必须是Json,否则出错  (注：有的网站还必须要你Json提交，否则它给你报错)
+////设置Headers信息post请求返回json		    gg.setHeaders_postHtml("https://www.aliexpress.com/item/1005002156462954.html",{},{},this.c01,this)
+//setHeaders_postHtml: function (url, headers, data, next, This, t) {
+//    let oo = { action: "setHeaders_postHtml", url: url, headers: headers, data: data }
+//    this.postMessage(next, This, t, oo)
+//}

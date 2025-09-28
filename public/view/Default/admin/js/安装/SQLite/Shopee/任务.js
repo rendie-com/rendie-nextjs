@@ -55,9 +55,9 @@ mssql = mssql.concat([{
         },
         {
             name: "jsfile",
-            type: "varchar(255)",
+            type: "text",
             default: "",
-            des: "js文件"
+            des: "js数组文件"
 
         },
         {

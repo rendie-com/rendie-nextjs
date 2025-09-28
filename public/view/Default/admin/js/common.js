@@ -132,14 +132,14 @@ Object.assign(Tool, {
         </a>'
     },
     main: function (val) {
-        let url = location.href.split("?")[0] + val
+        let url = location.href.split("?")[0] + "?template=" + o.params.template + "&" + val
         frameElement._DialogArguments.fun.a05(url);
     },
     url: function (url) {
         frameElement._DialogArguments.fun.a05(url);
     },
     open: function (name, val) {
-        Tool.main("?" + Tool.setQueryParam(location.search, name, val));
+        Tool.main("" + Tool.setQueryParam(location.search, name, val));
     },
     openR: function (val) {
         Tool.main(val + "&return=" + encodeURIComponent(location.pathname + location.search));//返回URL
@@ -162,146 +162,6 @@ Object.assign(Tool, {
             $("#state").html("【" + x + "进度】完成！");
             if (next2) { next2.apply(This, [t]); }
         }
-    },
-    SMTselectType: function (fromid, next, This, t) {
-        this.action = "SMTselectType"
-        this.next = next;
-        this.This = This;
-        this.t = t;
-        ///////////////////////////////////
-        let txt
-        if (!fromid) {
-            txt = '\
-            [0,{\
-                "fromid":"0",\
-                "arr":[0\
-                  <r:type db="sqlite.aliexpress" where=" where @.upid=\'0\' and @.hide=0 order by @.sort desc" size=200>,\
-		            {\
-			            "fromid":<:fromid/>,\
-			            "name":"<:name tag=js/>",\
-			            "isleaf":<:isleaf/>\
-		            }\
-                  </r:type>\
-                ]\
-            }]';
-        }
-        else {
-            txt = '[0\
-              <r:type db="sqlite.aliexpress" where=" where @.fromid=\''+ fromid + '\'" size=1>\
-                <r:type db="sqlite.aliexpress" where=" where @.fromid=\'<:upid/>\'" size=1>\
-                  <r:type db="sqlite.aliexpress" where=" where @.fromid=\'<:upid/>\'" size=1>\
-                    <r:type db="sqlite.aliexpress" where=" where @.fromid=\'<:upid/>\'" size=1>,\
-			        {\
-				        "fromid":<:fromid/>,\
-				        "arr":[0\
-				        <r:type db="sqlite.aliexpress" where=" where @.upid=\'<:upid/>\' order by @.sort desc" size=200>,\
-				        {\
-					        "fromid":<:fromid/>,\
-					        "name":"<:name tag=js/>",\
-					        "isleaf":<:isleaf/>\
-				        }\
-				        </r:type>\
-				        ]\
-			        }\
-                    </r:type>\
-                    ,{\
-                    "fromid":<:fromid/>,\
-                    "arr":[0\
-                    <r:type db="sqlite.aliexpress" where=" where @.upid=\'<:upid/>\' order by @.sort desc" size=200>,\
-					{\
-						"fromid":<:fromid/>,\
-						"name":"<:name/>",\
-						"isleaf":<:isleaf/>\
-					}\
-                    </r:type>\
-                    ]}\
-                  </r:type>\
-                  ,{\
-          	        "fromid":<:fromid/>,\
-          	        "arr":[0\
-                  <r:type db="sqlite.aliexpress" where=" where @.upid=\'<:upid/>\' order by @.sort desc" size=200>,\
-				    {\
-					    "fromid":<:fromid/>,\
-					    "name":"<:name/>",\
-					    "isleaf":<:isleaf/>\
-				    }\
-                  </r:type>]\
-					        }\
-                </r:type>\
-                ,{\
-			        "fromid":<:fromid/>,\
-			        "arr":[0\
-			        <r:type db="sqlite.aliexpress" where=" where @.upid=\'<:upid/>\' order by @.sort desc" size=200>,\
-			        {\
-				        "fromid":<:fromid/>,\
-				        "name":"<:name/>",\
-				        "isleaf":<:isleaf/>\
-			        }\
-			        </r:type>]\
-		        }\
-              </r:type>]';
-        }
-        this.json(this.SMTselectType02, txt, this)
-    },
-    SMTselectType02: function (arr2) {
-        let arr4 = ['', '', '', '']
-        for (let j = 1; j < arr2.length; j++) {
-            for (let i = 1; i < arr2[j].arr.length; i++) {
-                arr4[j - 1] += '<option value="' + arr2[j].arr[i].fromid + '" ' + (arr2[j].arr[i].fromid == arr2[j].fromid ? 'selected="selected"' : '') + '>' + (arr2[j].arr[i].isleaf == 1 ? "" : "+") + arr2[j].arr[i].name + '</option>';
-            }
-        }
-        let html = '\
-        <ul class="Tul border-n row">\
-          <li class="col"><select size="2" class="form-select" style="height:300px" id="SMTprolist1" onChange="Tool.SMTselectType03(this.value,\'2\',\'3,4\')">'+ arr4[0] + '</select></li>\
-          <li class="col"><select size="2" class="form-select" style="height:300px" id="SMTprolist2" onChange="Tool.SMTselectType03(this.value,\'3\',\'4\')">'+ arr4[1] + '</select></li>\
-          <li class="col"><select size="2" class="form-select" style="height:300px" id="SMTprolist3" onChange="Tool.SMTselectType03(this.value,\'4\',\'\')">'+ arr4[2] + '</select></li>\
-          <li class="col"><select size="2" class="form-select" style="height:300px" id="SMTprolist4">'+ arr4[3] + '</select></li>\
-        </ul>'
-        Tool.Modal('请选择【速卖通】类目', html, '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button><button type="button" class="btn btn-primary" onClick="Tool.SMTselectType05();" data-bs-dismiss="modal">确定</button>', 'modal-xl');
-    },
-    SMTselectType03: function (val, id, celar) {
-        if (celar == "3,4") { $("#SMTprolist3,#SMTprolist4").html(""); } else if (celar == "4") { $("#SMTprolist4").html(""); }
-        let str = '[0\
-        <r:type db="sqlite.aliexpress" where=" where @.upid=\''+ val + '\' order by @.sort asc" size=150>,\
-	    {\
-		    "fromid":<:fromid/>,\
-		    "name":"<:name/>",\
-		    "isleaf":<:isleaf/>\
-	    }\
-        </r:type>]'
-        let This = $("#SMTprolist" + id);
-        This.html('<option>加载中。。。</option>')
-        Tool.ajax.a01(str, 1, this.SMTselectType04, this, This)
-    },
-    SMTselectType04: function (arr, This) {
-        let html = ""
-        for (let i = 1; i < arr.length; i++) {
-            html += '<option value="' + arr[i].fromid + '">' + (arr[i].isleaf == 1 ? "&nbsp;&nbsp;&nbsp;" : "+") + arr[i].name + '</option>';
-        }
-        This.html(html);
-    },
-    SMTselectType05: function () {
-        let proselected = "", valid, isbool = true, arr = []
-        for (let i = 4; i > 0; i--) {
-            proselected = $("#SMTprolist" + i).find("option:selected").text();
-            if (proselected) {
-                if (isbool) { isbool = false; valid = $("#SMTprolist" + i).val(); }
-                arr[i - 1] = Tool.Trim(proselected).replace("+", "");
-            }
-        }
-        if (valid) {
-            if (this.action == "SMTselectType") {
-                let next = this.next, This = this.This, t = this.t;
-                this.action = ""
-                this.next = null
-                this.This = null
-                this.t = null
-                next.apply(This, [valid, arr.join(" &gt; ").replace(/\&nbsp;/g, ""), t]);
-            }
-            else {
-                alert("异常：有数据在里面。")
-            }
-        } else { alert("请选择分类"); }
     },
     Modal: function (title, body, footer, style) {
         let str = '\
@@ -424,15 +284,12 @@ Object.assign(Tool, {
         })
         */
     },
-    remainder: function (id, num) {
-        return (Math.abs(id % num) + 1).toString().padStart(2, '0');
+    remainder: function (id, count) {
+        return (Math.abs(id % count) + 1).toString().padStart(("" + count).length, '0');
     },
-    remainder3: function (id, num) {
-        return (Math.abs(id % num) + 1).toString().padStart(3, '0');
-    },
-    pronum: function (proid, num) {
+    pronum: function (proid, count) {
         let id = parseInt(proid.substring(1))
-        return this.remainder(id, num);
+        return (Math.abs(id % count) + 1).toString().padStart(("" + count).length, '0');
     },
     returnID: function () {
         let id = [];
@@ -442,3 +299,146 @@ Object.assign(Tool, {
         return id.join(",")
     }
 })
+
+/*
+  SMTselectType: function (fromid, next, This, t) {
+        this.action = "SMTselectType"
+        this.next = next;
+        this.This = This;
+        this.t = t;
+        ///////////////////////////////////
+        let txt
+        if (!fromid) {
+            txt = '\
+            [0,{\
+                "fromid":"0",\
+                "arr":[0\
+                  <r:type db="sqlite.aliexpress" where=" where @.upid=\'0\' and @.hide=0 order by @.sort desc" size=200>,\
+                    {\
+                        "fromid":<:fromid/>,\
+                        "name":"<:name tag=js/>",\
+                        "isleaf":<:isleaf/>\
+                    }\
+                  </r:type>\
+                ]\
+            }]';
+        }
+        else {
+            txt = '[0\
+              <r:type db="sqlite.aliexpress" where=" where @.fromid=\''+ fromid + '\'" size=1>\
+                <r:type db="sqlite.aliexpress" where=" where @.fromid=\'<:upid/>\'" size=1>\
+                  <r:type db="sqlite.aliexpress" where=" where @.fromid=\'<:upid/>\'" size=1>\
+                    <r:type db="sqlite.aliexpress" where=" where @.fromid=\'<:upid/>\'" size=1>,\
+                    {\
+                        "fromid":<:fromid/>,\
+                        "arr":[0\
+                        <r:type db="sqlite.aliexpress" where=" where @.upid=\'<:upid/>\' order by @.sort desc" size=200>,\
+                        {\
+                            "fromid":<:fromid/>,\
+                            "name":"<:name tag=js/>",\
+                            "isleaf":<:isleaf/>\
+                        }\
+                        </r:type>\
+                        ]\
+                    }\
+                    </r:type>\
+                    ,{\
+                    "fromid":<:fromid/>,\
+                    "arr":[0\
+                    <r:type db="sqlite.aliexpress" where=" where @.upid=\'<:upid/>\' order by @.sort desc" size=200>,\
+                    {\
+                        "fromid":<:fromid/>,\
+                        "name":"<:name/>",\
+                        "isleaf":<:isleaf/>\
+                    }\
+                    </r:type>\
+                    ]}\
+                  </r:type>\
+                  ,{\
+                        "fromid":<:fromid/>,\
+                        "arr":[0\
+                  <r:type db="sqlite.aliexpress" where=" where @.upid=\'<:upid/>\' order by @.sort desc" size=200>,\
+                    {\
+                        "fromid":<:fromid/>,\
+                        "name":"<:name/>",\
+                        "isleaf":<:isleaf/>\
+                    }\
+                  </r:type>]\
+                            }\
+                </r:type>\
+                ,{\
+                    "fromid":<:fromid/>,\
+                    "arr":[0\
+                    <r:type db="sqlite.aliexpress" where=" where @.upid=\'<:upid/>\' order by @.sort desc" size=200>,\
+                    {\
+                        "fromid":<:fromid/>,\
+                        "name":"<:name/>",\
+                        "isleaf":<:isleaf/>\
+                    }\
+                    </r:type>]\
+                }\
+              </r:type>]';
+        }
+        this.json(this.SMTselectType02, txt, this)
+    },
+    SMTselectType02: function (arr2) {
+        let arr4 = ['', '', '', '']
+        for (let j = 1; j < arr2.length; j++) {
+            for (let i = 1; i < arr2[j].arr.length; i++) {
+                arr4[j - 1] += '<option value="' + arr2[j].arr[i].fromid + '" ' + (arr2[j].arr[i].fromid == arr2[j].fromid ? 'selected="selected"' : '') + '>' + (arr2[j].arr[i].isleaf == 1 ? "" : "+") + arr2[j].arr[i].name + '</option>';
+            }
+        }
+        let html = '\
+        <ul class="Tul border-n row">\
+          <li class="col"><select size="2" class="form-select" style="height:300px" id="SMTprolist1" onChange="Tool.SMTselectType03(this.value,\'2\',\'3,4\')">'+ arr4[0] + '</select></li>\
+          <li class="col"><select size="2" class="form-select" style="height:300px" id="SMTprolist2" onChange="Tool.SMTselectType03(this.value,\'3\',\'4\')">'+ arr4[1] + '</select></li>\
+          <li class="col"><select size="2" class="form-select" style="height:300px" id="SMTprolist3" onChange="Tool.SMTselectType03(this.value,\'4\',\'\')">'+ arr4[2] + '</select></li>\
+          <li class="col"><select size="2" class="form-select" style="height:300px" id="SMTprolist4">'+ arr4[3] + '</select></li>\
+        </ul>'
+        Tool.Modal('请选择【速卖通】类目', html, '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button><button type="button" class="btn btn-primary" onClick="Tool.SMTselectType05();" data-bs-dismiss="modal">确定</button>', 'modal-xl');
+    },
+    SMTselectType03: function (val, id, celar) {
+        if (celar == "3,4") { $("#SMTprolist3,#SMTprolist4").html(""); } else if (celar == "4") { $("#SMTprolist4").html(""); }
+        let str = '[0\
+        <r:type db="sqlite.aliexpress" where=" where @.upid=\''+ val + '\' order by @.sort asc" size=150>,\
+        {\
+            "fromid":<:fromid/>,\
+            "name":"<:name/>",\
+            "isleaf":<:isleaf/>\
+        }\
+        </r:type>]'
+        let This = $("#SMTprolist" + id);
+        This.html('<option>加载中。。。</option>')
+        Tool.ajax.a01(str, 1, this.SMTselectType04, this, This)
+    },
+    SMTselectType04: function (arr, This) {
+        let html = ""
+        for (let i = 1; i < arr.length; i++) {
+            html += '<option value="' + arr[i].fromid + '">' + (arr[i].isleaf == 1 ? "&nbsp;&nbsp;&nbsp;" : "+") + arr[i].name + '</option>';
+        }
+        This.html(html);
+    },
+    SMTselectType05: function () {
+        let proselected = "", valid, isbool = true, arr = []
+        for (let i = 4; i > 0; i--) {
+            proselected = $("#SMTprolist" + i).find("option:selected").text();
+            if (proselected) {
+                if (isbool) { isbool = false; valid = $("#SMTprolist" + i).val(); }
+                arr[i - 1] = Tool.Trim(proselected).replace("+", "");
+            }
+        }
+        if (valid) {
+            if (this.action == "SMTselectType") {
+                let next = this.next, This = this.This, t = this.t;
+                this.action = ""
+                this.next = null
+                this.This = null
+                this.t = null
+                next.apply(This, [valid, arr.join(" &gt; ").replace(/\&nbsp;/g, ""), t]);
+            }
+            else {
+                alert("异常：有数据在里面。")
+            }
+        } else { alert("请选择分类"); }
+    },
+*/

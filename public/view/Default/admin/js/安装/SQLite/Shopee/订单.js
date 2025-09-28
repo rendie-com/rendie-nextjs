@@ -3,13 +3,13 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "订单-多个站点",
-        database: "shopee/订单/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/订单/订单管理/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
         //run: [
-            //"alter table @.table add @.status_info varchar(255)",
-            //"alter table @.table add @.logistics_status tinyint default 0",
-            //"alter table @.table add @.cancel_reason_ext integer default 0",
-            //"ALTER TABLE @.table DROP COLUMN @.status_info"
+        //"alter table @.table add @.status_info varchar(255)",
+        //"alter table @.table add @.purchaseTime integer default 0",
+        //"alter table @.table add @.cancel_reason_ext integer default 0",
+        //"ALTER TABLE @.table DROP COLUMN @.status_info"
         //],
         table: [
             {
@@ -164,12 +164,12 @@ mssql = mssql.concat([
                 name: "auto_cancel_3pl_ack_date",
                 type: "integer",
                 default: "0",
-                des: "订单自动取消的时间（如：1718983800）--------超过这个时间被扫描算迟发货"
+                des: "订单自动取消的时间（如：1718983800）--------超过这个时间没被扫描要被处罚"
             }, {
                 name: "auto_cancel_arrange_ship_date",
                 type: "integer",
                 default: "0",
-                des: "自动取消安排发货日期（如：1718724600）-----超过这个时间没填国内运单算迟发货"
+                des: "自动取消安排发货日期（如：1718724600）-----超过这个时间没填国内运单算【迟发货】"
             }, {
                 name: "buyer_is_rated",
                 type: "numeric(8,3)",
@@ -293,8 +293,13 @@ mssql = mssql.concat([
             }, {
                 name: "purchasePostingFee",
                 type: "numeric(5,2)",
-                default: "",
+                default: "0",
                 des: "采购贴单费"
+            }, {
+                name: "purchaseTime",
+                type: "integer",
+                default: "0",
+                des: "采购时间"
             }, {
                 name: "purchaseAccount",
                 type: "varchar(30)",
@@ -304,7 +309,7 @@ mssql = mssql.concat([
                 name: "purchaseStatus",
                 type: "tinyint",
                 default: "0",
-                des: "采购状态采购状态（0:待处理;1:待采购;2:采购待付款;3:采购已付款;4:采购退款中;5:采购取消;6:采购已付款(问题订单);7:采购退款完成;8:采购退款失败;）"
+                des: "采购状态（0:待处理;1:待采购;2:采购待付款;3:采购已付款;4:采购退款中;5:采购取消;6:采购已付款(问题订单);7:采购退款完成;8:采购退款失败;）"
             }, {
                 name: "purchaseNotes",
                 type: "varchar(255)",
@@ -316,7 +321,167 @@ mssql = mssql.concat([
                 type: "numeric(8,3)",
                 default: "0",
                 des: "采购退款金额"
+            }, {
+                name: "list_type",
+                type: "tinyint",
+                default: "0",
+                des: ""
             },
+        ]
+    },
+    {
+        name: "table",
+        des: "订单-多个站点",
+        database: "shopee/订单/发货预报/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
+        action: "sqlite",
+        //run: [
+            //"alter table @.table add @.display_tn varchar(20)",
+            //"alter table @.table add @.images text",
+            //"alter table @.table add @.list_type tinyint default 0",
+            //"alter table @.table add @.ship_by_date integer default 0",
+            //"ALTER TABLE @.table DROP COLUMN @.status_info"
+        //],
+        table: [
+            {
+                name: "id",
+                type: "integer primary key",
+                default: "",
+                des: "索引"
+            },
+            {
+                name: "shop_id",
+                type: "integer",
+                default: "0",
+                des: "如：911626103"
+            },
+            {
+                name: "region_id",
+                type: "varchar(5)",
+                default: "",
+                des: "如：BR"
+            },
+            {
+                name: "order_id",
+                type: "varchar(20)",
+                default: "",
+                des: "如：191775876137103"
+            },
+            {
+                name: "order_sn",
+                type: "varchar(20)",
+                default: "",
+                des: "如：250128PJJW4M4F"
+            },
+            {
+                name: "parcel_no",
+                type: "integer",
+                default: "0",
+                des: "如：0"
+            },
+            {
+                name: "forder_id",
+                type: "varchar(30)",
+                default: "",
+                des: "如：5620349970540546103"
+            },
+            {
+                name: "package_number",
+                type: "varchar(30)",
+                default: "",
+                des: "如：OFG191775876183497"
+            },
+            {
+                name: "fm_tn",
+                type: "varchar(20)",
+                default: "",
+                des: "如：78877560254718"
+            },
+            {
+                name: "sls_tn",
+                type: "varchar(20)",
+                default: "",
+                des: "如：BR251693480305E"
+            },
+            {
+                name: "shipping_method",
+                type: "tinyint",
+                default: "0",
+                des: "如：2"
+            },
+            {
+                name: "carrier_id",
+                type: "integer",
+                default: "0",
+                des: "如：371"
+            },
+            {
+                name: "action_status",
+                type: "tinyint",
+                default: "0",
+                des: "如：2"
+            },
+            {
+                name: "binding_status",
+                type: "tinyint",
+                default: "0",
+                des: "如：3"
+            },
+            {
+                name: "submit_time",
+                type: "integer",
+                default: "0",
+                des: "如：1738603907"
+            },
+            {
+                name: "is_pick_up_done",
+                type: "bit",
+                default: "0",
+                des: "如：true(要转0和1)"
+            },
+            {
+                name: "is_sorting_center_received",
+                type: "bit",
+                default: "0",
+                des: "如：true(要转0和1)"
+            }, {
+                name: "is_need_alarm",
+                type: "bit",
+                default: "0",
+                des: "如：false(要转0和1)"
+            }, {
+                name: "binding_id",
+                type: "varchar(20)",
+                default: "",
+                des: "如："
+            },
+            ////////////////////////////////
+            {
+                name: "warehouse_id",
+                type: "varchar(10)",
+                default: "",
+                des: "如：ECP04"
+            }, {
+                name: "channel_id",
+                type: "integer",
+                default: "0",
+                des: "如：18025"
+            }, {
+                name: "arrange_shipment_time",
+                type: "integer",
+                default: "0",
+                des: "如：1738925440"
+            }, {
+                name: "ship_by_date",
+                type: "integer",
+                default: "0",
+                des: "如：1738925440"
+            }, {
+                name: "images",
+                type: "text",
+                default: "",
+                des: "如：json"
+            },
+
         ]
     },
 ]);

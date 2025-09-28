@@ -1255,13 +1255,13 @@ mssql = mssql.concat([
                 name: "discount",
                 type: "smallint",
                 default: "0",
-                des: "旧折扣（算利润要用）"
+                des: "计划折扣（算利润要用）"
             },
             {
                 name: "newDiscount",
                 type: "numeric(8,4)",
                 default: "0",
-                des: "新折扣（当采购改价，我不用改价，改折扣）"
+                des: "最终折扣（当采购改价，我不用改价，改折扣）"
             },
             {
                 name: "isDiscount",
@@ -1381,7 +1381,7 @@ mssql = mssql.concat([
                 name: "min_purchase_limit",
                 type: "integer",
                 default: "0",
-                des: "现在的最低购买量----在【重新计算新折扣】的时后，判断这俩个是否一样用的"
+                des: "现在的最低购买量----在【重新计算最终折扣】的时后，判断这俩个是否一样用的"
             },
             {
                 name: "promotion",
@@ -1449,13 +1449,13 @@ mssql = mssql.concat([
                 name: "discount",
                 type: "smallint",
                 default: "0",
-                des: "旧折扣（算利润要用）"
+                des: "计划折扣（算利润要用）"
             },
             {
                 name: "newDiscount",
                 type: "numeric(8,4)",
                 default: "0",
-                des: "新折扣（当采购改价，我不用改价，改折扣）"
+                des: "最终折扣（当采购改价，我不用改价，改折扣）"
             },
             {
                 name: "isDiscount",
@@ -1575,7 +1575,7 @@ mssql = mssql.concat([
                 name: "min_purchase_limit",
                 type: "integer",
                 default: "0",
-                des: "现在的最低购买量----在【重新计算新折扣】的时后，判断这俩个是否一样用的"
+                des: "现在的最低购买量----在【重新计算最终折扣】的时后，判断这俩个是否一样用的"
             },
             {
                 name: "promotion",
@@ -1649,7 +1649,7 @@ mssql = mssql.concat([
                 name: "newDiscount",
                 type: "numeric(8,4)",
                 default: "0",
-                des: "新折扣（当采购改价，我不用改价，改折扣）"
+                des: "最终折扣（当采购改价，我不用改价，改折扣）"
             },
             {
                 name: "isDiscount",
@@ -1768,7 +1768,7 @@ mssql = mssql.concat([
                 name: "min_purchase_limit",
                 type: "integer",
                 default: "0",
-                des: "现在的最低购买量----在【重新计算新折扣】的时后，判断这俩个是否一样用的"
+                des: "现在的最低购买量----在【重新计算最终折扣】的时后，判断这俩个是否一样用的"
             },
             {
                 name: "promotion",

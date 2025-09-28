@@ -24,6 +24,18 @@ mssql = mssql.concat([{
             des: "优先级"
         },
         {
+            name: "runuser",
+            type: "varchar(10)",
+            default: "",
+            des: "执行者用户名"
+        },
+        {
+            name: "runuserid",
+            type: "integer",
+            default: "0",
+            des: "执行者用户名ID"
+        },
+        {
             name: "runcycle",
             type: "smallint",
             default: "0",
@@ -43,9 +55,9 @@ mssql = mssql.concat([{
         },
         {
             name: "jsfile",
-            type: "varchar(255)",
+            type: "text",
             default: "",
-            des: "js文件"
+            des: "js数组文件"
 
         },
         {

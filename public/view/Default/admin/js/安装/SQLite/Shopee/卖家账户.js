@@ -12,6 +12,12 @@ mssql = mssql.concat([{
             des: "索引"
         },
         {
+            name: "isDefault",
+            type: "bit",
+            default: "0",
+            des: "是否默认"
+        },
+        {
             name: "withdrawee",
             type: "varchar(100)",
             default: "",
@@ -70,6 +76,12 @@ mssql = mssql.concat([{
             type: "text",
             default: "",
             des: "配置信息（如：店铺ID，店铺名，等等）"
+        },
+        {
+            name: "app_list",
+            type: "text",
+            default: "",
+            des: "商家设置 > 合作伙伴管理"
         },
         {
             name: "addtime",

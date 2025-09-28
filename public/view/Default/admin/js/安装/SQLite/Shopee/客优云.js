@@ -5,6 +5,9 @@ mssql = mssql.concat([
         des: "客优云-订单管理",
         database: "shopee/客优云/订单管理",
         action: "sqlite",
+        // run: [
+        //     "alter table @.table add @.supplyType varchar(30)",
+        // ],
         table: [{
             name: "id",
             type: "integer primary key",
@@ -139,12 +142,12 @@ mssql = mssql.concat([
         }, {
             name: "cancelDay",
             type: "integer",
-            default: "",
+            default: "0",
             des: "如：2025-01-09T18:21:44Z（我要转时间戳）"
         }, {
             name: "orderCancelDay",
             type: "integer",
-            default: "",
+            default: "0",
             des: "如：2025-01-10T15:30:00Z（我要转时间戳）"
         }, {
             name: "trackingNo",
@@ -316,6 +319,11 @@ mssql = mssql.concat([
             type: "numeric(8,3)",
             default: "0",
             des: "如：0.0"
+        }, {
+            name: "supplyType",
+            type: "varchar(30)",
+            default: "",
+            des: "未知"
         }]
     },
     {
@@ -374,6 +382,21 @@ mssql = mssql.concat([
             default: "",
             des: "如：PG250103XOXAXLBK"
         }, {
+            name: "ordersn",
+            type: "varchar(20)",
+            default: "",
+            des: "订单号（客优云没有我加的）"
+        }, {
+            name: "shipByDate",
+            type: "integer",
+            default: "0",
+            des: "如：2025-01-03T02:32:39Z（我要转时间戳---客优云没有我加的）"
+        }, {
+            name: "orderCancelDay",
+            type: "integer",
+            default: "0",
+            des: "如：2025-01-03T02:32:39Z（我要转时间戳---客优云没有我加的）"
+        }, {
             name: "gmtCreate",
             type: "integer",
             default: "0",
@@ -423,6 +446,11 @@ mssql = mssql.concat([
             type: "varchar(255)",
             default: "",
             des: "如：json"
+        }, {
+            name: "trackingNos",
+            type: "varchar(100)",
+            default: "",
+            des: "物流单号。如：数组"
         }, {
             name: "gmtLeaving",
             type: "integer",
@@ -530,6 +558,11 @@ mssql = mssql.concat([
             default: "",
             des: "如：250106SG5PXS5G"
         }, {
+            name: "trackingNos",
+            type: "varchar(100)",
+            default: "",
+            des: "物流单号。如：数组格式"
+        }, {
             name: "packageId",
             type: "varchar(30)",
             default: "",
@@ -601,6 +634,21 @@ mssql = mssql.concat([
             type: "integer primary key",
             default: "",
             des: "索引"
+        }, {
+            name: "sellerId",
+            type: "integer",
+            default: "0",
+            des: "如：429511"
+        }, {
+            name: "sellerLogin",
+            type: "varchar(30)",
+            default: "",
+            des: "如：574754058@qq.com"
+        }, {
+            name: "sellerPhone",
+            type: "varchar(15)",
+            default: "",
+            des: "如：19947341683"
         }, {
             name: "expressNum",
             type: "varchar(20)",
@@ -760,6 +808,18 @@ mssql = mssql.concat([
                 type: "text",
                 default: "",
                 des: "登录用的localStorage信息"
+            },
+            {
+                name: "authInfo",
+                type: "text",
+                default: "",
+                des: "授权信息"
+            },
+            {
+                name: "isDefault",
+                type: "bit",
+                default: "0",
+                des: "是否默认"
             },
             {
                 name: "phone",

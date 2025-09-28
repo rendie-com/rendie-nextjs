@@ -2,14 +2,13 @@
 frameElement._DialogArguments.addEventListener("message", function (e)//接收消息
 {
     if (e.data.cmd == "return-rendie-com") {
-        gg.Return(e.data)
+        gg.Return(gg.obj.next, gg.obj.This, gg.obj.t, e.data)
     }
 }, false);
 var gg =
 {
     obj: {
         windowId: 0,
-        IDurl: "",
         next: null,
         This: null,
         t: null,
@@ -19,9 +18,7 @@ var gg =
         if (this.obj.This == null) {
             oo.windowId = this.obj.windowId;
             oo.cmd = oo.cmd ? oo.cmd : 'content-script-rendie-com';
-            oo.IDurl = Tool.urlToName(location.href) + "-" + oo.windowId
             ////////////////////////////        
-            this.obj.IDurl = oo.IDurl
             this.obj.next = next
             this.obj.This = This
             this.obj.t = t
@@ -31,34 +28,39 @@ var gg =
             alert("有代码在执行，还没出来。---------------应该到了不这里。")
         }
     },
-    Return: function (data)//返回
+    Return: function (next, This, t, data)//返回
     {
-        if (data.IDurl == this.obj.IDurl) {
-            if (data.return && data.return.status == "error") {
-                Tool.pre(["rendie插件出错：", data])
-            }
-            else {
-                if (this.obj.windowId == 0) { this.obj.windowId = data.return; }//因为每次执行，都会用【gg.isRD】初始化,所以返回第一个值是定是【windowId】
-                let next = this.obj.next, This = this.obj.This, t = this.obj.t;
-                this.obj.next = null;
-                this.obj.This = null;
-                this.obj.t = null;
-                next.apply(This, [data.return, t]);
-            }
+        if (data.return && data.return.status == "error") {
+            Tool.pre(["rendie插件出错：", data])
+        }
+        else {
+            if (this.obj.windowId == 0) { this.obj.windowId = data.return; }//因为每次执行，都会用【gg.isRD】初始化,所以返回第一个值是定是【windowId】
+            this.obj.next = null; this.obj.This = null; this.obj.t = null;
+            if (next) next.apply(This, [data.return, t]);//这行为什么有“if”?答：当我主动终止程序时，就有用了。
         }
     },
     //////////////////////////////////////////////////////////////////////
-    //删除后创建再查找(返回网页内容)         gg.tabs_remove_create_indexOf(2,"https://www.aliexpress.com/item/1005002156462954.html","找到我，就返回",true,this.c01,this,"aaaa")
+    //删除后创建再查找(返回网页内容)         gg.tabs_remove_create_indexOf(2,"https://www.aliexpress.com/item/1005002156462954.html",["找到我，就返回"],true,this.c01,this,"aaaa")
     //isHighlightTab    true:表示选中【第一个选项卡】，否则不选中。
     //htmlArr           不填这个属性，那就是页面加载完就返回。（有的时后是不需要网页回载完的。）
     tabs_remove_create_indexOf: function (index, url, htmlArr, isHighlightTab, next, This, t) {
-        let oo = { action: "tabs_remove_create_indexOf", index: index, url: url, htmlArr: htmlArr, isHighlightTab: isHighlightTab }
-        this.postMessage(next, This, t, oo)
+        if (typeof (htmlArr) == "object") {
+            let oo = { action: "tabs_remove_create_indexOf", index: index, url: url, htmlArr: htmlArr, isHighlightTab: isHighlightTab }
+            this.postMessage(next, This, t, oo)
+        }
+        else {
+            Tool.at("要找的内容，必须是数组。")
+        }
     },
-    //执行js代码后再找内容(返回网页内容)      gg.tabs_executeScript_indexOf(2,["jquery"],"执行代码","找到我就返回",true,this.c01,this,"xxxx")
+    //执行js代码后再找内容(返回网页内容)      gg.tabs_executeScript_indexOf(2,["jquery"],"执行代码",["找到我就返回"],true,this.c01,this,"xxxx")
     tabs_executeScript_indexOf: function (index, fileArr, code, htmlArr, isHighlightTab, next, This, t) {
-        let oo = { action: "tabs_executeScript_indexOf", index: index, fileArr: fileArr, code: code, htmlArr: htmlArr, isHighlightTab: isHighlightTab }
-        this.postMessage(next, This, t, oo)
+        if (typeof (htmlArr) == "object") {
+            let oo = { action: "tabs_executeScript_indexOf", index: index, fileArr: fileArr, code: code, htmlArr: htmlArr, isHighlightTab: isHighlightTab }
+            this.postMessage(next, This, t, oo)
+        }
+        else {
+            Tool.at("要找的内容，必须是数组。")
+        }
     },
     //执行js代码(直接返回执行后的内容)      gg.tabs_executeScript(2,"加载js文件","执行代码",this.c01,this,"xxxx")
     tabs_executeScript: function (index, file, code, isHighlightTab, next, This, t) {
@@ -138,13 +140,6 @@ var gg =
         let oo = { action: "notifications", title: title, message: message, iconUrl: iconUrl }
         this.postMessage(next, This, t, oo)
     },
-    //查找(返回网页内容)        gg.tabs_indexOf(2,"找到我，就返回",this.c01,this,"aaaa")
-    //使用场景：有的网站，必须要刷新一下才能使用。
-    //tabs_indexOf: function (index, html, next, This, t, isHighlightTab) {
-    //    let oo = { action: "tabs_indexOf", index: index, html: html, isHighlightTab: isHighlightTab }
-    //    this.postMessage(next, This, t, oo)
-    //},
-    /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////
     //获取一个网址的所有cookies       gg.getAllCookies(["https://dhgate.com/","https://seller.dhgate.com/"],this.a04,this)
     getAllCookies: function (urlArr, next, This, t) {
@@ -152,9 +147,9 @@ var gg =
         this.postMessage(next, This, t, oo);
     },
     ////////////////////////////////////////////
-    //获取一个网址的一个cookies                      gg.getCookies("http://10.168.1.159/","token",this.a04,this)
-    getCookies: function (url, name, next, This, t) {
-        let oo = { action: "getCookies", url: url, name: name };
+    //获取一个网址的一个cookies----(注：这里多了一个【partitionKey】，有的不加这个获取不到值)                      gg.getCookies("https://www.1688.com/","token","https://1688.com",this.a04,this)
+    getCookies: function (url, name, partitionKey, next, This, t) {
+        let oo = { action: "getCookies", url: url, name: name, partitionKey: partitionKey };
         this.postMessage(next, This, t, oo);
     },
     //设置一个网址的一个cookies                      gg.setCookies("https://www.aliexpress.com/","aep_usuc_f","site=glo&c_tp=USD&region=SE&b_locale=en_US",this.a04,this)
@@ -168,7 +163,35 @@ var gg =
         let oo = { action: "delCookies", url: url, name: name }
         this.postMessage(next, This, t, oo)
     },
+    //删除后创建再查找(返回网页内容)--(浏览器必须打开调试模式。即F12)        gg.tabs_remove_create_devtools_indexOf(2,"https://www.aliexpress.com/item/1005002156462954.html",[{url:"要找到的url",postData:"要找到的内容"}],true,this.c01,this,"aaaa")
+    //isHighlightTab    true:表示选中【第一个选项卡】，否则不选中。
+    //htmlArr           可获取多个url的内容
+    tabs_remove_create_devtools_indexOf: function (index, url, htmlArr, isHighlightTab, next, This, t) {
+        if (typeof (htmlArr) == "object") {
+            let oo = { action: "tabs_remove_create_devtools_indexOf", index: index, url: url, htmlArr: htmlArr, isHighlightTab: isHighlightTab }
+            this.postMessage(next, This, t, oo)
+        }
+        else {
+            Tool.at("要找的内容，必须是数组。")
+        }
+    },
+    tabs_executeScript_devtools_indexOf: function (index, fileArr, code, htmlArr, isHighlightTab, next, This, t) {
+        if (typeof (htmlArr) == "object") {
+            let oo = { action: "tabs_executeScript_devtools_indexOf", index: index, fileArr: fileArr, code: code, htmlArr: htmlArr, isHighlightTab: isHighlightTab }
+            this.postMessage(next, This, t, oo)
+        }
+        else {
+            Tool.at("要找的内容，必须是数组。")
+        }
+    },
 }
+//查找(返回网页内容)        gg.tabs_indexOf(2,"找到我，就返回",this.c01,this,"aaaa")
+//使用场景：有的网站，必须要刷新一下才能使用。
+//tabs_indexOf: function (index, html, next, This, t, isHighlightTab) {
+//    let oo = { action: "tabs_indexOf", index: index, html: html, isHighlightTab: isHighlightTab }
+//    this.postMessage(next, This, t, oo)
+//},
+
 //////////////////////////////////////////////////////
 // //返回所有Headers信息     gg.tabs_remove_create_getHeaders(2,"https://pifa.pinduoduo.com/",["https://pifa.pinduoduo.com/pifa/user/queryUserInfo"],isHighlightTab,this.d02,this)
 // tabs_remove_create_getHeaders: function (index, url, filterUrlArr, isHighlightTab, next, This, t) {
@@ -180,24 +203,7 @@ var gg =
 //     let oo = { action: "tabs_executeScript_getHeaders", index: index, code: code, filterUrlArr: filterUrlArr, isHighlightTab: isHighlightTab }
 //     this.postMessage(next, This, t, oo)
 // },
-//返回监听url的内容。(浏览器必须打开调试模式。即F12)
-//gg.getNetwork(this.c01,this,"xxxx")
-//getNetwork: function (next, This, t) {
-//    let oo = { action: "getNetwork", cmd: "devtools" }
-//    this.postMessage(next, This, t, oo)
-//},
-////监听url(包含)。(浏览器必须打开调试模式。即F12)
-//setNetwork: function (url, next, This, t) {
-//    let oo = { action: "setNetwork", cmd: "devtools", url: url }
-//    this.postMessage(next, This, t, oo)
-//},
 /*
-//图片转base64	gg.imgToBase64("https://rendie.com/view/Default/html/product/img/logo/logo.png",this.a02,this,"xxxxx")
-imgToBase64:function(src,next,This,t)
-{
-    let oo={action:"imgToBase64",src:src}
-    this.postMessage(next,This,t,oo)
-},
 //创建或更新后再查找(返回网页内容)         gg.tabs_create_update_indexOf(2,"https://www.aliexpress.com/item/1005002156462954.html","找到我，就返回",this.c01,this,"aaaa")
 tabs_create_update_indexOf:function(index,url,html,next,This,t) 
 {
@@ -215,8 +221,6 @@ tabs_create_update_indexOf:function(index,url,html,next,This,t)
         //url=HTTPS hkbgp.mssstatic.com:55443;HTTPS node1134664662.api.steamgamepowered.com:19443;HTTPS PP1134664662.netvigatorscdn.com:22443;
     frame.postMessage({cmd: 'content-script',code: "fun.proxy(\""+url+"\",\""+next+"\",\""+this.b01()+"\")"}, '*');  
   },
-
-  
   //gg.executeScript(2,"","document.body.parentNode.outerHTML;","fun.c01")//运行代码
   executeScript:function(index,file,code,next)
   {

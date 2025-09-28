@@ -229,10 +229,10 @@ var Tool = {
         }
         return nArr.join("&")
     },
-    urlToName: function (url) {
-        url = this.StrSlice(decodeURIComponent(url), o.path, ".html")
-        url = encodeURIComponent(url)
-        return url.replace(/[^\w\s]/gi, '');//使用正则表达式匹配非字母、数字、下划线、空格的字符，并替换为空字符串
+    urlToName: function (url1) {
+        let url2 = this.StrSlice(decodeURIComponent(url1), "template=", ".js")
+        url2 = encodeURIComponent(url2)
+        return url2.replace(/[^\w\s]/gi, '');//使用正则表达式匹配非字母、数字、下划线、空格的字符，并替换为空字符串
     },
     fieldAs: function (fields) {
         let arr = fields.split(","), nArr = []

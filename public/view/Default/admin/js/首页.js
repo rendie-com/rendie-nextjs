@@ -1,4 +1,4 @@
-'use strict';        
+'use strict';
 var fun =
 {
     obj: {},
@@ -10,7 +10,7 @@ var fun =
             this.obj = { top1: 1, top2: null }
         }
         else {
-            this.obj=JSON.parse(menu);            
+            this.obj = JSON.parse(menu);
         }
         this.a02(Tool.getStorage("username"))
     },
@@ -34,7 +34,7 @@ var fun =
                 <li>\
                     <a class="icon" href="../" title="网站首页（PC版）" target="_blank">\
                         <svg class="i-desktop" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">\
-                        <path d="M10 29 C10 29 10 24 16 24 22 24 22 29 22 29 L10 29 Z M2 6 L2 23 30 23 30 6 2 6 Z"></path>\
+                            <path d="M10 29 C10 29 10 24 16 24 22 24 22 29 22 29 L10 29 Z M2 6 L2 23 30 23 30 6 2 6 Z"></path>\
                         </svg>\
                     </a>\
                 </li>\
@@ -135,7 +135,7 @@ var fun =
         {
             oo.isbool = true
             oo.id = id;
-            oo.url = "/" + o.path + "admin/html/" + oo.template;;
+            oo.url = "/" + o.path + "admin/html/iframe.html?template=" + oo.template;
             top2 = {};
             top2[id] = oo;
             this.obj.top2 = top2;
@@ -282,7 +282,7 @@ var fun =
         let top2 = this.obj.top2;
         for (let k in top2) { top2[k].isbool = false; }//所有为flase  
         let oo = menuList[this.obj.top1 - 1].list[parseInt(value) - 1];
-        let url = "/" + o.path + "admin/html/" + oo.template;
+        let url = "/" + o.path + "admin/html/iframe.html?template=" + oo.template;
         top2[value] = { name: oo.name, id: value, isbool: true, url: url };
         this.obj.top2 = top2;
         window.localStorage.setItem("menuList", JSON.stringify(this.obj));

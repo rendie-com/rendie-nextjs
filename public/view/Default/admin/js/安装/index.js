@@ -1,70 +1,82 @@
 'use strict';
 !function () {
     let path = "admin/js/安装/"
-    switch (obj.params.step) {
+    switch (o.params.step) {
         case "2": Tool.scriptArr([path + '2.js']); break;
         case "3": Tool.scriptArr([path + '3.js']); break;
         case "4": Tool.scriptArr([path + '4.js']); break;
         case "5": Tool.scriptArr([path + '5.js']); break;
-        case "6":
-            Tool.scriptArr([
-                path + 'PostgreSQL/默认表.js',
-                // path + 'PostgreSQL/Shopee/类目.js',
-                // path + 'PostgreSQL/Shopee/买家账户.js',
-                // path + 'PostgreSQL/Shopee/卖家账户.js',
-                // path + 'PostgreSQL/Shopee/任务.js',
-                //path + 'PostgreSQL/Shopee/采集箱.js',
-                ////////////////////////////////////////
-                //path + 'DynamoDB/默认表.js',
-                //path + 'DynamoDB/Shopee/卖家账户.js',
-                //path + 'DynamoDB/Shopee/任务.js',
-                //path + 'DynamoDB/Shopee/采集箱.js',
-                ////////////////////////////////////////
-                path + 'SQLite/默认表.js',
-                //path + 'SQLite/Shopee/商品/index.js',
-                //path + 'SQLite/Shopee/客优云.js',
-                //path + 'SQLite/Shopee/聊聊.js',
-                //path + 'SQLite/Shopee/商品/图片.js',
-                //path + 'SQLite/Shopee/采集箱/商品.js',
-                //path + 'SQLite/Shopee/采集箱/店铺.js',
-                path + 'SQLite/Shopee/订单.js',
-                //path + 'SQLite/Shopee/Shopee广告.js',
-                //path + 'SQLite/Shopee/采集箱/粉丝.js',//这个要花的时间长
-                //path + 'SQLite/Shopee/任务.js',
-                //path + 'SQLite/Shopee/卖家账户.js',
-                //path + 'SQLite/Shopee/类目.js',
-                //path + 'SQLite/Shopee/物流方式.js',
-                //path + 'SQLite/Shopee/违禁词.js',
-                //path + 'SQLite/Shopee/黑名单.js',
-                //path + 'SQLite/Shopee/品牌.js',
-                //path + 'SQLite/Shopee/买家账户.js',
-                //path + 'SQLite/Shopee/营销中心.js',
-                //////////////////////////////////////
-                //path + 'SQLite/1688/类目.js',
-                //path + 'SQLite/1688/买家账户.js',
-                //path + 'SQLite/1688/买家订单.js',
-                //path + 'SQLite/eBay表.js',
-                //path + 'SQLite/Ozon表.js',
-                //path + 'SQLite/Amazon表.js',
-                //path + 'SQLite/敦煌表.js',
-                //path + 'SQLite/速卖通表.js',
-                //path + 'SQLite/商品表.js',
-                ////////////////////////////////
-                //path + 'SQLite/扩展表.js',
-                //path + 'SQLite/工具表.js',
-                //path + 'SQLite/视频表.js',
-                //path + 'SQLite/Wish表.js',
-                //path + 'SQLite/1688表.js',
-                //path + 'SQLite/淘宝表.js',
-                //path + 'SQLite/拼多多表.js',
-                //path + 'SQLite/TikTok表.js',
-                //path + 'SQLite/Lazada表.js',
-                //path + 'SQLite/Shopee表.js',
-                path + '6_mysql.js',
-                path + '6_DynamoDB.js',
-                path + '6_pg.js',
-                path + '6_sqlite.js',
-                path + '6.js']); break;
+        case "6": Tool.scriptArr([
+            path + 'PostgreSQL/默认表.js',
+            //path + 'PostgreSQL/Shopee/类目/index.js',
+            //path + 'PostgreSQL/Shopee/类目/属性划分100个文件.js',
+            //path + 'PostgreSQL/Shopee/买家账户.js',
+            //path + 'PostgreSQL/Shopee/卖家账户.js',
+            //path + 'PostgreSQL/Shopee/任务.js',
+            //path + 'PostgreSQL/Shopee/采集箱.js',
+            ////////////////////////////////////////
+            //path + 'DynamoDB/默认表.js',
+            //path + 'DynamoDB/Shopee/卖家账户.js',
+            //path + 'DynamoDB/Shopee/任务.js',
+            //path + 'DynamoDB/Shopee/采集箱.js',
+            ////////////////////////////////////////
+            path + 'SQLite/默认表.js',
+            //path + 'SQLite/Shopee/商品/index.js',
+            //path + 'SQLite/Shopee/商品/全球商品/index.js',
+            //path + 'SQLite/Shopee/商品/全球商品/划分100个文件.js',
+            //path + 'SQLite/Shopee/商品/店铺商品/index.js',
+            //path + 'SQLite/Shopee/商品/店铺商品/划分100个文件.js',
+            //path + 'SQLite/Shopee/客优云.js',
+            //path + 'SQLite/Shopee/聊聊.js',
+            //path + 'SQLite/Shopee/商品/图片-划分100个文件.js',
+            //path + 'SQLite/Shopee/采集箱/商品.js',
+            //path + 'SQLite/Shopee/采集箱/店铺.js',
+            //path + 'SQLite/Shopee/采集箱/粉丝.js',//这个要花的时间长
+            //path + 'SQLite/Shopee/订单.js',
+            //path + 'SQLite/Shopee/Shopee广告.js',
+            //path + 'SQLite/Shopee/任务.js',
+            //path + 'SQLite/Shopee/卖家账户.js',
+            //path + 'SQLite/Shopee/类目/index.js',
+            //path + 'SQLite/Shopee/类目/属性划分100个文件.js',
+            //path + 'SQLite/Shopee/物流方式.js',
+            //path + 'SQLite/Shopee/违禁词.js',
+            //path + 'SQLite/Shopee/黑名单.js',
+            path + 'SQLite/Shopee/品牌/index.js',
+            //path + 'SQLite/Shopee/品牌/划分100个文件.js',
+            //path + 'SQLite/Shopee/买家账户.js',
+            //path + 'SQLite/Shopee/营销中心.js',
+            //////////////////////////////////////
+            //path + 'SQLite/1688/类目.js',
+            //path + 'SQLite/1688/买家账户.js',
+            //path + 'SQLite/1688/买家订单.js',
+            //path + 'SQLite/1688/采集箱/平台关联.js',
+            //path + 'SQLite/1688/采集箱/商品列表/划分100个文件.js',
+            //path + 'SQLite/1688/采集箱/商品列表/放大镜图片-划分1000个文件.js',
+            //path + 'SQLite/1688/采集箱/商品列表/属性图片-划分1000个文件.js',
+            //path + 'SQLite/1688/采集箱/商品列表/详情-划分1000个文件.js',
+            //path + 'SQLite/1688/采集箱/商品列表/详情图片-划分1000个文件.js',
+            //path + 'SQLite/eBay表.js',
+            //path + 'SQLite/Ozon表.js',
+            //path + 'SQLite/Amazon表.js',
+            //path + 'SQLite/敦煌表.js',
+            //path + 'SQLite/速卖通表.js',
+            //path + 'SQLite/商品表.js',
+            ////////////////////////////////
+            //path + 'SQLite/扩展表.js',
+            //path + 'SQLite/工具表.js',
+            //path + 'SQLite/视频表.js',
+            //path + 'SQLite/Wish表.js',
+            //path + 'SQLite/1688表.js',
+            //path + 'SQLite/淘宝表.js',
+            //path + 'SQLite/拼多多表.js',
+            //path + 'SQLite/TikTok表.js',
+            //path + 'SQLite/Lazada表.js',
+            //path + 'SQLite/Shopee表.js',
+            path + '6_mysql.js',
+            path + '6_DynamoDB.js',
+            path + '6_pg.js',
+            path + '6_sqlite.js',
+            path + '6.js']); break;
         case "7": Tool.scriptArr([path + '7.js']); break;
         default:
             let html = '版权所有&nbsp;(c)&nbsp;2007-2023，RenDie保留所有权利。&nbsp;<br />\

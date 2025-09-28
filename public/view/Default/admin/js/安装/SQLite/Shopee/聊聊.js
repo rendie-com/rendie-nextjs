@@ -3,8 +3,11 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "聊聊",
-        database: "shopee/聊聊/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/聊聊/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
+        // run: [
+        //     "alter table @.table add @.biz_id tinyint default 0",
+        // ],
         table: [
             {
                 name: "id",
@@ -235,6 +238,26 @@ mssql = mssql.concat([
             }, {
                 name: "to_avatar_hash",
                 type: "varchar(50)",
+                default: "",
+                des: ""
+            }, {
+                name: "biz_id",
+                type: "tinyint",
+                default: "0",
+                des: ""
+            }, {
+                name: "user_role",
+                type: "tinyint",
+                default: "0",
+                des: ""
+            }, {
+                name: "opposite_user_role",
+                type: "tinyint",
+                default: "0",
+                des: ""
+            }, {
+                name: "official_chat",
+                type: "varchar(255)",
                 default: "",
                 des: ""
             },

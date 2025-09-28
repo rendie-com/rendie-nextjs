@@ -3,7 +3,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "优惠券",
-        database: "shopee/营销中心/优惠券/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/营销中心/优惠券/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -107,7 +107,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "折扣",
-        database: "shopee/营销中心/折扣/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/营销中心/折扣/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -169,7 +169,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "店内秒杀",
-        database: "shopee/营销中心/店内秒杀/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/营销中心/店内秒杀/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -237,7 +237,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "加购优惠",
-        database: "shopee/营销中心/加购优惠/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/营销中心/加购优惠/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -320,5 +320,24 @@ mssql = mssql.concat([
             },
         ]
     },
-
+    {
+        name: "table",
+        des: "运费促销",
+        database: "shopee/营销中心/运费促销/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
+        action: "sqlite",
+        table: [
+            {
+                name: "id",
+                type: "integer primary key",
+                default: "",
+                des: "索引"
+            },
+            {
+                name: "addtime",
+                type: "integer",
+                default: "0",
+                des: "添加时间"
+            },
+        ]
+    },
 ]);

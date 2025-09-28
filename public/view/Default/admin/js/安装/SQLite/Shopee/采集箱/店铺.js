@@ -3,7 +3,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "采集箱-店铺-多个站点",
-        database: "shopee/采集箱/店铺/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/采集箱/店铺/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
         sql: [
             "create index shopid ON @.table(@.shopid)"

@@ -3,7 +3,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: "广告",
-        database: "shopee/Shopee广告/广告/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/Shopee广告/广告/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
         table: [
             {
@@ -119,7 +119,7 @@ mssql = mssql.concat([
     {
         name: "table",
         des: " 关键词",
-        database: "shopee/Shopee广告/关键词/${sg|tw|th|my|vn|ph|br|mx|co|cl}",
+        database: "shopee/Shopee广告/关键词/${sg|sg2|tw|th|my|vn|vn2|ph|br|mx|mx2|co|cl}",
         action: "sqlite",
         table: [
             {
