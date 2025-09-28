@@ -10,7 +10,7 @@ var fun =
             default:
                 o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页        
                 o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
-                this.a03();
+                this.a02();
         }
     },
     a02: function () {
