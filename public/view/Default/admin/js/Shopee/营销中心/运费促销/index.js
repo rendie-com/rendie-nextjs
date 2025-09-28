@@ -17,13 +17,13 @@ var fun =
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
+            database: "shopee/营销中心/运费促销/" + this.obj.siteNum,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/店内秒杀/" + this.obj.siteNum + ".db"],
-                database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/营销中心/运费促销/" + this.obj.siteNum + ".db"],
+                database: "shopee/营销中心/运费促销/" + this.obj.siteNum,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -32,17 +32,18 @@ var fun =
         let where = this.b03();
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
+            database: "shopee/营销中心/运费促销/" + this.obj.siteNum,
             sql: "select count(1) as total FROM @.table" + where,
         }, {
             action: "sqlite",
-            database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
-            sql: "select " + Tool.fieldAs("type,item_count,status,start_time,end_time,addtime,uptime") + " FROM @.table" + where + " order by @.addtime desc " + Tool.limit(10, o.params.page),
+            database: "shopee/营销中心/运费促销/" + this.obj.siteNum,
+            sql: "select " + Tool.fieldAs("addtime") + " FROM @.table" + where + " order by @.addtime desc " + Tool.limit(10, o.params.page),
         }, {
             action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
+
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
@@ -90,7 +91,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'jsFile=js11&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*获取【店内秒杀】信息</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js11&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*获取【运费促销】信息</a></li>\
         </ul>'
     },
     b03: function () {

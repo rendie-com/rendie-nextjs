@@ -6,13 +6,16 @@ var fun =
         A1: 1, A2: 3,//1:接下来的活动；2:进行中的活动；3:已过期；
         B1: 1, B2: 0,// 页进度
         seller: {},
+        siteNum: "",
     },
     a01: function () {
-        let html = Tool.header(obj.params.return, "Shopee &gt; 营销中心 &gt; 折扣列表 &gt; 获取【折扣】信息") + '\
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num)
+        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 折扣列表 &gt; 获取【折扣】信息") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
-   		        <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+   		        <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
+                <tr><td class="right">第几个店铺：</td><td colspan="2">'+ o.params.num + '</td></tr>\
                 <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
                 <tr><td class="right">活动进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
@@ -36,8 +39,8 @@ var fun =
         let arr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
-            "cbsc_shop_region=" + obj.params.site
+            "cnsc_shop_id=" + this.obj.seller[o.params.site][Tool.int(o.params.num) - 1].shopId,
+            "cbsc_shop_region=" + o.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v4/discount/get_discount_list/?" + arr.join("&")
         $("#url").html(url + '[post]');
@@ -81,7 +84,7 @@ var fun =
         }
         let data = [{
             action: "sqlite",
-            database: "shopee/营销中心/折扣/" + obj.params.site,
+            database: "shopee/营销中心/折扣/" + this.obj.siteNum,
             sql: "select @.promotion_id as promotion_id from @.table where @.promotion_id in(" + promotion_idArr.join(",") + ")",
         }]
         Tool.ajax.a01(data, this.d05, this, oo)
@@ -99,14 +102,14 @@ var fun =
             if (arr1.indexOf(arr2[i]) == -1) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/折扣/" + obj.params.site,
+                    database: "shopee/营销中心/折扣/" + this.obj.siteNum,
                     sql: oo.insertArr[i],
                 })
             }
             else {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/营销中心/折扣/" + obj.params.site,
+                    database: "shopee/营销中心/折扣/" + this.obj.siteNum,
                     sql: oo.updateArr[i],
                 })
             }

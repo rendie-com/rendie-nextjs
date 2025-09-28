@@ -5,31 +5,35 @@ var fun =
         siteNum: "",
     },
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ''//择JS文件        
-        obj.params.site = obj.params.site ? obj.params.site : 'sg'
-        obj.params.num = obj.params.num ? obj.params.num : '1'
-        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num)
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ''//择JS文件        
+        o.params.site = o.params.site ? o.params.site : 'sg'
+        o.params.num = o.params.num ? o.params.num : '1'
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num)
         //////////////////////////////////////////////////////////
         let data = [{
-            action: "${default_db}",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
+        }, {
+            action: o.DEFAULT_DB,
+            database: "main",
+            sql: "select @.value as value FROM @.config where @.name='" + o.params.template + "'",
         }]
         Tool.ajax.a01(data, this.a02, this);
     },
     a02: function (t) {
-        let siteArr = JSON.parse(t[0][0].config)[obj.params.site]
-        let html = Tool.header(obj.params.jsFile, obj.params.site) + '\
+        let siteArr = JSON.parse(t[0][0].config)[o.params.site];
+        let html = Tool.header(o.params.jsFile, o.params.site) + '\
         <div class="p-2">\
-            '+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + '\
+            '+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + '\
             <table class="table align-middle">\
             <tbody>\
                 <tr><td class="right w200">商品活动：</td><td>'+ this.b03() + '</td></tr>\
-                <tr><td class="right">营销工具：</td><td class="p-0">'+ this.b01() + '</td></tr>\
+                <tr><td class="right">营销工具：</td><td class="p-0">'+ this.b01(t[1]) + '</td></tr>\
                 <tr><td class="right">与买家互动：</td><td>'+ this.b02() + '</td></tr>\
                 <tr>\
                     <td class="right">跨境活动报名：</td>\
-                    <td><button type="button" class="btn btn-secondary" onclick="Tool.openR(\'?jsFile=js15&num='+ obj.params.num + '\');">前往报名</button></td>\
+                    <td><button type="button" class="btn btn-secondary" onclick="Tool.openR(\'jsFile=js15&num='+ o.params.num + '\');">前往报名</button></td>\
                 </tr>\
             </tbody>\
             </table>\
@@ -37,7 +41,9 @@ var fun =
         Tool.html(null, null, html);
     },
     //营销工具
-    b01: function () {
+    b01: function (t1) {
+        let config = JSON.parse(t1[0].value)["营销中心"]
+        if (!config) config = {}
         return '\
         <table class="table mb-0 center table-hover align-top">\
             <thead class="table-light">\
@@ -52,27 +58,27 @@ var fun =
                     <td style="padding-left: 20px;position: relative;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		                <ul class="dropdown-menu">\
-                            <li onClick="Tool.openR(\'?jsFile=js01&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*创建【优惠券】</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js01&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*创建【优惠券】</a></li>\
 		                </ul>\
                         优惠券\
                     </td>\
                     <td title="上次活动结束时间">'+ this.b04(config[this.obj.siteNum]) + '</td>\
                     <td class="left">\
-                    （1）【店铺优惠券1】：3% Shopee币回扣，最高上限数额1，最低消费15，可使用总数100。（3天一个活动，做30天）<br/>\
-                    （2）【店铺优惠券2】：折扣金额1，最低消费20，可使用总数100。（3天一个活动，做30天）<br/>\
-                    （3）【新买家优惠券】：折扣金额2，最低消费30，可使用总数100。（3天一个活动，做30天）<br/>\
-                    （4）【回购买家优惠券】：折扣金额3，最低消费50，可使用总数100。（30天一个活动，做30天）<br/>\
-                    （5）【商品优惠券】：折扣金额10，最低消费100，可使用总数100。（3天一个活动，做30天，选100个来源销量大的商品）<br/>\
+                    （1）【店铺优惠券1】：3% Shopee币回扣，最高上限数额1，最低消费15，可使用总数100。（3天一个活动，做3天）<br/>\
+                    （2）【店铺优惠券2】：折扣金额1，最低消费20，可使用总数100。（3天一个活动，做3天）<br/>\
+                    （3）【新买家优惠券】：折扣金额2，最低消费30，可使用总数100。（3天一个活动，做3天，要过期后创建新的）<br/>\
+                    （4）【回购买家优惠券】：折扣金额3，最低消费50，可使用总数100。（30天一个活动，做3天，要过期后创建新的）<br/>\
+                    （5）【商品优惠券】：折扣金额10，最低消费100，可使用总数100。（3天一个活动，做3天，选100个来源销量大的商品）<br/>\
                     （6）【关注礼优惠券】：最低消费20，折扣金额2，可使用总数100。（3天一个活动，做30天）<br/>\
-                    （7）【非公开优惠券】：折扣金额3，最低消费50，可使用总数100。（3天一个活动，做30天）<br/>\
-                    （8）【直播优惠券】：折扣金额3，最低消费50，可使用总数100。（3天一个活动，做30天）<br/>\
+                    （7）【非公开优惠券】：折扣金额3，最低消费50，可使用总数100。（3天一个活动，做3天）<br/>\
+                    （8）【直播优惠券】：折扣金额3，最低消费50，可使用总数100。（3天一个活动，做3天）<br/>\
                     </td>\
                 </tr>\
                 <tr>\
                     <td style="padding-left: 20px;position: relative;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		                <ul class="dropdown-menu">\
-                            <li onClick="Tool.openR(\'?jsFile=js05&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*创建【折扣活动】</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js05&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*创建【折扣活动】</a></li>\
 		                </ul>\
                         折扣活动\
                     </td>\
@@ -89,7 +95,7 @@ var fun =
                     <td style="padding-left: 20px;position: relative;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		                <ul class="dropdown-menu">\
-                            <li onClick="Tool.openR(\'?jsFile=js17&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*创建【套装优惠】</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js17&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*创建【套装优惠】</a></li>\
 		                </ul>\
                         套装优惠\
                     </td>\
@@ -100,7 +106,7 @@ var fun =
                     <td style="padding-left: 20px;position: relative;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		                <ul class="dropdown-menu">\
-                            <li onClick="Tool.openR(\'?jsFile=js13&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*创建【加购优惠】</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js13&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*创建【加购优惠】</a></li>\
 		                </ul>\
                         加购优惠\
                     </td>\
@@ -116,7 +122,7 @@ var fun =
                     <td style="padding-left: 20px;position: relative;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		                <ul class="dropdown-menu">\
-                            <li onClick="Tool.openR(\'?jsFile=js09&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*创建【店内秒杀】</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js09&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*创建【店内秒杀】</a></li>\
 		                </ul>\
                         店内秒杀\
                     </td>\
@@ -135,7 +141,7 @@ var fun =
                     <td style="padding-left: 20px;position: relative;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		                <ul class="dropdown-menu">\
-                            <li onClick="Tool.open4(\'js0xx1\');"><a class="dropdown-item pointer">*创建【运费促销】</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js25&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*创建【运费促销】</a></li>\
 		                </ul>\
                         运费促销\
                     </td>\
@@ -146,7 +152,7 @@ var fun =
                     <td style="padding-left: 20px;position: relative;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		                <ul class="dropdown-menu">\
-                            <li onClick="Tool.open4(\'js0xx1\');"><a class="dropdown-item pointer">*创建【样品促销活动】</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=jsxxxx09&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*创建【样品促销活动】</a></li>\
 		                </ul>\
                         样品促销活动\
                     </td>\
@@ -184,9 +190,9 @@ var fun =
     b03: function () {
         return '\
         <div class="btn-group">\
-            <button type="button" class="btn btn-secondary" onclick="Tool.openR(\'?jsFile=js20&site='+ obj.params.site + '&num=' + obj.params.num + '\');">立即报名</button>\
-            <button type="button" class="btn btn-secondary" onclick="Tool.openR(\'?jsFile=js21&site='+ obj.params.site + '&num=' + obj.params.num + '\');">撤销报名</button>\
-            <button type="button" class="btn btn-secondary" onclick="Tool.openR(\'?jsFile=js23&site='+ obj.params.site + '&num=' + obj.params.num + '\');">删除【尚未提交】商品</button>\
+            <button type="button" class="btn btn-secondary" onclick="Tool.openR(\'jsFile=js20&site='+ o.params.site + '&num=' + o.params.num + '\');">立即报名</button>\
+            <button type="button" class="btn btn-secondary" onclick="Tool.openR(\'jsFile=js21&site='+ o.params.site + '&num=' + o.params.num + '\');">撤销报名</button>\
+            <button type="button" class="btn btn-secondary" onclick="Tool.openR(\'jsFile=js23&site='+ o.params.site + '&num=' + o.params.num + '\');">删除【尚未提交】商品</button>\
         </div>\
         <br/>（1）在指定折扣且包邮门槛下，利润达到10%的商品。\
         <br/>（2）shopee要求报名的商品，要在店内【折扣+5】（如：之前是-35%，现在要-40%）。\
@@ -196,8 +202,9 @@ var fun =
         <br/>例如2：原价100卖130利润率是30%，定价650<sup>-80%</sup>=130，那650<sup>-85%</sup>=97.5，这时就亏了。'
     },
     b04: function (oo) {
-        if (!oo) oo = { coupon_time: [] }
-        let arr = oo.coupon_time
+        if (!oo) oo = {};
+        if (!oo["优惠券"]) oo["优惠券"] = []
+        let arr = oo["优惠券"]
         let nArr = []
         for (let i = 0; i < arr.length; i++) {
             nArr.push(Tool.js_date_time2(arr[i]));
@@ -205,14 +212,14 @@ var fun =
         return nArr.join("<br/>")
     },
     b05: function (oo) {
-        if (!oo) oo = { discount_time: [] }
-        if (!oo.discount_time) { oo.discount_time = []; }
-        return Tool.js_date_time2(oo.discount_time);
+        if (!oo) oo = {}
+        if (!oo["折扣活动"]) oo["折扣活动"] = 0
+        return Tool.js_date_time2(oo["折扣活动"]);
     },
     b06: function (oo) {
-        if (!oo) oo = { add_on_deal_time: [] }
-        if (!oo.add_on_deal_time) { oo.add_on_deal_time = []; }
-        return Tool.js_date_time2(oo.add_on_deal_time);
+        if (!oo) oo = {};
+        if (!oo["加购优惠"]) oo["加购优惠"] = 0
+        return Tool.js_date_time2(oo["加购优惠"]);
     }
 }
 fun.a01();

@@ -5,16 +5,16 @@ var fun =
     {
         A1: 1, A2: 0,// 页进度
         seller: {},
-        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
+        siteNum: Tool.siteNum(o.params.site, o.params.num),
     },
     a01: function () {
-        //obj.params.site       站点       
-        let html = Tool.header(obj.params.return, "Shopee &gt; 营销中心 &gt; 折扣列表 &gt; 获取【加购优惠】信息") + '\
+        //o.params.site       站点       
+        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 折扣列表 &gt; 获取【加购优惠】信息") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
-                <tr><td class="w150 right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
- 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr>\
+                <tr><td class="w150 right">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
+ 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ o.params.num + '</td></tr>\
                 <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
                 <tr><td class="right">页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>\
@@ -39,8 +39,8 @@ var fun =
             "offset=" + ((this.obj.A1 - 1) * 50),//第一页为“0”    第二页为“50”        第三页为：“100”
             "status=0",
             "sub_type=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site][Tool.int(obj.params.num) - 1].shopId,
-            "cbsc_shop_region=" + obj.params.site
+            "cnsc_shop_id=" + this.obj.seller[o.params.site][Tool.int(o.params.num) - 1].shopId,
+            "cbsc_shop_region=" + o.params.site
         ]
         let url = "https://seller.shopee.cn/api/marketing/v3/add_on_deal/list/?" + arr.join("&")
         $("#url").html(url);

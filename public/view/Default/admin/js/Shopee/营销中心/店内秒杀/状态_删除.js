@@ -3,15 +3,17 @@ var fun =
 {
     obj:
     {
-        A1: 1, A2: 0,// 页进度
+        A1: 1, A2: 0,// 条进度
         seller: {},
+        siteNum: Tool.siteNum(o.params.site, o.params.num),
     },
     a01: function () {
-        let html = Tool.header("Shopee &gt; 营销中心 &gt; 店内秒杀列表 &gt; 状态_删除") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 店内秒杀列表 &gt; 状态_删除") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
                 <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
+ 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ o.params.num + '</td></tr>\
                 <tr><td class="right">条进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
             </tbody>\
@@ -28,69 +30,66 @@ var fun =
     },
     /////////////////////
     d01: function () {
+        let where = " where @.type=" + o.params.type
+        let data = [{
+            action: "sqlite",
+            database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
+            sql: "select " + Tool.fieldAs("flash_sale_id,timeslot_id") + " from @.table" + where + " limit 1",
+        }]
+        if (this.obj.A2 == 0) {
+            data.push({
+                action: "sqlite",
+                database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
+                sql: "select count(1) as count FROM @.table" + where,
+            })
+        }
         $("#state").html("正在获取商品信息。。。");
-        let str = '\
-        {\
-            "A2":' + (this.obj.A2 == 0 ? '<@page/>' : '0') + '\
-            <r:flash_sale size=1 db="sqlite.shopee" page=2 where=" where @.type=' + obj.arr[6] + ' and @.site=\'' + obj.arr[5] + '\'">,\
-            "flash_sale_id":<:flash_sale_id/>,\
-            "timeslot_id":<:timeslot_id/>\
-            </r:flash_sale>\
-        }'
-        Tool.ajax.a01(str, 1, this.d02, this);
+        Tool.ajax.a01(data, this.d02, this);
     },
-    d02: function (oo) {
-        if (this.obj.A2 == 0) { this.obj.A2 = oo.A2; }
-        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d03, this, null, oo)
+    d02: function (t) {
+        if (this.obj.A2 == 0) { this.obj.A2 = t[1][0].count; }
+        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d03, this, null, t[0])
     },
-    d03: function (oo) {
-        let arr = [
+    d03: function (arr1) {
+        let arr2 = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.arr[5]].shopId,
-            "cbsc_shop_region=" + obj.arr[5]
+            "cnsc_shop_id=" + this.obj.seller[o.params.site][Tool.int(o.params.num) - 1].shopId,
+            "cbsc_shop_region=" + o.params.site
         ]
-        let url = "https://seller.shopee.cn/api/marketing/v4/shop_flash_sale/set/?" + arr.join("&")
+        let url = "https://seller.shopee.cn/api/marketing/v4/shop_flash_sale/set/?" + arr2.join("&")
         let data = {
-            flash_sale_id: oo.flash_sale_id,
-            time_slot_id: oo.timeslot_id,
+            flash_sale_id: arr1[0].flash_sale_id,
+            time_slot_id: arr1[0].timeslot_id,
             status: 0
         }
-        let headers = [
-           
-            {
-                "name": "Content-Type",
-                "value": 'application/json;charset=UTF-8'
-            }
-        ]
         $("#state").html("正在删除。。。");
-        gg.setHeaders_postHtml(url, headers, JSON.stringify(data), this.d04, this, oo)
+        gg.postFetch(url, JSON.stringify(data), this.d04, this, arr1[0].flash_sale_id)
     },
-    d04: function (t, oo) {
+    d04: function (t, flash_sale_id) {
         if (t.code == 0) {
             $("#state").html("删除成功。");
-            this.d05(oo)
+            this.d05(flash_sale_id)
         }
         else if (t.message == "voucher not exists") {
             $("#state").html("这个已经删除过了。");
-            this.d05(oo)
+            this.d05(flash_sale_id)
         }
         else {
             Tool.pre(["出错222", t])
         }
     },
-    d05: function (oo) {
-        let str = '"ok"<r: db="sqlite.shopee">delete from @.flash_sale where @.flash_sale_id=' + oo.flash_sale_id + '</r:>'
-        Tool.ajax.a01(str, 1, this.d06, this);
+    d05: function (flash_sale_id) {
+        let data = [{
+            action: "sqlite",
+            database: "shopee/营销中心/店内秒杀/" + this.obj.siteNum,
+            sql: "delete from @.table where @.flash_sale_id=" + flash_sale_id,
+        }]
+        Tool.ajax.a01(data, this.d06, this);
     },
     d06: function (t) {
-        if (t == "ok") {
-            this.obj.A1++;
-            this.d01();
-        }
-        else {
-            Tool.pre(["出错111", t])
-        }
+        this.obj.A1++;
+        this.d01();
     },
 }
 fun.a01();

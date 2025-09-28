@@ -5,14 +5,14 @@ var fun =
         siteNum: "",
     },
     a01: function () {
-        //obj.params.jsFile        选择JS文件
-        obj.params.site = obj.params.site ? obj.params.site : "sg";//站点
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页
-        obj.params.field = obj.params.field ? obj.params.field : "1";//搜索字段
-        obj.params.searchword = obj.params.searchword ? obj.params.searchword : "";//搜索关键词
-        obj.params.fe_status = obj.params.fe_status ? obj.params.fe_status : "";//状态	
-        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
-        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num)
+        //o.params.jsFile        选择JS文件
+        o.params.site = o.params.site ? o.params.site : "sg";//站点
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页
+        o.params.field = o.params.field ? o.params.field : "1";//搜索字段
+        o.params.searchword = o.params.searchword ? o.params.searchword : "";//搜索关键词
+        o.params.fe_status = o.params.fe_status ? o.params.fe_status : "";//状态	
+        o.params.num = o.params.num ? o.params.num : "1"//该站点的第几个店
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num)
         this.a02();
     },
     a02: function () {
@@ -38,16 +38,16 @@ var fun =
         }, {
             action: "sqlite",
             database: "shopee/营销中心/优惠券/" + this.obj.siteNum,
-            sql: "select " + Tool.fieldAs("rule,name,voucher_code,fe_display_coin_amount,value,discount,usage_quantity,fe_status,start_time,end_time,uptime,addtime") + " FROM @.table" + this.b11() + Tool.limit(10, obj.params.page),
+            sql: "select " + Tool.fieldAs("rule,name,voucher_code,fe_display_coin_amount,value,discount,usage_quantity,fe_status,start_time,end_time,uptime,addtime") + " FROM @.table" + this.b11() + Tool.limit(10, o.params.page),
         }, {
-            action: "${default_db}",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
-        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
+        let siteArr = JSON.parse(t[2][0].config)[o.params.site]
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -68,12 +68,12 @@ var fun =
                 <td class="p-0">'+ this.b04(arr[i].addtime, arr[i].uptime) + '</td>\
            </tr>'
         }
-        let html = Tool.header(obj.params.jsFile, obj.params.site) + '\
-        <div class="p-2">'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b09() + '\
+        let html = Tool.header(o.params.jsFile, o.params.site) + '\
+        <div class="p-2">'+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b09() + '\
            <table class="table align-middle center table-hover">\
   			    <thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\
-            </table>' + Tool.page(t[0][0].total, 10, obj.params.page) + '\
+            </table>' + Tool.page(t[0][0].total, 10, o.params.page) + '\
         </div>'
         Tool.html(null, null, html);
     },
@@ -91,9 +91,9 @@ var fun =
             <th class="p-0">\
                 <select onChange="Tool.open(\'fe_status\',this.options[this.selectedIndex].value)" class="form-select">\
                     <option value="-_-20">状态</option>\
-                    <option value="1" '+ (obj.params.fe_status == "1" ? 'selected="selected"' : '') + '>接下来的活动</option>\
-                    <option value="2" '+ (obj.params.fe_status == "2" ? 'selected="selected"' : '') + '>进行中的活动</option>\
-                    <option value="3" '+ (obj.params.fe_status == "3" ? 'selected="selected"' : '') + '>已过期</option>\
+                    <option value="1" '+ (o.params.fe_status == "1" ? 'selected="selected"' : '') + '>接下来的活动</option>\
+                    <option value="2" '+ (o.params.fe_status == "2" ? 'selected="selected"' : '') + '>进行中的活动</option>\
+                    <option value="3" '+ (o.params.fe_status == "3" ? 'selected="selected"' : '') + '>已过期</option>\
                 </select>\
             </th>\
             <th class="w160">优惠券领取期间</th>\
@@ -105,7 +105,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js03&site='+ obj.params.site + '&num='+ obj.params.num + '\');"><a class="dropdown-item pointer">*获取【优惠券】信息</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js03&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*获取【优惠券】信息</a></li>\
 		</ul>'
     },
     b03: function (name, voucher_code, value) {
@@ -205,7 +205,7 @@ var fun =
             <div style="position: relative;top: -8px;left: 0px;">\
                 <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
                 <ul class="dropdown-menu">\
-                    <li onclick="Tool.open6(\'js04\',\''+ obj.params.site + '\',' + fe_status + ')"><a class="dropdown-item pointer">*删除</a></li>\
+                    <li onclick="Tool.open6(\'js04\',\''+ o.params.site + '\',' + fe_status + ')"><a class="dropdown-item pointer">*删除</a></li>\
                 </ul>\
             </div>\
             <span class="p-1" style="color:#ee4d2d;background-color:#fff1f0;">接下来的活动</span>'
@@ -215,7 +215,7 @@ var fun =
             <div style="position: relative;top: -8px;left: 0px;">\
                 <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
                 <ul class="dropdown-menu">\
-                    <li onclick="Tool.open6(\'js19\',\''+ obj.params.site + '\',' + fe_status + ')"><a class="dropdown-item pointer">*结束</a></li>\
+                    <li onclick="Tool.open6(\'js19\',\''+ o.params.site + '\',' + fe_status + ')"><a class="dropdown-item pointer">*结束</a></li>\
                 </ul>\
             </div>\
             <span class="p-1" style="color: #5c7;background-color:#eaf9ef;">进行中的活动</span>'
@@ -231,12 +231,12 @@ var fun =
     b09: function () {
         return '\
         <div class="input-group w-50 m-2">\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b10(obj.params.field) + '</button>\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b10(o.params.field) + '</button>\
             <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c01(1)">优惠券活动名称</li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)">优惠券码</a></li>\
             </ul>\
-            <input type="text" class="form-control" id="searchword" value="'+ Tool.Trim(obj.params.searchword) + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <input type="text" class="form-control" id="searchword" value="'+ Tool.Trim(o.params.searchword) + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
@@ -251,13 +251,13 @@ var fun =
     },
     b11: function () {
         let arr = [];
-        if (obj.params.searchword) {
-            switch (obj.params.field) {
-                case "1": arr.push("@.name like '%" + obj.params.searchword + "%'"); break;//优惠券名
-                case "2": arr.push("@.voucher_code='" + obj.params.searchword + "'"); break;//优惠券ID
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.name like '%" + o.params.searchword + "%'"); break;//优惠券名
+                case "2": arr.push("@.voucher_code='" + o.params.searchword + "'"); break;//优惠券ID
             }
         }
-        if (obj.params.fe_status) { arr.push("@.fe_status=" + obj.params.fe_status); }
+        if (o.params.fe_status) { arr.push("@.fe_status=" + o.params.fe_status); }
         return (arr.length == 0 ? "" : " where " + arr.join(" and ")) + " order by @.addtime desc";
     },
     /////////////////////////////////////////////////
@@ -268,7 +268,7 @@ var fun =
     c02: function () {
         let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
         if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&num="+ obj.params.num + "&page=1&field=" + field + "&searchword=" + searchword);
+            Tool.main("jsFile=" + o.params.jsFile + "&site=" + o.params.site + "&num=" + o.params.num + "&page=1&field=" + field + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },
 }
