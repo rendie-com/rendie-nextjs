@@ -297,6 +297,37 @@ Object.assign(Tool, {
             id[id.length] = $(this).val();
         });
         return id.join(",")
+    },
+    download_sqlite: {
+        a01: function (arr, next, This, t) {
+            let oo = {
+                next: next,
+                This: This,
+                t: t
+            }
+            this.a02(arr, oo)
+        },
+        a02: function (arr, oo) {
+            let data = []
+            for (let i = 0; i < arr.length; i++) {
+                data.push({
+                    action: "fs",
+                    fun: "access_sqlite",
+                    database: arr[i],
+                    mode: 0,
+                    elselist: [{
+                        action: "fs",
+                        fun: "download_sqlite",
+                        urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/" + arr[i] + ".db"],
+                        database: arr[i]
+                    }]
+                })
+            }
+            Tool.ajax.a01(data, this.a03, this, oo);
+        },
+        a03: function (t, oo) {
+            Tool.apply(t, oo.next, oo.This, oo.t)
+        }
     }
 })
 
