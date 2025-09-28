@@ -8,13 +8,13 @@ var fun =
         seller: {},
     },
     a01: function () {
-        //obj.params.jsFile         选择JS文件
-        //obj.params.return         返回URL  
-        //obj.params.site           站点
+        //o.params.jsFile         选择JS文件
+        //o.params.return         返回URL  
+        //o.params.site           站点
         this.a02()
     },
     a02: function () {
-        let html = Tool.header(obj.params.return, "Shopee &gt; 采集箱 &gt; 粉丝 &gt; 取消关注和关注") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 采集箱 &gt; 粉丝 &gt; 取消关注和关注") + '\
         <div class="p-2">\
             <table class="table table-hover align-middle">\
             <tbody>\
@@ -26,7 +26,7 @@ var fun =
                         所以我打算每个数据库,取消关注10个，然后关注10个。（共计关注1000个）\
                     </td>\
                 </tr>\
-		        <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		        <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
 		        <tr><td class="right">数据库进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">取消关注进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
                 <tr><td class="right">关注进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
@@ -52,7 +52,7 @@ var fun =
         //@.is_my_following=1      表示被我关注的用户
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/粉丝/" + obj.params.site + "/" + (this.obj.A1.toString().padStart(3, '0')),
+            database: "shopee/采集箱/粉丝/" + o.params.site + "/" + (this.obj.A1.toString().padStart(3, '0')),
             sql: "select count(1) as Count FROM @.table where @.is_my_following=1"
         }]
         Tool.ajax.a01(data, this.d03, this);
@@ -75,14 +75,14 @@ var fun =
         //@.is_my_following     表示是否被我关注
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/粉丝/" + obj.params.site + "/" + (this.obj.A1.toString().padStart(3, '0')),
+            database: "shopee/采集箱/粉丝/" + o.params.site + "/" + (this.obj.A1.toString().padStart(3, '0')),
             sql: "select @.userid as userid FROM @.table where @.is_my_following=1 order by @.follow_time asc limit 1",
         }]
         Tool.ajax.a01(data, this.d06, this);
     },
     d06: function (t) {
         $("#userid").html(t[0][0].userid)
-        Tool.follow_user.a01(t[0][0].userid, this.obj.A1.toString().padStart(3, '0'), false, this.obj.seller, obj.params.site, this.d07, this)
+        Tool.follow_user.a01(t[0][0].userid, this.obj.A1.toString().padStart(3, '0'), false, this.obj.seller, o.params.site, this.d07, this)
     },
     d07: function () {
         this.obj.B1++;
@@ -98,7 +98,7 @@ var fun =
         //@.is_following           是否关注我  
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/粉丝/" + obj.params.site + "/" + (this.obj.A1.toString().padStart(3, '0')),
+            database: "shopee/采集箱/粉丝/" + o.params.site + "/" + (this.obj.A1.toString().padStart(3, '0')),
             sql: "select @.userid as userid FROM @.table where @.is_my_following=0 and @.follow_count=0 and @.is_following=0 order by @.last_active_time desc limit 1"
         }]
         Tool.ajax.a01(data, this.e03, this);
@@ -110,7 +110,7 @@ var fun =
         }
         else {
             $("#userid").html(t[0][0].userid)
-            Tool.follow_user.a01(t[0][0].userid, this.obj.A1.toString().padStart(3, '0'), true, this.obj.seller, obj.params.site, this.e04, this)
+            Tool.follow_user.a01(t[0][0].userid, this.obj.A1.toString().padStart(3, '0'), true, this.obj.seller, o.params.site, this.e04, this)
         }
     },
     e04: function () {

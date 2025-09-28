@@ -5,34 +5,34 @@ var fun =
         siteNum: "",
     },
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'tw'//站点
-        obj.params.dbname = obj.params.dbname ? obj.params.dbname : '001'//数据库名        
-        obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.site = o.params.site ? o.params.site : 'tw'//站点
+        o.params.dbname = o.params.dbname ? o.params.dbname : '001'//数据库名        
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
         ////////////////////////////////////////    
-        obj.params.follow_count = obj.params.follow_count ? obj.params.follow_count : ''//我关注次数  
-        obj.params.notFollow_count = obj.params.notFollow_count ? obj.params.notFollow_count : ''//我取关次数
-        obj.params.is_following = obj.params.is_following ? obj.params.is_following : ''//是否关注我
-        obj.params.is_my_following = obj.params.is_my_following ? obj.params.is_my_following : ''//是否我关注
-        obj.params.time = obj.params.time ? obj.params.time : ''//时间
-        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
+        o.params.follow_count = o.params.follow_count ? o.params.follow_count : ''//我关注次数  
+        o.params.notFollow_count = o.params.notFollow_count ? o.params.notFollow_count : ''//我取关次数
+        o.params.is_following = o.params.is_following ? o.params.is_following : ''//是否关注我
+        o.params.is_my_following = o.params.is_my_following ? o.params.is_my_following : ''//是否我关注
+        o.params.time = o.params.time ? o.params.time : ''//时间
+        o.params.num = o.params.num ? o.params.num : "1"//该站点的第几个店
         ///////////////////////////////////////////////////////////////////////
-        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num);
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num);
         this.a02();
     },
     a02: function () {
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + obj.params.dbname,
+            database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + obj.params.dbname + ".db"],
-                database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + obj.params.dbname
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname + ".db"],
+                database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -41,21 +41,21 @@ var fun =
         let where = this.b03();
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + obj.params.dbname,
+            database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname,
             sql: "select count(1) as total FROM @.table" + where,
         }, {
             action: "sqlite",
-            database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + obj.params.dbname,
-            sql: "select " + Tool.fieldAs("id,last_active_time,follow_time,userid,shopid,status,follow_count,notFollow_count,is_preferred_plus,is_official_shop,is_shopee_verified,is_following,is_my_following,is_seller,portrait,shopname,username") + " FROM @.table" + where + this.b14() + Tool.limit(10, obj.params.page, "sqlite"),
+            database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname,
+            sql: "select " + Tool.fieldAs("id,last_active_time,follow_time,userid,shopid,status,follow_count,notFollow_count,is_preferred_plus,is_official_shop,is_shopee_verified,is_following,is_my_following,is_seller,portrait,shopname,username") + " FROM @.table" + where + this.b14() + Tool.limit(10, o.params.page, "sqlite"),
         }, {
-            action: "${default_db}",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
-        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
+        let siteArr = JSON.parse(t[2][0].config)[o.params.site]
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -76,14 +76,14 @@ var fun =
                 <td class="p-0">'+ this.b07(arr[i].last_active_time, arr[i].follow_time, arr[i].id) + '</td>\
             </tr>'
         }
-        let html = Tool.header2(obj.params.jsFile, obj.params.site, obj.params.num) + '\
+        let html = Tool.header2(o.params.jsFile, o.params.site, o.params.num) + '\
         <div class="p-2">\
-            '+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + Tool.header4(obj.params.site, 2) + this.b06() + '\
+            '+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + Tool.header4(o.params.site, 2) + this.b06() + '\
         	<table class="table align-middle table-hover center">\
         		<thead class="table-light">'+ this.b01() + '</thead>\
         		<tbody>'+ html1 + '</tbody>\
         	</table>\
-            ' + Tool.page(t[0][0].total, 10, obj.params.page) + '\
+            ' + Tool.page(t[0][0].total, 10, o.params.page) + '\
         </div>'
         Tool.html(null, null, html)
     },
@@ -95,16 +95,16 @@ var fun =
           <th>店铺ID</th>\
           <th>头像</th>\
           <th>名称</th>\
-          <th class="p-0">'+ this.b09("follow_count", obj.params.follow_count) + '</th>\
-          <th class="p-0">'+ this.b10("notFollow_count", obj.params.notFollow_count) + '</th>\
-          <th class="p-0">'+ this.b11("is_following", obj.params.is_following) + '</th>\
-          <th class="p-0">'+ this.b12("is_my_following", obj.params.is_my_following) + '</th>\
+          <th class="p-0">'+ this.b09("follow_count", o.params.follow_count) + '</th>\
+          <th class="p-0">'+ this.b10("notFollow_count", o.params.notFollow_count) + '</th>\
+          <th class="p-0">'+ this.b11("is_following", o.params.is_following) + '</th>\
+          <th class="p-0">'+ this.b12("is_my_following", o.params.is_my_following) + '</th>\
           <th>状态</th>\
           <th>preferred+</th>\
           <th>官方店</th>\
           <th>是否已验证</th>\
           <th>是否开店</th>\
-          <th class="w200 p-0">'+ this.b13("time", obj.params.time) + '</th>\
+          <th class="w200 p-0">'+ this.b13("time", o.params.time) + '</th>\
         </tr>'
         return html;
     },
@@ -118,21 +118,21 @@ var fun =
     },
     b03: function () {
         let arr = [];
-        if (obj.params.searchword) {
-            switch (obj.params.field) {
-                case "1": arr.push("@.userid=" + obj.params.searchword); break;//用户ID
-                case "2": arr.push("@.shopid=" + obj.params.searchword); break;//店铺ID
-                case "3": arr.push("@.shopname like '%" + obj.params.searchword + "%'"); break;//店铺名称
-                case "4": arr.push("@.username like '%" + obj.params.searchword + "%'"); break;//用户名称
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.userid=" + o.params.searchword); break;//用户ID
+                case "2": arr.push("@.shopid=" + o.params.searchword); break;//店铺ID
+                case "3": arr.push("@.shopname like '%" + o.params.searchword + "%'"); break;//店铺名称
+                case "4": arr.push("@.username like '%" + o.params.searchword + "%'"); break;//用户名称
             }
         }
-        if (obj.params.follow_count) { arr.push("@.follow_count=" + obj.params.follow_count); }
-        if (obj.params.notFollow_count) { arr.push("@.notFollow_count=" + obj.params.notFollow_count); }
-        if (obj.params.is_following) { arr.push("@.is_following=" + obj.params.is_following); }
-        if (obj.params.is_my_following) { arr.push("@.is_my_following=" + obj.params.is_my_following); }
-        if (obj.params.time) {
+        if (o.params.follow_count) { arr.push("@.follow_count=" + o.params.follow_count); }
+        if (o.params.notFollow_count) { arr.push("@.notFollow_count=" + o.params.notFollow_count); }
+        if (o.params.is_following) { arr.push("@.is_following=" + o.params.is_following); }
+        if (o.params.is_my_following) { arr.push("@.is_my_following=" + o.params.is_my_following); }
+        if (o.params.time) {
             let time = Tool.gettime("")
-            switch (obj.params.time) {
+            switch (o.params.time) {
                 case "2": arr.push("@.last_active_time<" + (time - 60 * 60 * 24 * 100)); break;//100天
                 case "3": arr.push("@.last_active_time<" + (time - 60 * 60 * 24 * 200)); break;//200天
                 case "4": arr.push("@.last_active_time<" + (time - 60 * 60 * 24 * 365)); break;//365年
@@ -162,16 +162,16 @@ var fun =
     b06: function () {
         return '\
         <div class="input-group w-50 m-2">\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dbname" value="'+ obj.params.dbname + '">【' + obj.params.dbname + '】库数库</button>\
-            '+ this.b02(obj.params.dbname) + '\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b05(obj.params.field) + '</button>\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dbname" value="'+ o.params.dbname + '">【' + o.params.dbname + '】库数库</button>\
+            '+ this.b02(o.params.dbname) + '\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b05(o.params.field) + '</button>\
             <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c01(1)">用户ID（自动选择数据库）</li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)">店铺ID</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(3)">店铺名称</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(4)">用户名称</a></li>\
             </ul>\
-            <input type="text" class="form-control" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
@@ -236,8 +236,8 @@ var fun =
     },
     b14: function () {
         let where = "";
-        if (obj.params.time) {
-            switch (obj.params.time) {
+        if (o.params.time) {
+            switch (o.params.time) {
                 case "1":
                 case "2":
                 case "3":
@@ -259,8 +259,8 @@ var fun =
             alert("【商品ID】或【商品ID】必须是数字。")
         }
         else if (searchword) {
-            if (field == "1") { obj.params.dbname = Tool.remainder3(Tool.int(searchword), 100); }
-            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&dbname=" + obj.params.dbname + "&num=" + obj.params.num + "&searchword=" + searchword);
+            if (field == "1") { o.params.dbname = Tool.remainder3(Tool.int(searchword), 100); }
+            Tool.main("jsFile=" + o.params.jsFile + "&site=" + o.params.site + "&page=1&field=" + field + "&dbname=" + o.params.dbname + "&num=" + o.params.num + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },
     c03: function (This, val1, id) {
@@ -270,7 +270,7 @@ var fun =
             This.attr("disabled", true);
             let data = [{
                 action: "sqlite",
-                database: "shopee/采集箱/粉丝/" + Tool.siteNum(obj.params.site, obj.params.num) + "/" + obj.params.dbname,
+                database: "shopee/采集箱/粉丝/" + Tool.siteNum(o.params.site, o.params.num) + "/" + o.params.dbname,
                 sql: "update @.table set @.follow_time=" + timestamp + " where @.id=" + id,
             }]
             Tool.ajax.a01(data, this.c04, this, This);

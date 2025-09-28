@@ -11,17 +11,17 @@
         B1: 1, B2: 1,
     },
     a01: function () {
-        //obj.params.jsFile         选择JS文件
-        //obj.params.site           站点
-        //obj.params.return         返回URL
+        //o.params.jsFile         选择JS文件
+        //o.params.site           站点
+        //o.params.return         返回URL
         this.a02()
     },
     a02: function () {
-        let html = Tool.header(obj.params.return, "Shopee &gt; 采集箱 &gt; 粉丝 &gt; 从店铺中获取粉丝") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 采集箱 &gt; 粉丝 &gt; 从店铺中获取粉丝") + '\
         <div class="p-2">\
             <table class="table table-hover align-middle">\
             <tbody>\
-		        <tr><td class="right w170">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		        <tr><td class="right w170">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
 		        <tr><td class="right">店铺ID：</td><td id="shopid" colspan="2"></td></tr>\
 		        <tr><td class="right">店铺ID进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">粉丝页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
@@ -38,16 +38,16 @@
         gg.isRD(this.a04, this);
     },
     a04: function () {
-        let where = this.b01(obj.params.site)
+        let where = this.b01(o.params.site)
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/店铺/" + obj.params.site,
+            database: "shopee/采集箱/店铺/" + o.params.site,
             sql: "select " + Tool.fieldAs("shopid,get_follower_time") + " from @.table" + where + " order by @.get_follower_time asc limit 1",
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/采集箱/店铺/" + obj.params.site,
+                database: "shopee/采集箱/店铺/" + o.params.site,
                 sql: "select count(1) as total FROM @.table" + where,
             })
         }
@@ -86,7 +86,7 @@
         Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d02, this, this.e01)
     },
     d02: function () {
-        let url = "https://" + (obj.params.site == "tw" ? "xiapi" : obj.params.site) + ".xiapibuy.com/api/v4/pages/get_follower_list?limit=20&offset=" + ((this.obj.B1 - 1) * 20) + "&shopid=" + this.obj.Aobj.shopid
+        let url = "https://" + (o.params.site == "tw" ? "xiapi" : o.params.site) + ".xiapibuy.com/api/v4/pages/get_follower_list?limit=20&offset=" + ((this.obj.B1 - 1) * 20) + "&shopid=" + this.obj.Aobj.shopid
         $("#url").html(url);
         $("#state").html("正在获取店铺的粉丝。。。")
         gg.getFetch(url, "json", this.d03, this)
@@ -101,7 +101,7 @@
                 }
                 else {
                     if (!t.data.nomore) { this.obj.B2++; }
-                    Tool.accounts.a01(t.data.accounts, {}, false, obj.params.site, this.d04, this);
+                    Tool.accounts.a01(t.data.accounts, {}, false, o.params.site, this.d04, this);
                 }
             }
             else {
@@ -121,7 +121,7 @@
     e01: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/采集箱/店铺/" + obj.params.site,
+            database: "shopee/采集箱/店铺/" + o.params.site,
             sql: "update @.table set @.get_follower_time=" + this.obj.Aobj.new_get_follower_time + " where @.shopid=" + this.obj.Aobj.shopid,
         }]
         $("#state").html("正在更新数据。。。")

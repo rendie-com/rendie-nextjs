@@ -6,27 +6,27 @@ var fun =
         siteNum: "",
     },
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'sg'//站点
-        obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
-        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.site = o.params.site ? o.params.site : 'sg'//站点
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
+        o.params.num = o.params.num ? o.params.num : "1"//该站点的第几个店
         ///////////////////////////////////////////////////////////////////////
-        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num);
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num);
         this.a02();
     },
     a02: function () {
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/采集箱/店铺/" + obj.params.site,
+            database: "shopee/采集箱/店铺/" + o.params.site,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/店铺/" + obj.params.site + ".db"],
-                database: "shopee/采集箱/店铺/" + obj.params.site
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/店铺/" + o.params.site + ".db"],
+                database: "shopee/采集箱/店铺/" + o.params.site
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -40,16 +40,16 @@ var fun =
         }, {
             action: "sqlite",
             database: "shopee/采集箱/店铺/" + this.obj.siteNum,
-            sql: "select " + Tool.fieldAs("shopname,follower_count,get_follower_time,following_count,is_official_shop,last_login_time,nickname,portrait,products,response_rate,response_time,shop_rating,shopee_verified_flag,show_official_shop_label,show_shopee_verified_label,userid,shopid,username,is_in_fss,ps_plus,rating_good,rating_normal,rating_bad,is_shopee_choice,shop_location") + " FROM @.table" + where + " order by @.get_follower_time desc" + Tool.limit(this.obj.size, obj.params.page),
+            sql: "select " + Tool.fieldAs("shopname,follower_count,get_follower_time,following_count,is_official_shop,last_login_time,nickname,portrait,products,response_rate,response_time,shop_rating,shopee_verified_flag,show_official_shop_label,show_shopee_verified_label,userid,shopid,username,is_in_fss,ps_plus,rating_good,rating_normal,rating_bad,is_shopee_choice,shop_location") + " FROM @.table" + where + " order by @.get_follower_time desc" + Tool.limit(this.obj.size, o.params.page),
         }, {
-            action: "${default_db}",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
-        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
+        let siteArr = JSON.parse(t[2][0].config)[o.params.site]
         let html1 = "", arr = t[1]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
@@ -73,13 +73,13 @@ var fun =
                 <td class="p-0">'+ this.b07(arr[i].last_login_time, arr[i].get_follower_time) + '</td>\
             </tr>'
         }
-        let html = Tool.header2(obj.params.jsFile, obj.params.site,obj.params.num) + '\
+        let html = Tool.header2(o.params.jsFile, o.params.site,o.params.num) + '\
 		<div class="p-2">\
-			'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b06() + '\
+			'+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b06() + '\
 			<table class="table align-middle table-hover center">\
 				<thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\
-			</table> ' + Tool.page(t[0][0].total, 10, obj.params.page) + '\
+			</table> ' + Tool.page(t[0][0].total, 10, o.params.page) + '\
 		</div>'
         Tool.html(null, null, html);
     },
@@ -107,19 +107,19 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js03&site='+ obj.params.site + '&num='+ obj.params.num + '\');"><a class="dropdown-item pointer">采集店铺</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js04&site='+ obj.params.site  + '&num='+ obj.params.num+ '\');"><a class="dropdown-item pointer">从商品中获取店铺ID</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js10&table=users_'+ obj.params.site  + '&num='+ obj.params.num+ '&database=shopee_gather&newdatabase=shopee/采集箱/店铺/' + obj.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js03&site='+ o.params.site + '&num='+ o.params.num + '\');"><a class="dropdown-item pointer">采集店铺</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js04&site='+ o.params.site  + '&num='+ o.params.num+ '\');"><a class="dropdown-item pointer">从商品中获取店铺ID</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js10&table=users_'+ o.params.site  + '&num='+ o.params.num+ '&database=shopee_gather&newdatabase=shopee/采集箱/店铺/' + o.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
 		</ul>'
     },
     b03: function () {
         let arr = [];
-        if (obj.params.searchword) {
-            switch (obj.params.field) {
-                case "1": arr.push("@.userid=" + obj.params.searchword); break;//用户ID
-                case "2": arr.push("@.shopid=" + obj.params.searchword); break;//店铺ID
-                case "3": arr.push("@.shopname like '%" + obj.params.searchword + "%'"); break;//店铺名称
-                case "4": arr.push("@.username like '%" + obj.params.searchword + "%'"); break;//用户名
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.userid=" + o.params.searchword); break;//用户ID
+                case "2": arr.push("@.shopid=" + o.params.searchword); break;//店铺ID
+                case "3": arr.push("@.shopname like '%" + o.params.searchword + "%'"); break;//店铺名称
+                case "4": arr.push("@.username like '%" + o.params.searchword + "%'"); break;//用户名
             }
         }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
@@ -148,14 +148,14 @@ var fun =
     b06: function () {
         return '\
         <div class="input-group w-50 m-2">\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b05(obj.params.field) + '</button>\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b05(o.params.field) + '</button>\
             <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c01(1)">用户ID</li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)">店铺ID</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(3)">店铺名称</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(4)">用户名</a></li>\
             </ul>\
-            <input type="text" class="form-control" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
@@ -176,7 +176,7 @@ var fun =
             alert("【商品ID】或【商品ID】必须是数字。")
         }
         else if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
+            Tool.main("jsFile=" + o.params.jsFile + "&site=" + o.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },
 }

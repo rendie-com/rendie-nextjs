@@ -4,21 +4,21 @@ var fun =
     {
         A1: 1, A2: 0, Aarr: [],
         B1: 1, B2: 0,
-        siteNum: Tool.siteNum(obj.params.site, obj.params.num)
+        siteNum: Tool.siteNum(o.params.site, o.params.num)
     },
     a01: function () {
-        //obj.params.jsFile         选择JS文件        
-        //obj.params.site           站点
-        //obj.params.return         返回URL  
+        //o.params.jsFile         选择JS文件        
+        //o.params.site           站点
+        //o.params.return         返回URL  
         Tool.loadJS("/" + o.path + "admin/js/Shopee/采集箱/config_" + this.obj.siteNum + ".js", this.a02, this)
     },
     a02: function () {
-        let html = Tool.header(obj.params.return, "Shopee &gt; 采集箱 &gt; 商品 &gt; 采集商品") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 采集箱 &gt; 商品 &gt; 采集商品") + '\
         <div class="p-2">\
             <table class="table table-hover align-middle">\
             <tbody>\
-		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
- 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
+		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
+ 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ o.params.num + '</td></tr></tbody>\
                 <tr><td class="right">关键词个数进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">关键词页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
@@ -43,7 +43,7 @@ var fun =
     },
     a04: function () {
         $("#state").html("正在删除【cookies】只是为了使用当地语言。");
-        let www = this.b02(obj.params.site)
+        let www = this.b02(o.params.site)
         if (www) {
             gg.delCookies("https://" + www + ".xiapibuy.com/", "language", this.d01, this)
         }
@@ -74,7 +74,7 @@ var fun =
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d02, this, this.g02)
     },
     d02: function () {
-        let url = "https://" + this.b02(obj.params.site) + ".xiapibuy.com/search?keyword=" + this.obj.Aarr[this.obj.A1 - 1] + "&page=0&sortBy=ctime";//搜索;
+        let url = "https://" + this.b02(o.params.site) + ".xiapibuy.com/search?keyword=" + this.obj.Aarr[this.obj.A1 - 1] + "&page=0&sortBy=ctime";//搜索;
         gg.tabs_remove_create_indexOf(3, url, false, false, this.d03, this)
     },
     d03: function () {

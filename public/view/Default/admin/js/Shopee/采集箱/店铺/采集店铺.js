@@ -5,17 +5,17 @@ var fun =
         A1: 1, A2: 1,
     },
     a01: function () {
-        //obj.params.return         返回URL
-        //obj.params.site           站点
+        //o.params.return         返回URL
+        //o.params.site           站点
         this.a02()
     },
     a02: function () {
-        let html = Tool.header(obj.params.return, "Shopee &gt; 采集箱 &gt; 商品 &gt; 采集店铺") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 采集箱 &gt; 商品 &gt; 采集店铺") + '\
         <div class="p-2">\
             <table class="table table-hover align-middle">\
             <tbody>\
-		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
-		        <tr><td class="right">请选择关键词：</td><td colspan="2">'+ this.b01(obj.params.site) + '</td></tr>\
+		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
+		        <tr><td class="right">请选择关键词：</td><td colspan="2">'+ this.b01(o.params.site) + '</td></tr>\
 		        <tr><td class="right">关键词页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
             </tbody>\
@@ -59,7 +59,7 @@ var fun =
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d03, this)
     },
     d03: function () {
-        let url = "https://" + (obj.params.site == "tw" ? "xiapi" : obj.params.site) + ".xiapibuy.com/search_user/?keyword=" + this.obj.key//搜索
+        let url = "https://" + (o.params.site == "tw" ? "xiapi" : o.params.site) + ".xiapibuy.com/search_user/?keyword=" + this.obj.key//搜索
         $("#state").html('<a href="' + url + '" target="_blank">' + url + '</a>')
         //这个必须要获取“Headers”信息。。。。。。
         //gg.tabs_remove_create_getHeaders(2, url, ["/api/v4/search/search_user"], false, this.d04, this)
@@ -109,7 +109,7 @@ var fun =
                 "@.is_shopee_choice",//是否为choice标志
             ]
             let arrR = [
-                Tool.rpsql(obj.params.site),//站点（如：my）
+                Tool.rpsql(o.params.site),//站点（如：my）
                 arr[i].status,//状态（如：1）----还不知道有什么用
                 Tool.rpsql(arr[i].shopname),//店铺名称（如：Skullreaper Digital）
                 arr[i].follower_count,//粉丝数量
@@ -136,12 +136,12 @@ var fun =
                 arr[i].is_shopee_choice ? 1 : 0,//是否为choice标志
             ]
             let arrUp = []; for (let i = 0; i < arrL.length; i++) { arrUp.push(arrL[i] + "=" + arrR[i]); }
-            let sel = "select count(1) from @.users where @.shopid=" + arr[i].shopid + " and @.site='" + obj.params.site + "'"
+            let sel = "select count(1) from @.users where @.shopid=" + arr[i].shopid + " and @.site='" + o.params.site + "'"
             sqlArr.push('\
 		    <if Fun(Db(sqlite.shopee,'+ sel + ',count))==0>\
 			    <r: db="sqlite.shopee">insert into @.users('+ arrL.join(",") + ')values(' + arrR.join(",") + ')</r:>\
 		    <else/>\
-			    <r: db="sqlite.shopee">update @.users set '+ arrUp.join(",") + ' where @.shopid=' + arr[i].shopid + ' and @.site=\'' + obj.params.site + '\'</r:>\
+			    <r: db="sqlite.shopee">update @.users set '+ arrUp.join(",") + ' where @.shopid=' + arr[i].shopid + ' and @.site=\'' + o.params.site + '\'</r:>\
 		    </if>')
         }
         Tool.ajax.a01('"ok"' + sqlArr.join(""), 1, this.e02, this);

@@ -6,21 +6,21 @@
         B1: 1, B2: 1,
         shopId: 0,
         dbnameObj: {},
-        siteNum: Tool.siteNum(obj.params.site, obj.params.num),
+        siteNum: Tool.siteNum(o.params.site, o.params.num),
     },
     a01: function () {
-        //obj.params.jsFile         选择JS文件
-        //obj.params.return         返回URL  
-        //obj.params.site           站点        
+        //o.params.jsFile         选择JS文件
+        //o.params.return         返回URL  
+        //o.params.site           站点        
         this.a02()
     },
     a02: function () {
-        let html = Tool.header(obj.params.return, "Shopee &gt; 采集箱 &gt; 粉丝 &gt; 获取关注我的用户") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 采集箱 &gt; 粉丝 &gt; 获取关注我的用户") + '\
         <div class="p-2">\
             <table class="table table-hover align-middle">\
             <tbody>\
-		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
- 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
+		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
+ 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ o.params.num + '</td></tr></tbody>\
 		        <tr><td class="right">店铺ID：</td><td colspan="2" id="shopId"></td></tr>\
 		        <tr><td class="right">数据库进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">粉丝页进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
@@ -34,7 +34,7 @@
         Tool.login.a01(this.a04, this);
     },
     a04: function (t) {
-        this.obj.shopId = t[obj.params.site][Tool.int(obj.params.num) - 1].shopId;
+        this.obj.shopId = t[o.params.site][Tool.int(o.params.num) - 1].shopId;
         $("#shopId").html(this.obj.shopId)
         this.a05();
     },
@@ -60,7 +60,7 @@
     },
     d02: function () {
         //【关注我的】来源：https://my.xiapibuy.com/shop/896010703/followers/?__classic__=1
-        let url = "https://" + (obj.params.site == "tw" ? "xiapi" : obj.params.site) + ".xiapibuy.com/api/v4/pages/get_follower_list?limit=20&offset=" + ((this.obj.B1 - 1) * 20) + "&shopid=" + this.obj.shopId
+        let url = "https://" + (o.params.site == "tw" ? "xiapi" : o.params.site) + ".xiapibuy.com/api/v4/pages/get_follower_list?limit=20&offset=" + ((this.obj.B1 - 1) * 20) + "&shopid=" + this.obj.shopId
         $("#state").html("正在获取店铺的粉丝。。。")
         gg.getFetch(url, "json", this.d03, this)
     },

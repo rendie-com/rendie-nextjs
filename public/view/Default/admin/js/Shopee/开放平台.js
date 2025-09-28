@@ -2,8 +2,8 @@
 var fun =
 {
   a01: function () {
-    //obj.params.jsFile     选择JS文件  
-    switch (obj.params.jsFile) {
+    //o.params.jsFile     选择JS文件  
+    switch (o.params.jsFile) {
       case "js02": Tool.scriptArr(['admin/js/敦煌网/开放平台/类目.js']); break;
       default: this.a02();
     }

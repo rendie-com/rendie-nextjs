@@ -3,21 +3,21 @@ var fun =
     obj:
     {
         A1: 1, A2: 0,
-        siteNum: Tool.siteNum(obj.params.site, obj.params.num)
+        siteNum: Tool.siteNum(o.params.site, o.params.num)
     },
     a01: function () {
-        //obj.params.jsFile         选择JS文件        
-        //obj.params.site           站点
-        //obj.params.return         返回URL  
+        //o.params.jsFile         选择JS文件        
+        //o.params.site           站点
+        //o.params.return         返回URL  
         this.a02()
     },
     a02: function () {
-        let html = Tool.header(obj.params.return, "Shopee &gt; 采集箱 &gt; 商品 &gt; 从商品中获取店铺ID") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 采集箱 &gt; 商品 &gt; 从商品中获取店铺ID") + '\
         <div class="p-2">\
             <table class="table table-hover align-middle">\
             <tbody>\
-		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
- 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ obj.params.num + '</td></tr></tbody>\
+		        <tr><td class="right w150">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
+ 		        <tr><td class="right">第几个店铺：</td><td colspan="2">'+ o.params.num + '</td></tr></tbody>\
 		        <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
             </tbody>\

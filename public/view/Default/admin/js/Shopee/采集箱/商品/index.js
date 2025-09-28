@@ -6,14 +6,14 @@ var fun =
         siteNum: "",
     },
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.field = obj.params.field ? obj.params.field : '1'
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
-        obj.params.site = obj.params.site ? obj.params.site : 'sg'
-        obj.params.num = obj.params.num ? obj.params.num : "1"//该站点的第几个店
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.field = o.params.field ? o.params.field : '1'
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
+        o.params.site = o.params.site ? o.params.site : 'sg'
+        o.params.num = o.params.num ? o.params.num : "1"//该站点的第几个店
         ///////////////////////////////////////////////////////////////////////
-        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num);
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num);
         this.a02();
     },
     a02: function () {
@@ -35,13 +35,13 @@ var fun =
         let data = [{
             action: "sqlite",
             database: "shopee/采集箱/商品/" + this.obj.siteNum,
-            sql: "select " + Tool.fieldAs("itemid,shopid,title,image,shop_location,currency,price,addtime") + " FROM @.table" + this.b03() + Tool.limit(this.obj.size, obj.params.page, "sqlite"),
+            sql: "select " + Tool.fieldAs("itemid,shopid,title,image,shop_location,currency,price,addtime") + " FROM @.table" + this.b03() + Tool.limit(this.obj.size, o.params.page, "sqlite"),
         }, {
             action: "sqlite",
             database: "shopee/采集箱/商品/" + this.obj.siteNum,
             sql: "select count(1) as Count FROM @.table" + this.b03(),
         }, {
-            action: "${default_db}",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
@@ -49,7 +49,7 @@ var fun =
     },
     a04: function (t) {
         let html1 = "", arr = Tool.getArr(t[0], "sqlite");
-        let siteArr = JSON.parse(t[2][0].config)[obj.params.site]
+        let siteArr = JSON.parse(t[2][0].config)[o.params.site]
         for (let i = 0; i < arr.length; i++) {
             html1 += '\
             <tr>\
@@ -57,19 +57,19 @@ var fun =
                 <td>'+ arr[i].shopid + '</td>\
                 <td class="nowrap">'+ arr[i].shop_location + '</td>\
                 <td>'+ this.b04(arr[i].image) + '</td>\
-                <td class="left"><a href="https://' + (obj.params.site == "tw" ? "xiapi" : obj.params.site) + '.xiapibuy.com/product/' + arr[i].shopid + '/' + arr[i].itemid + '/" target="_blank">' + arr[i].title + '</a></td>\
+                <td class="left"><a href="https://' + (o.params.site == "tw" ? "xiapi" : o.params.site) + '.xiapibuy.com/product/' + arr[i].shopid + '/' + arr[i].itemid + '/" target="_blank">' + arr[i].title + '</a></td>\
                 <td>'+ arr[i].price + '</td>\
                 <td>'+ Tool.js_date_time2(arr[i].addtime) + '</td>\
             </tr>'
         }
-        let html = Tool.header2(obj.params.jsFile, obj.params.site,obj.params.num) + '\
+        let html = Tool.header2(o.params.jsFile, o.params.site,o.params.num) + '\
     	<div class="p-2">\
-    		'+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) + this.b06() + '\
+    		'+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b06() + '\
     		<table class="table align-middle table-hover center">\
     			<thead class="table-light">'+ this.b01() + '</thead>\
     			<tbody>'+ html1 + '</tbody>\
     		</table>\
-            ' + Tool.page(t[1][0].Count, this.obj.size, obj.params.page) + '\
+            ' + Tool.page(t[1][0].Count, this.obj.size, o.params.page) + '\
     	</div>'
         Tool.html(null, null, html)
     },
@@ -91,19 +91,19 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js01&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">采集商品</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js10&table=pro_'+ obj.params.site + '&database=shopee_gather&newdatabase=shopee/采集箱/商品/' + obj.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js11&table=table&database=shopee/采集箱/商品/'+ obj.params.site + '&toaction=dynamodb\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【DynamoDB】数据库</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js01&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">采集商品</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js10&table=pro_'+ o.params.site + '&database=shopee_gather&newdatabase=shopee/采集箱/商品/' + o.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js11&table=table&database=shopee/采集箱/商品/'+ o.params.site + '&toaction=dynamodb\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【DynamoDB】数据库</a></li>\
 		</ul>'
     },
     b03: function () {
         let arr = [];
-        if (obj.params.searchword) {
-            switch (obj.params.field) {
-                case "1": arr.push("@.itemid='" + obj.params.searchword + "'"); break;//商品编码
-                case "2": arr.push("@.shopid=" + obj.params.searchword); break;//DH商品ID
-                case "3": arr.push("@.shop_location like '%" + obj.params.searchword + "%'"); break;//店铺位置
-                case "4": arr.push("@.name like '%" + obj.params.searchword + "%'"); break;//标题
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.itemid='" + o.params.searchword + "'"); break;//商品编码
+                case "2": arr.push("@.shopid=" + o.params.searchword); break;//DH商品ID
+                case "3": arr.push("@.shop_location like '%" + o.params.searchword + "%'"); break;//店铺位置
+                case "4": arr.push("@.name like '%" + o.params.searchword + "%'"); break;//标题
             }
         }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
@@ -129,14 +129,14 @@ var fun =
     b06: function () {
         return '\
         <div class="input-group w-50 m-2">\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b05(obj.params.field) + '</button>\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b05(o.params.field) + '</button>\
             <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c01(1)">商品ID</li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)">店铺ID</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(3)">店铺位置</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(4)">标题</a></li>\
             </ul>\
-            <input type="text" class="form-control" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
@@ -151,7 +151,7 @@ var fun =
             alert("【商品ID】或【商品ID】必须是数字。")
         }
         else if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
+            Tool.main("jsFile=" + o.params.jsFile + "&site=" + o.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },
 }
@@ -162,24 +162,24 @@ fun.a01();
 // let data = [{
 //     action: "fs",
 //     fun: "access_sqlite",
-//     database: "shopee/采集箱/商品/" + obj.params.site,
+//     database: "shopee/采集箱/商品/" + o.params.site,
 //     mode: 0,
 //     elselist: [{
 //         action: "fs",
 //         fun: "download_sqlite",
-//         urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_product_" + obj.params.site + ".db", "https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_product_" + obj.params.site + ".db"],
-//         database: "shopee/采集箱/商品/" + obj.params.site
+//         urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_product_" + o.params.site + ".db", "https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_product_" + o.params.site + ".db"],
+//         database: "shopee/采集箱/商品/" + o.params.site
 //     }]
 // }]
 
 // b08: function (size, ExclusiveStartKey) {
-//     let TableName = Tool.getChinaAscii('shopee_采集箱_商品_' + obj.params.site + '_table')
+//     let TableName = Tool.getChinaAscii('shopee_采集箱_商品_' + o.params.site + '_table')
 //     let params = {
 //         ProjectionExpression: 'itemid,shopid,title,image,shop_location,currency,price,addtime', // 只获取这些字段
 //         Limit: size, // 每页项目数上限
 //         TableName: TableName,
 //     }
-//     if (ExclusiveStartKey && obj.params.page != 1) {//翻页
+//     if (ExclusiveStartKey && o.params.page != 1) {//翻页
 //         params.ExclusiveStartKey = ExclusiveStartKey;
 //     }
 //     let data = [{
@@ -188,7 +188,7 @@ fun.a01();
 //         params: params,
 //     }]
 //     /////////////////////////////////////////////
-//     if (obj.params.page == 1) {
+//     if (o.params.page == 1) {
 //         data.push({
 //             action: "sqlite",
 //             fun: "scan",

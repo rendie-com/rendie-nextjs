@@ -16,13 +16,13 @@ Object.assign(Tool, {
                 This: This,
                 t: t
             }
-            this.a02(oo)
+            this.a02(oo);
             //说明：localStorage参数我没有用它，因为我还没有俩个账号，所以用不上。
             //localStorage参数,想要写进去，必须打开页面注入才行，那对我来说还慢了不少。
         },
         a02: function (oo) {
             oo.dom.html("先删除Cookies");
-            gg.delAllCookies(this.obj.urlArr, this.a03, this, oo)
+            gg.delAllCookies(this.obj.urlArr, this.a03, this, oo);
         },
         a03: function (t, oo) {
             if (!oo.cookies) {
@@ -36,11 +36,11 @@ Object.assign(Tool, {
         a04: function (oo) {
             let url = "https://seller.shopee.cn/account/signin?next=%2F"
             oo.dom.html("打开登入页面" + url);
-            gg.tabs_remove_create_indexOf(2, url, false, false, this.a05, this, oo);
+            gg.tabs_remove_create_indexOf(2, url, [""], false, this.a05, this, oo);
         },
         a05: function (t, oo) {
             oo.dom.html("注入_登入");
-            let url = "/" + o.path + "admin/js/Shopee/商家设置/卖家账户/注入_登录.js"
+            let url = "/" + o.path + "admin/js/Shopee/商家设置/卖家账户/注入_登录.js";
             Tool.ajax.text(url, this.a06, this, oo);
         },
         a06: function (t, oo) {
@@ -87,7 +87,7 @@ Object.assign(Tool, {
         //////////////////////////////////////////////////////////////////
         d01: function (oo) {
             oo.dom.html("正在写入【cookies】...");
-            gg.setAllCookies(oo.cookies, this.d02, this, oo)
+            gg.setAllCookies(oo.cookies, this.d02, this, oo);
         },
         d02: function (t, oo) {
             oo.dom.html("延时0.5秒,再确认是否登入...");
@@ -104,13 +104,16 @@ Object.assign(Tool, {
                 oo.cookies = 0;
                 this.a02(oo);//去登入
             }
+            else if (t.error) {
+                Tool.at("没有网络！！！")
+            }
             else {
                 if (t.user.name == oo.username) {
                     oo.dom.html("已确认“" + oo.username + "”登入...");
                     this.a11(t, oo);
                 }
                 else {
-                    Tool.at(["账号不对", t])
+                    Tool.pre(["账号不对", t])
                 }
             }
         }
