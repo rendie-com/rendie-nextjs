@@ -2,33 +2,21 @@
 var fun =
 {
     a01: function () {
-        //obj.params.jsFile     表示选择JS文件        
-        //obj.params.site       站点
-        switch (obj.params.jsFile) {
+        //o.params.jsFile     表示选择JS文件        
+        //o.params.site       站点
+        switch (o.params.jsFile) {
             case "js01": Tool.scriptArr(['admin/js/Shopee/物流方式/获取shopee的【物流方式】.js']); break;
             default: this.a02();
         }
     },
     a02: function () {
-        let data = [{
-            action: "fs",
-            fun: "access_sqlite",
-            database: "shopee/物流方式",
-            mode: 0,
-            elselist: [{
-                action: "fs",
-                fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/物流方式.db"],
-                database: "shopee/物流方式"
-            }]
-        }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.download_sqlite.a01(["shopee/物流方式"], this.a03, this)
     },
     a03: function (t) {
         let data = [{
             action: "sqlite",
             database: "shopee/物流方式",
-            sql: "select " + Tool.fieldAs("id,name,cn_name,currency_unit,currency_symbol,description,cargo_types") + " FROM @.table" + (obj.params.site ? " where @.id=" + obj.params.site : ""),
+            sql: "select " + Tool.fieldAs("id,name,cn_name,currency_unit,currency_symbol,description,cargo_types") + " FROM @.table" + (o.params.site ? " where @.id=" + o.params.site : ""),
         }, {
             action: "sqlite",
             database: "shopee/物流方式",
@@ -48,7 +36,7 @@ var fun =
                 <td>'+ arr1[i].currency_symbol + '</td>\
                 <td class="p-0">'+ this.b03(arr1[i].cargo_types, arr1[i].description, arr1[i].cn_name) + '</td>\
             </tr>';
-           
+
         }
         html = '\
         <header class="panel-heading">Shopee &gt; 物流方式</header>\
@@ -61,22 +49,22 @@ var fun =
         Tool.html(null, null, html)
     },
     ////////////////////////////////////////////////////////////////////
-    b01: function (arr) {        
+    b01: function (arr) {
         let html = '\
         <tr>\
             <th style="padding-left:25px;position: relative;">'+ this.b02() + '国家代码</th>\
-            <th class="p-0">'+ this.b07(obj.params.site, arr) + '</th>\
+            <th class="p-0">'+ this.b07(o.params.site, arr) + '</th>\
             <th>货币单位</th>\
             <th>货币符号</th>\
             <th></th>\
         </tr>'
         return html;
     },
-    b02: function () {        
+    b02: function () {
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js01\');"><a class="dropdown-item pointer">*获取shopee的【物流方式】</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js01\');"><a class="dropdown-item pointer">*获取shopee的【物流方式】</a></li>\
 		</ul>'
     },
     b03: function (cargo_types, description, cn_name) {
@@ -201,7 +189,7 @@ var fun =
     b07: function (val, arr) {
         let nArr = [];
         for (let i = 0; i < arr.length; i++) {
-            nArr.push('<option value="' + arr[i].id + '" ' + (""+arr[i].id == val ? 'selected="selected"' : '') + '>' + arr[i].cn_name + '</option>');
+            nArr.push('<option value="' + arr[i].id + '" ' + ("" + arr[i].id == val ? 'selected="selected"' : '') + '>' + arr[i].cn_name + '</option>');
         }
         return '\
         <select onChange="Tool.open(\'site\',this.options[this.selectedIndex].value)" class="form-select">\

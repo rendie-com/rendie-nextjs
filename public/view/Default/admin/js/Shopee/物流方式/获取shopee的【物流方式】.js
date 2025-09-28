@@ -2,8 +2,8 @@
 var fun =
 {
     a01: function () {
-        //obj.params.jsFile     表示选择JS文件  
-        let html = Tool.header(obj.params.return, 'Shopee &gt; 物流方式 &gt; 获取shopee的【物流方式】') + '\
+        //o.params.jsFile     表示选择JS文件  
+        let html = Tool.header(o.params.return, 'Shopee &gt; 物流方式 &gt; 获取shopee的【物流方式】') + '\
         <div class="p-2">\
             <table class="table table-hover">\
                 <tbody>\
