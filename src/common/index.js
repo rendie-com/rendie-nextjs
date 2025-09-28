@@ -3,6 +3,7 @@ import { self_fs } from './self/fs.js'
 import { self_process } from './self/process.js'
 import { sqlite } from './db/sqlite.js'
 import { PostgreSQL } from './db/PostgreSQL.js'
+import { self_serialport } from './self/serialport.js'
 
 export const index = {
     init: async function (list) {
@@ -37,7 +38,6 @@ export const index = {
         return newList;
     },
     switch_action: async function (data, oo) {
-        if (oo.action == "${default_db}") { oo.action = process.env.NEXTJS_CONFIG_DEFAULT_DB; }
         switch (oo.action) {
             case "sqlite": oo = await sqlite.a01(oo, this.database(data, oo.database), this.sql(data, oo.sql)); break;
             case "pg01": oo = await PostgreSQL.a01(oo, this.database(data, oo.database), this.sql(data, oo.sql), process.env.NEXTJS_CONFIG_PG01); break;
@@ -46,6 +46,7 @@ export const index = {
             case "pg04": oo = await PostgreSQL.a01(oo, this.database(data, oo.database), this.sql(data, oo.sql), process.env.NEXTJS_CONFIG_PG04); break;
             case "fs": oo = await self_fs.a01(oo); break;
             case "process": oo = await self_process.a01(oo); break;
+            case "serialport": oo = await self_serialport.a01(oo); break;
             case "__dirname": oo = __dirname; break;
             case "config": oo = this.config(oo.name); break;
         }
@@ -53,21 +54,28 @@ export const index = {
     },
     database: function (oo, database) {
         for (let k in oo) {
-            if (database.indexOf("${proid50:" + k + "}") != -1) {
+            if (database.indexOf("${proid_50:" + k + "}") != -1) {
                 let id = parseInt(oo[k].substring(1))
-                database = this.replaceAll(database, "\\$\\{proid50\\:" + k + "\\}", this.remainder(id, 50))
+                database = this.replaceAll(database, "\\$\\{proid_50\\:" + k + "\\}", this.remainder(id, 2, 50))
             }
-            else if (database.indexOf("${fromid99:" + k + "}") != -1) {
-                database = this.replaceAll(database, "\\$\\{fromid99\\:" + k + "\\}", this.remainder(oo[k], 99))
+            else if (database.indexOf("${proid_100:" + k + "}") != -1) {
+                let id = parseInt(oo[k].substring(1))
+                database = this.replaceAll(database, "\\$\\{proid_100\\:" + k + "\\}", this.remainder(id, 3, 100))
             }
-            else if (database.indexOf("${fromid300:" + k + "}") != -1) {
-                database = this.replaceAll(database, "\\$\\{fromid300\\:" + k + "\\}", this.remainder(oo[k], 300))
+            else if (database.indexOf("${id_100:" + k + "}") != -1) {
+                database = this.replaceAll(database, "\\$\\{id_100\\:" + k + "\\}", this.remainder(oo[k], 3, 100))
+            }
+            else if (database.indexOf("${id_1000:" + k + "}") != -1) {
+                database = this.replaceAll(database, "\\$\\{id_1000\\:" + k + "\\}", this.remainder(oo[k], 4, 1000))
+            }
+            else if (database.indexOf("${id_99:" + k + "}") != -1) {
+                database = this.replaceAll(database, "\\$\\{id_99\\:" + k + "\\}", this.remainder(oo[k], 2, 99))
             }
         }
         return database
     },
-    remainder: function (id, num) {
-        return (Math.abs(id % num) + 1).toString().padStart(2, '0');
+    remainder: function (id, num, count) {
+        return (Math.abs(id % count) + 1).toString().padStart(num, '0');
     },
     sql: function (oo, sql) {
         for (let k in oo) {

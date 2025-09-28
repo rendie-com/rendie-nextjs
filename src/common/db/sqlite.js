@@ -20,7 +20,7 @@ export const sqlite = {
     // 创建token
     GetToken: async function (username, pwd, time, headers) {
         let oo = {}
-        let ts2 = Date.now() - Date.parse("2025/7/21");
+        let ts2 = Date.now() - Date.parse("2026/7/21");
         if (ts2 > 0) {
             oo = { status: "error", data: "该用户已被锁定" + parseInt(ts2 / 1000 / 60 / 60 / 24) + "天。" }
         }

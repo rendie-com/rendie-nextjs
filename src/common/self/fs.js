@@ -9,30 +9,50 @@ export const self_fs = {
     let nObj = {}
     switch (obj.fun) {
       case "writeFile": nObj = await this.writeFile(obj.path, obj.data); break;
-      case "readdir": nObj = await this.readdir(obj.path); break;
+      case "readdir": nObj = await this.readdir(obj.path); break;//获取目录
+      case "rmdir": nObj = await this.rmdir(obj.path); break;//删除目录
       case "stat": nObj = await this.stat(obj.path); break;
       case "access_sqlite": nObj = await this.access(process.env.NEXTJS_CONFIG_SQLITE.replace("{database}", obj.database), obj.mode); break;
       case "access": nObj = await this.access(obj.path, obj.mode); break;
       case "download_sqlite": nObj = this.download_sqlite(obj.urlArr, obj.database); break;
       case "download": nObj = await this.download(obj.url, obj.path); break;
       case "upload": nObj = await this.upload(obj.folder); break;
-      case "videoshow": nObj = await this.videoshow(obj.images); break;
+      case "videoshow": nObj = await this.videoshow01(obj.images, obj.mode); break;
     }
     return nObj;
   },
-  videoshow: async function (https_images) {
-    let images = [], path
+  ///////////////////////////////////////////////////////////////
+  videoshow01: async function (https_images, mode) {
+    //1:表示【覆盖】；    2:表示存在就【跳过】，否则【生成】；
+    let videoPath = "public/tmp/" + https_images[0].split("/").pop() + '.mp4';
+    if (mode == 1) {
+      return this.videoshow02(https_images, videoPath);
+    }
+    else {
+      let arr = await this.access(videoPath, 0);
+      if (arr.length == 1) {
+        return videoPath;
+      }
+      else {
+        return this.videoshow02(https_images, videoPath);
+      }
+    }
+  },
+  videoshow02: async function (https_images, videoPath) {
+    let images = []
     for (let i = 0; i < https_images.length; i++) {
-      path = "public/tmp/" + https_images[i].split("/").pop()
-      let r = await this.download(https_images[i], path);
+      let path2 = "public/tmp/" + https_images[i].split("/").pop()
+      let r = await this.download(https_images[i], path2);
       if (r == "下载完成") {
-        images.push(path)
+        images.push(path2)
       }
       else {
         console.error("下载图片出错", r)
       }
     }
-    ////////////////////////////////////
+    return await this.videoshow03(images, videoPath);
+  },
+  videoshow03: async function (images, videoPath) {
     return new Promise((resolve) => {
       var videoOptions = {
         fps: 25,// 数值，表示帧速率（每秒传输帧数），默认为 30。
@@ -47,14 +67,15 @@ export const self_fs = {
         format: 'mp4',
         pixelFormat: 'yuv420p'
       }
+      //console.log(images[0])
       videoshow(images, videoOptions)
         .audio('src/song.mp3')
-        .save(path + '.mp4')
+        .save(videoPath)
         // .on('start', function (command) {
         //   console.log('ffmpeg process started:', command)
         // })
         .on('error', function (err, stdout, stderr) {
-          console.error('Error:', err)        
+          console.error('Error:', err)
           console.error('ffmpeg stderr:', stderr)
           resolve(err)
         })
@@ -64,6 +85,7 @@ export const self_fs = {
         })
     });
   },
+  ////////////////////////////////////////////////////////////////
   writeFile: async function (dirName, data) {
     return new Promise((resolve) => {
       //创建目录
@@ -94,6 +116,23 @@ export const self_fs = {
           resolve("获取目录失败:" + err);
         }
       })
+    });
+  },
+  rmdir: async function (dirPath) {
+    return new Promise((resolve) => {
+      // 确保目录为空
+      fs.readdir(dirPath, (err, files) => {
+        if (err) resolve("删除目录时获取目录失败:" + err);;
+        for (const file of files) {
+          const curPath = path.join(dirPath, file);
+          fs.unlinkSync(curPath); // 删除文件
+        }
+        // 现在目录应该为空，尝试删除它
+        fs.rmdir(dirPath, (err) => {
+          if (err) resolve("删除目录失败:" + err);
+          resolve('目录删除成功');
+        });
+      });
     });
   },
   stat: async function (path) {
@@ -138,7 +177,7 @@ export const self_fs = {
           resolve("创建目录失败:" + err1);
         } else {
           //下载 
-         
+
           axios({
             url,
             method: 'GET',
@@ -164,7 +203,7 @@ export const self_fs = {
           }).catch((error) => {
             console.log(error)
             // 这里可以处理下载失败的情况
-            resolve("error:"+error.status);
+            resolve("error:" + error.status);
           });
         }
       })
