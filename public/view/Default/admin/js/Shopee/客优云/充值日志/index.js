@@ -2,10 +2,10 @@
 var fun =
 {
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
         this.a02()
     },
     a02: function () {
@@ -24,11 +24,11 @@ var fun =
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
-        let where = " order by @.transTime desc"
+        let where = this.b05()
         let data = [{
             action: "sqlite",
             database: "shopee/客优云/充值日志",
-            sql: "select " + Tool.fieldAs("transTime,ordersn,packageId,tradeNo,transType,comment,tradeAmount,operateType,transStatus") + " FROM @.table" + where + Tool.limit(20, obj.params.page, "sqlite"),
+            sql: "select " + Tool.fieldAs("transTime,ordersn,packageId,tradeNo,transType,comment,tradeAmount,operateType,transStatus") + " FROM @.table" + where + Tool.limit(35, o.params.page, "sqlite"),
         }, {
             action: "sqlite",
             database: "shopee/客优云/充值日志",
@@ -41,6 +41,7 @@ var fun =
         for (let i = 0; i < t.length; i++) {
             tr.push('\
             <tr>\
+                <td>'+ (i + 1) + '</td>\
                 <td>'+ Tool.js_date_time2(t[i].transTime, "-") + '</td>\
                 <td>'+ t[i].ordersn + '</td>\
                 <td>'+ (t[i].packageId ? t[i].packageId : "") + '</td>\
@@ -51,13 +52,13 @@ var fun =
                 <td>'+ t[i].transStatus + '</td>\
            </tr>')
         }
-        let html = Tool.header2(obj.params.jsFile) + '\
+        let html = Tool.header2(o.params.jsFile) + this.b03() + '\
 		<div class="p-2">\
 			<table class="table align-top table-hover center">\
 				<thead class="table-light">'+ this.b01() + '</thead>\
                 <tbody>'+ tr.join("") + '</tbody>\
 			</table>\
-            ' + Tool.page(arr[1][0].Count, 20, obj.params.page) + '\
+            ' + Tool.page(arr[1][0].Count, 35, o.params.page) + '\
 		</div>'
         Tool.html(null, null, html)
     },
@@ -65,7 +66,8 @@ var fun =
     b01: function () {
         let html = '\
         <tr>\
-            <th style="position: relative;" class="w170">'+ this.b02() + '时间</th>\
+            <th class="w40" style="position: relative; left:5px;">'+ this.b02() + '</th>\
+            <th class="w170">时间</th>\
             <th>订单号</th>\
             <th>包裹编号</th>\
             <th>流水号</th>\
@@ -80,8 +82,53 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js05\');"><a class="dropdown-item pointer">*获取充值日志</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js05\');"><a class="dropdown-item pointer">*获取充值日志</a></li>\
         </ul>'
-    },    
+    },
+    b03: function () {
+        return '\
+        <div class="input-group w-50 m-2">\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b04(o.params.field) + '</button>\
+            <ul class="dropdown-menu">\
+                <li class="dropdown-item pointer" onclick="fun.c01(1)">订单号</li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(2)">包裹编号</a></li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(3)">流水号</a></li>\
+            </ul>\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
+        </div>'
+    },
+    b04: function (val) {
+        let name = "";
+        switch (val) {
+            case "1": name = "订单号"; break;
+            case "2": name = "包裹编号"; break;
+            case "3": name = "流水号"; break;
+            default: name = "未知：" + val;
+        }
+        return name
+    },
+    b05: function () {
+        let arr = []
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.ordersn='" + o.params.searchword + "'"); break;//商品编码
+                case "2": arr.push("@.packageId='" + o.params.searchword + "'"); break;//包裹号
+                case "3": arr.push("@.tradeNo='" + o.params.searchword + "'"); break;//采购订单号
+            }
+        }
+        return (arr.length == 0 ? "" : " where " + arr.join(" and ")) + " order by @.transTime desc";
+    },
+    //////////////////////////////////////////
+    c01: function (val) {
+        let name = this.b04("" + val)
+        $("#field").html(name).val(val)
+    },
+    c02: function () {
+        let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
+        if (searchword) {
+            Tool.main("jsFile=" + o.params.jsFile + "&page=1&field=" + field + "&searchword=" + searchword);
+        } else { alert("请输入搜索内容"); }
+    },
 }
 fun.a01();

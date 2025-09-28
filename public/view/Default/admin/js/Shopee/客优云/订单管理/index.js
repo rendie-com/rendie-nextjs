@@ -2,12 +2,13 @@
 var fun =
 {
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
-        obj.params.statusDescription = obj.params.statusDescription ? Tool.Trim(obj.params.statusDescription) : "";//状态
-        obj.params.country = obj.params.country ? Tool.Trim(obj.params.country) : "";//站点
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
+        o.params.statusDescription = o.params.statusDescription ? o.params.statusDescription : "";//订单状态
+        o.params.kyyOrderStatusName = o.params.kyyOrderStatusName ? o.params.kyyOrderStatusName : "";//处理状态
+        o.params.country = o.params.country ? o.params.country : "";//站点
         this.a02()
     },
     a02: function () {
@@ -25,16 +26,20 @@ var fun =
         }]
         Tool.ajax.a01(data, this.a03, this);
     },
-    a03: function (t) {
-        let where = this.b10()
+    a03: function () {
+        let where = this.b10();
         let data = [{
             action: "sqlite",
             database: "shopee/客优云/订单管理",
-            sql: "select " + Tool.fieldAs("items,ordersn,statusDescription,payTime,shipByDate,orderCancelDay,kyyOrderStatusName,country,shopName,currency") + " FROM @.table" + where + " order by @.createTime desc" + Tool.limit(10, obj.params.page, "sqlite"),
+            sql: "select " + Tool.fieldAs("items,ordersn,statusDescription,payTime,shipByDate,orderCancelDay,kyyOrderStatusName,country,shopName,currency") + " FROM @.table" + where + " order by @.createTime desc" + Tool.limit(10, o.params.page, "sqlite"),
         }, {
             action: "sqlite",
             database: "shopee/客优云/订单管理",
             sql: "select count(1) as Count FROM @.table" + where,
+        }, {
+            action: o.DEFAULT_DB,
+            database: "main",
+            sql: "select @.value as value FROM @.config where @.name='" + o.params.template + "'",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
@@ -47,25 +52,29 @@ var fun =
                 <td class="p-0">'+ this.b08(t[i].statusDescription, t[i].kyyOrderStatusName, t[i].ordersn) + '</td>\
                 <td class="p-0">'+ this.b09(t[i].country, t[i].shopName) + '</td>\
                 <td class="p-0">'+ this.b04(t[i].payTime, t[i].shipByDate, t[i].orderCancelDay) + '</td>\
-            </tr>')
+            </tr>');
         }
-        let html = Tool.header2(obj.params.jsFile) + this.b05() + '\
+        let html = Tool.header2(o.params.jsFile) + this.b05() + '\
 		<div class="p-2">\
 			<table class="table align-top table-hover center">\
-				<thead class="table-light">'+ this.b01() + '</thead>\
+				<thead class="table-light">'+ this.b01(arr[2]) + '</thead>\
                 <tbody>'+ tr.join("") + '</tbody>\
-			</table>\
-            ' + Tool.page(arr[1][0].Count, 10, obj.params.page) + '\
-		</div>'
-        Tool.html(null, null, html)
+			</table>' + Tool.page(arr[1][0].Count, 10, o.params.page) + '\
+		</div>';
+        Tool.html(null, null, html);
     },
     /////////////////////////////////////
-    b01: function () {
+    b01: function (t2) {
+        let config = {};
+        if (t2[0].value) {
+            config = JSON.parse(t2[0].value)["订单管理"]
+            if (!config) { config = {}; }
+        }
         let html = '\
         <tr>\
             <th class="left" style="padding-left:30px;position: relative;">'+ this.b02() + '商品信息</th>\
-            <th class="p-0">'+ this.b07('状态', obj.params.statusDescription, config.statusDescription) + '</th>\
-            <th class="p-0">'+ this.b11("站点", obj.params.country, config.country) + '</th>\
+            <th class="p-0">'+ this.b07('状态', o.params.statusDescription, config["订单状态"], o.params.kyyOrderStatusName, config["处理状态"]) + '</th>\
+            <th class="p-0">'+ this.b11("站点", o.params.country, config["站点"]) + '</th>\
             <th>时间</th>\
         </tr>'
         return html;
@@ -74,7 +83,8 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-	        <li onClick="Tool.openR(\'?jsFile=js01\');"><a class="dropdown-item pointer">*获取订单信息</a></li>\
+	        <li onClick="Tool.openR(\'jsFile=js22\');"><a class="dropdown-item pointer">更新数量</a></li>\
+	        <li onClick="Tool.openR(\'jsFile=js01\');"><a class="dropdown-item pointer">*同步缺失订单</a></li>\
         </ul>'
     },
     b03: function (items, currency) {
@@ -119,12 +129,12 @@ var fun =
     b05: function () {
         return '\
         <div class="input-group w-50 m-2">\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b06(obj.params.field) + '</button>\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b06(o.params.field) + '</button>\
             <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c01(1)">订单号</li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)">店铺名</a></li>\
             </ul>\
-            <input type="text" class="form-control" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
@@ -135,9 +145,9 @@ var fun =
             case "2": name = "店铺名"; break;
             default: name = "未知：" + val;
         }
-        return name
+        return name;
     },
-    b07: function (name, statusDescription, configArr) {
+    b07: function (name, statusDescription, config1Arr, kyyOrderStatusName, config2Arr) {
         let optionArr = [], arr = [
             "未付款",
             "待发货",
@@ -152,14 +162,25 @@ var fun =
             "退货运回",
         ]
         for (let i = 0; i < arr.length; i++) {
-            optionArr.push('<option value="' + arr[i] + '"' + (arr[i] == statusDescription ? 'selected="selected"' : '') + '>' + arr[i] + '(' + configArr[i] + ')</option>')
+            optionArr.push('<option value="' + arr[i] + '"' + (arr[i] == statusDescription ? 'selected="selected"' : '') + '>' + (i + 1) + "." + arr[i] + (config1Arr ? '(' + config1Arr[i] + ')' : '') + '</option>')
+        }
+        /////////////////////////////////////////////////////
+        let optionArr2 = [], arr2 = [
+            "未处理",
+            "已处理",
+            "已申请运单号",
+        ]
+        for (let i = 0; i < arr2.length; i++) {
+            optionArr2.push('<option value="' + arr2[i] + '"' + (arr2[i] == kyyOrderStatusName ? 'selected="selected"' : '') + '>' + arr2[i] + (config2Arr ? '(' + config2Arr[i] + ')' : '') + '</option>');
         }
         return '\
         <select onChange="fun.c03(this.options[this.selectedIndex].value)" class="form-select">\
           <option value="">'+ name + '</option>\
-          <option value="-1">更新数量</option>\
+          <option value="-1" disabled>订单状态</option>\
           '+ optionArr.join("") + '\
-        </select>';
+          <option value="-2" disabled>处理状态</option>\
+          '+ optionArr2.join("") + '\
+       </select>';
     },
     b08: function (statusDescription, kyyOrderStatusName, ordersn) {
         let tr = '\
@@ -176,51 +197,56 @@ var fun =
     },
     b10: function () {
         let arr = []
-        if (obj.params.searchword) {
-            switch (obj.params.field) {
-                case "1": arr.push("@.ordersn='" + obj.params.searchword + "'"); break;//商品编码
-                case "2": arr.push("@.shopName='" + obj.params.searchword + "'"); break;//包裹号
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.ordersn='" + o.params.searchword + "'"); break;//商品编码
+                case "2": arr.push("@.shopName='" + o.params.searchword + "'"); break;//包裹号
             }
         }
-        if (obj.params.statusDescription) { arr.push("@.statusDescription='" + obj.params.statusDescription + "'"); }
-        if (obj.params.country) { arr.push("@.country='" + obj.params.country + "'"); }
+        if (o.params.statusDescription) { arr.push("@.statusDescription='" + o.params.statusDescription + "'"); }
+        if (o.params.kyyOrderStatusName) { arr.push("@.kyyOrderStatusName='" + o.params.kyyOrderStatusName + "'"); }
+        if (o.params.country) { arr.push("@.country='" + o.params.country + "'"); }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
     },
     b11: function (name, val, configArr) {
         if (!configArr) configArr = []
         let optionArr = [], arr = Tool.siteArr();
         for (let i = 0; i < arr.length; i++) {
-            optionArr.push('<option value="' + arr[i][0] + '"' + ("" + arr[i][0] == val ? 'selected="selected"' : '') + '>' + arr[i][0] + '.' + arr[i][1] + '(' + configArr[i] + ')</option>')
+            optionArr.push('<option value="' + arr[i][0] + '"' + ("" + arr[i][0] == val ? 'selected="selected"' : '') + '>' + arr[i][0] + '.' + arr[i][1] + '(' + configArr[i] + ')</option>');
         }
         return '\
-        <select onChange="fun.c04(this.options[this.selectedIndex].value)" class="form-select">\
+        <select onChange=" Tool.open(\'country\',this.options[this.selectedIndex].value)" class="form-select">\
           <option value="">'+ name + '</option>\
-          <option value="-1">更新数量</option>\
           '+ optionArr.join("") + '\
         </select>';
     },
     ////////////////////////////////
     c01: function (val) {
-        let name = this.b06("" + val)
-        $("#field").html(name).val(val)
+        let name = this.b06("" + val);
+        $("#field").html(name).val(val);
     },
     c02: function () {
         let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
         if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&page=1&field=" + field + "&searchword=" + searchword);
+            Tool.main("jsFile=" + o.params.jsFile + "&page=1&field=" + field + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },
     c03: function (val) {
         if (val == "-1") {
-            Tool.openR("?jsFile=js22");
+            Tool.openR("jsFile=js22");
+        }
+        else if (val == "-2") {
+            Tool.openR("jsFile=js25");
         }
         else {
-            Tool.open("statusDescription", val);
+            let name = "statusDescription";
+            if (val == "未处理" || val == "已处理" || val == "已申请运单号") { name = "kyyOrderStatusName"; }
+            Tool.open(name, val);
         }
     },
     c04: function (val) {
         if (val == "-1") {
-            Tool.openR("?jsFile=js23");
+            Tool.openR("jsFile=js23");
         }
         else {
             Tool.open("country", val);

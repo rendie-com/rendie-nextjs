@@ -11,13 +11,13 @@ var fun =
         stop: false,
     },
     a01: function () {
-        //obj.params.jsFile         选择JS文件
-        //obj.params.return         返回URL
+        //o.params.jsFile         选择JS文件
+        //o.params.return         返回URL
         this.obj.runtime = Tool.gettime("")
         this.a02();
     },
     a02: function () {
-        let html = Tool.header(obj.params.return, "Shopee &gt; 任务 &gt; 定时任务 &gt; 启动定时任务") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 任务 &gt; 定时任务 &gt; 启动定时任务") + '\
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\
@@ -70,13 +70,13 @@ var fun =
         $("#state").html("正在获取任务信息。。。");
         let where = "where @.nexttime<" + this.obj.runtime + " and @.isenable=1 and @.runuser=\'" + Tool.getStorage("username") + "\'"
         let data = [{
-            action: "${default_db}",
+            action: o.DEFAULT_DB,
             database: "shopee/任务/定时任务",
             sql: "select " + Tool.fieldAs("jsfile,taskname,id,runcycle,remark") + " FROM @.table " + where + " order by @.priority asc limit 1",
         }]
         if (this.obj.A2 == 0) {
             data.push({
-                action: "${default_db}",
+                action: o.DEFAULT_DB,
                 database: "shopee/任务/定时任务",
                 sql: "select count(1) as total FROM @.table " + where,
             })
@@ -130,7 +130,7 @@ var fun =
     f01: function () {
         let oo = this.obj.Aobj
         let data = [{
-            action: "${default_db}",
+            action: o.DEFAULT_DB,
             database: "shopee/任务/定时任务",
             sql: "update @.table set @.runtime=" + this.obj.runtime + ",@.nexttime=" + (this.obj.runtime + oo.runcycle * 60) + " where @.id=" + oo.id,
         }]

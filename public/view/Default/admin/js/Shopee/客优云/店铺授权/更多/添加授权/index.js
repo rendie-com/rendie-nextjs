@@ -2,9 +2,9 @@
 var fun =
 {
     a01: function () {
-        //obj.params.jsFile         选择JS文件       
-        //obj.params.return         返回URL  
-        let html = Tool.header(obj.params.return, "Shopee &gt; 客优云 &gt; 店铺授权 &gt; 添加授权") + '\
+        //o.params.jsFile         选择JS文件       
+        //o.params.return         返回URL  
+        let html = Tool.header(o.params.return, "Shopee &gt; 客优云 &gt; 店铺授权 &gt; 添加授权") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
@@ -31,10 +31,15 @@ var fun =
             }
         }
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
-        gg.tabs_remove_create_indexOf(2, url, ['class="title">Select Account</div>'], false, this.a05, this)
+        gg.tabs_remove_create_indexOf(2, url, ['class="title">Select Account</div>', '>Login to Authorize Shopee Openplatform APP</p>'], false, this.a05, this)
     },
     a05: function (t) {
-        gg.tabs_executeScript_indexOf(2, ["jquery"], "$('.username').click();", ['Authorize Merchant'], false, this.a06, this);
+        if (t.indexOf('class="title">Select Account</div>') != -1) {
+            gg.tabs_executeScript_indexOf(2, ["jquery"], "$('.username').click();", ['Authorize Merchant'], false, this.a06, this);
+        }
+        else {
+            Tool.at("需要手动登陆。。。");
+        }
     },
     a06: function (t) {
         $("#state").html("注入_登录");
@@ -42,7 +47,7 @@ var fun =
     },
     a07: function (t) {
         t += "\nrendie_fun.a01()"
-        gg.tabs_executeScript_indexOf(2, ["jquery"], t, ['授权正常'], true, this.a08, this);
+        gg.tabs_executeScript_indexOf(2, ["jquery"], t, ['客优云ERP'], true, this.a08, this);
     },
     a08: function () {
         $("#state").html("全部完成。");

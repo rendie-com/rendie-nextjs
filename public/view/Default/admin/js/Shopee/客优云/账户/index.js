@@ -2,10 +2,10 @@
 var fun =
 {
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
         this.a02()
     },
     a02: function () {
@@ -28,7 +28,7 @@ var fun =
         let data = [{
             action: "sqlite",
             database: "shopee/客优云/账户",
-            sql: "select " + Tool.fieldAs("id,sort,username,phone,note,points") + " FROM @.table" + where + Tool.limit(10, obj.params.page, "sqlite"),
+            sql: "select " + Tool.fieldAs("id,sort,username,phone,note,points") + " FROM @.table" + where + Tool.limit(10, o.params.page, "sqlite"),
         }, {
             action: "sqlite",
             database: "shopee/客优云/账户",
@@ -45,7 +45,7 @@ var fun =
                 <td class="w30" style="padding-left: 30px;position: relative;">\
 					<button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdown0"><div></div><div></div><div></div></button>\
 					<ul class="dropdown-menu" aria-labelledby="dropdown0">\
-						<li><a class="dropdown-item pointer" onClick="Tool.openR(\'?jsFile=js15&id='+ t[i].id + '\')">修改</a></li>\
+						<li><a class="dropdown-item pointer" onClick="Tool.openR(\'jsFile=js15&id='+ t[i].id + '\')">修改</a></li>\
 				        <li onClick="fun.c02('+ t[i].id + ')"><a class="dropdown-item pointer">删除</a></li>\
 					</ul>\
 				</td>\
@@ -55,13 +55,13 @@ var fun =
                 <td>'+ t[i].points + '</td>\
            </tr>')
         }
-        let html = Tool.header2(obj.params.jsFile) + '\
+        let html = Tool.header2(o.params.jsFile) + '\
 		<div class="p-2">\
 			<table class="table align-top table-hover center">\
 				<thead class="table-light">'+ this.b01() + '</thead>\
                 <tbody>'+ tr.join("") + '</tbody>\
 			</table>\
-            ' + Tool.page(arr[1][0].Count, 10, obj.params.page) + '\
+            ' + Tool.page(arr[1][0].Count, 10, o.params.page) + '\
 		</div>'
         Tool.html(null, null, html)
     },
@@ -133,7 +133,7 @@ var fun =
         a04: function (t, oo) {
             let url = "https://erp.keyouyun.com/dashboard"
             oo.This.html("正在打开页面...");
-            gg.tabs_remove_create_indexOf(2, url, '<script', false, this.a05, this, oo)
+            gg.tabs_remove_create_indexOf(2, url, ['<script'], false, this.a05, this, oo)
         },
         a05: function (t, oo) {
             oo.This.html('* <a href="javascript:;" onclick="fun.SignIn.a01(' + oo.id + ',$(this).parent())" title="点击登陆">' + oo.username + '</a>')

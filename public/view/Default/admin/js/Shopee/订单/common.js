@@ -1,29 +1,17 @@
 ﻿Object.assign(Tool, {
-    header2: function (jsFile, site) {
+    header2: function (jsFile, site, num) {
         let html = '\
             <header class="panel-heading">\
-              <div onclick="Tool.main(\'?jsFile=&site=' + site + '\')"' + (!jsFile ? ' class="active"' : '') + '>订单管理</div>\
-              <div onclick="Tool.main(\'?jsFile=js07&site=' + site + '\')"' + (jsFile == "js07" ? ' class="active"' : '') + '>发货预报</div>\
+              <div onclick="Tool.main(\'jsFile=&site=' + site + '&num=' + num + '\')"' + (!jsFile ? ' class="active"' : '') + '>订单管理</div>\
+              <div onclick="Tool.main(\'jsFile=js07&site=' + site + '&num=' + num + '\')"' + (jsFile == "js07" ? ' class="active"' : '') + '>发货预报</div>\
             </header>'
         return html;
     },
-    //选出SIP店铺对应的主站点
-    sip: function (site) {
-        switch (site) {
-            case "th":
-            case "th":
-            case "vn": site = 'tw'; break;
-            case "co":
-            case "cl":
-                site = 'br'; break;
-        }
-        return site;
-    },
-    binding: function (jsFile, site, binding_status) {
+    binding: function (jsFile, site, num, binding_status) {
         let html = '\
-       <ul class="makeHtmlTab" style="padding-left:25px;">\
-            <li'+ (binding_status == "0" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=' + site + '&binding_status=0\')">未绑定订单</li>\
-            <li'+ (binding_status == "3" ? ' class="hover"' : '') + ' onclick="Tool.main(\'?jsFile=' + jsFile + '&site=' + site + '&binding_status=3\')">已绑定订单</li>\
+       <ul class="makeHtmlTab">\
+            <li'+ (binding_status == "0" ? ' class="hover"' : '') + ' onclick="Tool.main(\'jsFile=' + jsFile + '&site=' + site + '&num=' + num + '&binding_status=0\')">未绑定订单</li>\
+            <li'+ (binding_status == "3" ? ' class="hover"' : '') + ' onclick="Tool.main(\'jsFile=' + jsFile + '&site=' + site + '&num=' + num + '&binding_status=3\')">已绑定订单</li>\
         </ul>'
         return html;
     },
@@ -48,7 +36,7 @@
                 case 4: str = '已取消<br/>' + this.b01(cancel_reason_ext); break;
                 case 7:
                     switch (status) {
-                        case "1-1-9":
+                        case "1-1-9": str = '待出货<br/><font color="#8c8c8c"> 訂單正在等待買家完成預先委任中 </font>'; break;
                         case "2-2-9": str = '待出货<br/><font color="#8c8c8c">为了避免延迟出货，请在' + Tool.js_date_time2(auto_cancel_arrange_ship_date) + '前出货。</font>'; break;
                         case "2-2-1":
                         case "1-1-1": str = '待出货<br/><font color="#8c8c8c">等待快递员确认发货。</font>'; break;
@@ -81,6 +69,7 @@
                 case 502: str = '<font color="#8c8c8c">已被买家取消<br/>取消原因:需要输入/更换优惠券代码</font>'; break;
                 case 507: str = '<font color="#8c8c8c">已被买家取消<br/>取消原因:其他</font>'; break;
                 case 503: str = '<font color="#8c8c8c">已被买家取消<br/>取消原因:需要修改订单(例如:尺寸，颜色，数量等等)</font>'; break;
+                case 501: str = '<font color="#8c8c8c">已被买家取消<br/>取消原因:需要更改送货地址</font>'; break;
                 case 9: str = '<font color="#8c8c8c">已被买家取消<br/>取消原因:其他/改变主意</font>'; break;
                 case 504: str = '<font color="#8c8c8c">已被买家取消<br/>取消原因:付款程序太麻烦了</font>'; break;
                 case 205: str = '<font color="red">已被系统自动取消订单<br/>取消原因: 已被Shopee仓库取消</font>'; break;
@@ -88,6 +77,7 @@
                 case 303: str = '<font color="red">已被买家取消<br/>取消原因:订单未在截止日期之前运送至中转仓库。</font>'; break;
                 case 204: str = '<font color="red">已被系统自动取消订单<br/>取消原因:卖家未按时安排出货。</font>'; break;
                 case 202: str = '<font color="red">已被系统自动取消订单<br/>取消原因:运送失败</font>'; break;
+                case 1003: str = '<font color="red">已被系统自动取消订单<br/>取消原因: 已被系统自动取消订单 </font>'; break;
                 default: str = "<font color=red>未知取消原因：" + cancel_reason_ext + "</font>"; break;
             }
             return str;

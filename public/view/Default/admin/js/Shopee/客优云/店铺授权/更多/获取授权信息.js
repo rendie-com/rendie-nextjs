@@ -2,9 +2,9 @@
 var fun =
 {
     a01: function () {
-        //obj.params.jsFile         选择JS文件       
-        //obj.params.return         返回URL  
-        let html = Tool.header(obj.params.return, "Shopee &gt; 客优云 &gt; 店铺授权 &gt; 获取授权信息") + '\
+        //o.params.jsFile         选择JS文件       
+        //o.params.return         返回URL  
+        let html = Tool.header(o.params.return, "Shopee &gt; 客优云 &gt; 店铺授权 &gt; 获取授权信息") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\

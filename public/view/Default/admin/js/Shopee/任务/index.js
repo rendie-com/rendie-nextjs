@@ -1,9 +1,9 @@
 'use strict';
 !function () {
-    //obj.params.jsFile         选择JS文件
+    //o.params.jsFile         选择JS文件
     let path = "admin/js/Shopee/任务/"
     let loginPath = ["admin/js/Shopee/common.js", "admin/js/Shopee/common_login.js", "admin/js/Shopee/common_登录.js"]
-    switch (obj.params.jsFile) {
+    switch (o.params.jsFile) {
         case "js01": Tool.scriptArr([path + '定时任务/修改.js']); break;
         case "js02": Tool.scriptArr(loginPath.concat([
             path + 'common.js',

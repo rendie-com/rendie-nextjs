@@ -1,6 +1,6 @@
 'use strict';
 !function () {
-    //obj.params.jsFile         选择JS文件
+    //o.params.jsFile         选择JS文件
     let path = "admin/js/Shopee/商家设置/"
     let loginPath = [
         "admin/js/Shopee/common.js",
@@ -8,8 +8,8 @@
         "admin/js/Shopee/common_登录.js"
     ]
     let loginUrl = "admin/js/Shopee/common_登录.js";
-    switch (obj.params.jsFile) {
-        case "js01": Tool.scriptArr([path + '卖家账户/修改.js']); break;
+    switch (o.params.jsFile) {
+        case "js01": Tool.scriptArr([path + '卖家账户/修改/index.js']); break;
         case "js02": Tool.scriptArr([path + '卖家账户/更多/index.js']); break;
         case "js03": Tool.scriptArr([path + 'common.js', path + '合作伙伴管理/index.js']); break;
         case "js04": Tool.scriptArr(loginPath.concat([path + 'common.js', path + '合作伙伴管理/取消连接.js'])); break;

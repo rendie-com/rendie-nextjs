@@ -2,18 +2,18 @@
 var fun =
 {
   a01: function () {
-    //obj.params.jsFile         选择JS文件
-    //obj.params.id             ID
-    //obj.params.return         返回
+    //o.params.jsFile         选择JS文件
+    //o.params.id             ID
+    //o.params.return         返回
     this.a02();
   },
   a02: function () {
     let data = [{
-      action: "${default_db}",
+      action: o.DEFAULT_DB,
       database: "shopee/任务/定时任务",
-      sql: "select " + Tool.fieldAs("id,taskname,jsfile,runtime,runcycle,remark,isenable,priority,runuserid") + " FROM @.table where @.id=" + obj.params.id,
+      sql: "select " + Tool.fieldAs("id,taskname,jsfile,runtime,runcycle,remark,isenable,priority,runuserid") + " FROM @.table where @.id=" + o.params.id,
     }, {
-      action: "${default_db}",
+      action: o.DEFAULT_DB,
       database: "main",
       sql: "select " + Tool.fieldAs("id,username") + " FROM @.manager limit 20"
     }
@@ -28,7 +28,7 @@ var fun =
     if (!oo.taskname) oo.taskname = "";
     let jsfile = ""; if (oo.jsfile) { jsfile = JSON.stringify(JSON.parse(oo.jsfile), null, 2); }//
     if (!oo.remark) oo.remark = "";
-    let html = Tool.header(obj.params.return, "Shopee  &gt; 定时任务 &gt; 修改") + '\
+    let html = Tool.header(o.params.return, "Shopee  &gt; 定时任务 &gt; 修改") + '\
     <div class="p-2">\
       <table class="table table-hover align-middle">\
         <tbody>\
@@ -58,7 +58,7 @@ var fun =
             <td></td>\
           </tr>\
           <tr>\
-          <td class="right">排序：</td>\
+          <td class="right">优先级：</td>\
           <td><input class="form-control w150 center" type="text" value="' + oo.priority + '" onblur="fun.c01($(this),\'priority\',\'' + oo.priority + '\')"></td>\
           <td>当有多个任务时，值越小优先运行。</td>\
           </tr>\
@@ -87,9 +87,9 @@ var fun =
     if (val != V && !This.attr("disabled")) {
       This.attr("disabled", true);
       let data = [{
-        action: "${default_db}",
+        action: o.DEFAULT_DB,
         database: "shopee/任务/定时任务",
-        sql: "update @.table set @." + L + "='" + val + "' where @.id=" + obj.params.id,
+        sql: "update @.table set @." + L + "='" + val + "' where @.id=" + o.params.id,
       }]
       Tool.ajax.a01(data, this.c02, this, This);
     }
@@ -106,9 +106,9 @@ var fun =
     if (!This.attr("disabled")) {
       This.attr("disabled", true);
       let data = [{
-        action: "${default_db}",
+        action: o.DEFAULT_DB,
         database: "shopee/任务/定时任务",
-        sql: "update @.table set @." + L + "='" + (This.is(":checked") ? 1 : 0) + "' where @.id=" + obj.params.id,
+        sql: "update @.table set @." + L + "='" + (This.is(":checked") ? 1 : 0) + "' where @.id=" + o.params.id,
       }]
       Tool.ajax.a01(data, this.c02, this, This);
     }
@@ -120,9 +120,9 @@ var fun =
       try {
         let json = JSON.parse(val);
         let data = [{
-          action: "${default_db}",
+          action: o.DEFAULT_DB,
           database: "shopee/任务/定时任务",
-          sql: "update @.table set @." + L + "=" + Tool.rpsql(JSON.stringify(json)) + " where @.id=" + obj.params.id,
+          sql: "update @.table set @." + L + "=" + Tool.rpsql(JSON.stringify(json)) + " where @.id=" + o.params.id,
         }]
         Tool.ajax.a01(data, this.c02, this, This);
       } catch (error) {
@@ -135,9 +135,9 @@ var fun =
     if (!This.attr("disabled")) {
       This.attr("disabled", true);
       let data = [{
-        action: "${default_db}",
+        action: o.DEFAULT_DB,
         database: "shopee/任务/定时任务",
-        sql: "update @.table set @.runuserid='" + arr[0] + "',@.runuser=" + Tool.rpsql(arr[1]) + " where @.id=" + obj.params.id,
+        sql: "update @.table set @.runuserid='" + arr[0] + "',@.runuser=" + Tool.rpsql(arr[1]) + " where @.id=" + o.params.id,
       }]
       Tool.ajax.a01(data, this.c02, this, This);
     }

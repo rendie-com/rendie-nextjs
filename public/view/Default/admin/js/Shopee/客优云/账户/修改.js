@@ -2,13 +2,13 @@
 var fun =
 {
   a01: function () {
-    //obj.params.jsFile         选择JS文件
-    //obj.params.id         
-    //obj.params.return         
+    //o.params.jsFile         选择JS文件
+    //o.params.id         
+    //o.params.return         
     let data = [{
       action: "sqlite",
       database: "shopee/客优云/账户",
-      sql: "select " + Tool.fieldAs("fromid,username,password,email,phone,note,cookies,sort,points") + " FROM @.table where @.id=" + obj.params.id + " limit 1"
+      sql: "select " + Tool.fieldAs("fromid,username,password,email,phone,note,cookies,sort,points") + " FROM @.table where @.id=" + o.params.id + " limit 1"
     }]
     Tool.ajax.a01(data, this.a02, this)
   },
@@ -20,7 +20,7 @@ var fun =
     if (!oo.email) oo.email = "";
     if (!oo.note) oo.note = "";
     if (!oo.cookies) oo.cookies = "[]";
-    let html = Tool.header(obj.params.return, "Shopee &gt; 客优云 &gt; 账户 &gt; 修改") + '\
+    let html = Tool.header(o.params.return, "Shopee &gt; 客优云 &gt; 账户 &gt; 修改") + '\
     <div class="p-2">\
       <table class="table table-hover align-middle">\
         <tbody>\
@@ -82,7 +82,7 @@ var fun =
       let data = [{
         action: "sqlite",
         database: "shopee/客优云/账户",
-        sql: "update @.table set @." + L + "='" + val + "' where @.id=" + obj.params.id
+        sql: "update @.table set @." + L + "='" + val + "' where @.id=" + o.params.id
       }]
       Tool.ajax.a01(data, this.c02, this, This);
     }

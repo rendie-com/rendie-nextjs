@@ -6,10 +6,10 @@ var fun =
         seller: {},
     },
     a01: function () {
-        //obj.params.jsFile         选择JS文件       
-        //obj.params.return         返回URL  
-        //obj.params.partner_id     返回URL  
-        let html = Tool.header(obj.params.return, "Shopee &gt; 商家设置 &gt; 合作伙伴管理 &gt; 取消连接") + '\
+        //o.params.jsFile         选择JS文件       
+        //o.params.return         返回URL  
+        //o.params.partner_id     返回URL  
+        let html = Tool.header(o.params.return, "Shopee &gt; 商家设置 &gt; 合作伙伴管理 &gt; 取消连接") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
@@ -35,7 +35,7 @@ var fun =
         let url = "https://seller.shopee.cn/api/selleraccount/merchant/partner/deauth/?" + arr.join("&")
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
         $("#state").html("正在【取消连接】。");
-        let data = { "partner_id": Tool.int(obj.params.partner_id) }
+        let data = { "partner_id": Tool.int(o.params.partner_id) }
         gg.postFetch(url, JSON.stringify(data), this.d01, this)
     },
     ////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ var fun =
         let app_list = JSON.parse(t[0][0].app_list);
         let shop_list = [];
         for (let i = 0; i < app_list.length; i++) {
-            if ("" + app_list[i].partner_id == obj.params.partner_id) {
+            if ("" + app_list[i].partner_id == o.params.partner_id) {
                 shop_list = app_list[i].shop_list[0]; break;
             }
         }
@@ -69,7 +69,7 @@ var fun =
             "cbsc_shop_region=mx",
         ]
         let url = "https://seller.shopee.cn/api/selleraccount/shop/partner/deauth/?" + arr.join("&")
-        let data = { "partner_id": Tool.int(obj.params.partner_id), "shop_id_list": shop_id_list }
+        let data = { "partner_id": Tool.int(o.params.partner_id), "shop_id_list": shop_id_list }
         gg.postFetch(url, JSON.stringify(data), this.d04, this);
     },
     d04: function (t) {

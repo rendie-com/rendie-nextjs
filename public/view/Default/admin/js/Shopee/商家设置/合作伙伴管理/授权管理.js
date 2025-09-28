@@ -1,33 +1,21 @@
 'use strict';
 var fun =
 {
-    obj: {
-        DEFAULT_DB: "",
-    },
     a01: function () {
-        //obj.params.jsFile         选择JS文件
-        //obj.params.return         返回
-        //obj.params.partner_id     
+        //o.params.jsFile         选择JS文件
+        //o.params.return         返回
+        //o.params.partner_id     
         this.a02();
     },
     a02: function () {
-        let data = [{
-            action: "process",
-            fun: "env",
-            name: "NEXTJS_CONFIG_DEFAULT_DB"
-        }]
-        Tool.ajax.a01(data, this.a03, this);
-    },
-    a03: function (t) {
-        this.obj.DEFAULT_DB = t[0];
-        let data = this.b02(t[0]);
+        let data = this.b02(o.DEFAULT_DB);
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
         let app_list = JSON.parse(t[0][0].app_list);
         let shop_list = [], info = {};
         for (let i = 0; i < app_list.length; i++) {
-            if ("" + app_list[i].partner_id == obj.params.partner_id) {
+            if ("" + app_list[i].partner_id == o.params.partner_id) {
                 shop_list = app_list[i].shop_list;
                 info = app_list[i].info
                 break;
@@ -54,7 +42,7 @@ var fun =
             tbody.push('<tbody id="status' + i + '" ' + (i != 0 ? 'class="hide"' : '') + '>' + tr.join("") + '</tbody>');
             countArr.push(tr.length)
         }       
-        let html = Tool.header(obj.params.return, "Shopee &gt; 商家设置 &gt; 合作伙伴管理 &gt; 授权管理") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 商家设置 &gt; 合作伙伴管理 &gt; 授权管理") + '\
         <div class="p-2">\
             <table class="table table-hover align-middle center">\
                 <thead class="table-light">\

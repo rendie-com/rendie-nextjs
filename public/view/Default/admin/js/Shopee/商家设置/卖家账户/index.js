@@ -1,27 +1,15 @@
 'use strict';
 var fun =
 {
-    obj: {
-        DEFAULT_DB: "",
-    },
     a01: function () {
-        //obj.params.jsFile         选择JS文件
+        //o.params.jsFile         选择JS文件
         this.a02();
     },
-    a02: function () {
-        let data = [{
-            action: "process",
-            fun: "env",
-            name: "NEXTJS_CONFIG_DEFAULT_DB"
-        }]
-        Tool.ajax.a01(data, this.a03, this);
-    },
-    a03: function (t) {
-        this.obj.DEFAULT_DB = t[0];
-        Tool.ajax.a01(this.b02(t[0]), this.a04, this);
+    a02: function () {   
+        Tool.ajax.a01(this.b02(o.DEFAULT_DB), this.a04, this);
     },
     a04: function (t) {
-        let html = "", arr = Tool.getArr(t[0], this.obj.DEFAULT_DB);
+        let html = "", arr = Tool.getArr(t[0], o.DEFAULT_DB);
         for (let i = 0; i < arr.length; i++) {
             html += '\
 			<tr>\
@@ -29,8 +17,8 @@ var fun =
 				<td class="w30" style="padding-left: 30px;position: relative;">\
 					<button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdown0"><div></div><div></div><div></div></button>\
 					<ul class="dropdown-menu" aria-labelledby="dropdown0">\
-						<li onClick="Tool.openR(\'?jsFile=js02&id='+ arr[i].id + '\')"><a class="dropdown-item pointer">更多</a></li>\
-						<li><a class="dropdown-item pointer" onClick="Tool.openR(\'?jsFile=js01&id='+ arr[i].id + '\')">修改</a></li>\
+						<li onClick="Tool.openR(\'jsFile=js02&id='+ arr[i].id + '\')"><a class="dropdown-item pointer">更多</a></li>\
+						<li><a class="dropdown-item pointer" onClick="Tool.openR(\'jsFile=js01&id='+ arr[i].id + '\')">修改</a></li>\
 				        <li onClick="fun.c03('+ arr[i].id + ')"><a class="dropdown-item pointer">删除</a></li>\
 					</ul>\
 				</td>\
@@ -45,7 +33,7 @@ var fun =
             "https://seller.sg.shopee.cn/registration/information-collection/records",
             "https://shopee.cn/edu/home",
         ]
-        html = Tool.header2(obj.params.jsFile) + '\
+        html = Tool.header2(o.params.jsFile) + '\
         <div class="p-2">\
             <table class="table table-hover align-middle center">\
                 <thead class="table-light">'+ this.b01() + '</thead>\
@@ -86,12 +74,12 @@ var fun =
             <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdown0"><div></div><div></div><div></div></button>\
             <ul class="dropdown-menu" aria-labelledby="dropdown0">\
               <li><a class="dropdown-item pointer" onClick="fun.c01()">添加</a></li>\
-              <li onClick="Tool.openR(\'?jsFile=js05&table=table&database=shopee/卖家账户&toaction=pg01\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg01】数据库</a></li>\
-              <li onClick="Tool.openR(\'?jsFile=js05&table=table&database=shopee/卖家账户&toaction=pg02\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg02】数据库</a></li>\
-              <li onClick="Tool.openR(\'?jsFile=js05&table=table&database=shopee/卖家账户&toaction=pg03\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg03】数据库</a></li>\
-              <li onClick="Tool.openR(\'?jsFile=js05&table=table&database=shopee/卖家账户&toaction=pg04\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg04】数据库</a></li>\
-              <li onClick="Tool.openR(\'?jsFile=js05&table=table&database=shopee/卖家账户&toaction=dynamodb\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【DynamoDB】数据库</a></li>\
-              <li onClick="Tool.openR(\'?jsFile=js03&table=seller&database=shopee&newdatabase=shopee/seller\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js05&table=table&database=shopee/卖家账户&toaction=pg01\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg01】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js05&table=table&database=shopee/卖家账户&toaction=pg02\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg02】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js05&table=table&database=shopee/卖家账户&toaction=pg03\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg03】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js05&table=table&database=shopee/卖家账户&toaction=pg04\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg04】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js05&table=table&database=shopee/卖家账户&toaction=dynamodb\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【DynamoDB】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js03&table=seller&database=shopee&newdatabase=shopee/seller\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
            </ul>\
           </th>\
           <th class="left">用户名</th>\

@@ -3,8 +3,8 @@ Object.assign(Tool, {
     header2: function (jsFile) {
         let html = '\
             <header class="panel-heading">\
-              <div onclick="Tool.main(\'?jsFile=\')"' + (!jsFile ? ' class="active"' : '') + '>卖家账户</div>\
-              <div onclick="Tool.main(\'?jsFile=js03\')"' + (jsFile == "js03" ? ' class="active"' : '') + '>合作伙伴管理</div>\
+              <div onclick="Tool.main(\'jsFile=\')"' + (!jsFile ? ' class="active"' : '') + '>卖家账户</div>\
+              <div onclick="Tool.main(\'jsFile=js03\')"' + (jsFile == "js03" ? ' class="active"' : '') + '>合作伙伴管理</div>\
             </header>'
         return html;
     },
@@ -36,7 +36,7 @@ Object.assign(Tool, {
         a04: function (t, oo) {
             let url = "https://seller.shopee.cn/"
             oo.This.html("正在打开页面...");
-            gg.tabs_remove_create_indexOf(2, url, '> ' + oo.username + ' <', false, this.a05, this, oo)
+            gg.tabs_remove_create_indexOf(2, url, ['> ' + oo.username + ' <'], false, this.a05, this, oo)
         },
         a05: function (t, oo) {
             oo.This.html('* <a href="javascript:;" onclick="Tool.SignIn.a01(' + oo.id + ',$(this).parent(),\'' + "sqlite" + '\')" title="点击登陆">' + oo.username + '</a>')

@@ -2,12 +2,12 @@
 var fun =
 {
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
-        obj.params.statusName = obj.params.statusName ? obj.params.statusName : ''//包裹状态
-        obj.params.time = obj.params.time ? obj.params.time : ''//时间
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
+        o.params.statusName = o.params.statusName ? o.params.statusName : ''//包裹状态
+        o.params.time = o.params.time ? o.params.time : ''//时间
         this.a02()
     },
     a02: function () {
@@ -26,15 +26,19 @@ var fun =
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
-        let where = this.b10()
+        let where = this.b10();
         let data = [{
             action: "sqlite",
             database: "shopee/客优云/包裹管理",
-            sql: "select " + Tool.fieldAs("shipByDate,orderCancelDay,statusName,orderInfos,ordersn,expressInfos,packageId,gmtCreate,logisticsProvider,nodeCode,gmtLeaving,packageComment") + " FROM @.table" + where + " order by @.gmtCreate desc" + Tool.limit(10, obj.params.page, "sqlite"),
+            sql: "select " + Tool.fieldAs("trackingNos,shipByDate,orderCancelDay,statusName,orderInfos,ordersn,expressInfos,packageId,gmtCreate,logisticsProvider,nodeCode,gmtLeaving,packageCommentList") + " FROM @.table" + where + " order by @.gmtCreate desc" + Tool.limit(10, o.params.page, "sqlite"),
         }, {
             action: "sqlite",
             database: "shopee/客优云/包裹管理",
             sql: "select count(1) as Count FROM @.table" + where,
+        }, {
+            action: o.DEFAULT_DB,
+            database: "main",
+            sql: "select @.value as value FROM @.config where @.name='" + o.params.template + "'",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
@@ -43,7 +47,7 @@ var fun =
         for (let i = 0; i < t[0].length; i++) {
             t[0][i].expressInfos = JSON.parse(t[0][i].expressInfos)
             for (let j = 0; j < t[0][i].expressInfos.length; j++) {
-                if (t[0][i].expressInfos[j].number != "000") {
+                if (t[0][i].expressInfos[j].number != "0000") {
                     arr.push(t[0][i].expressInfos[j].number);
                 }
             }
@@ -57,11 +61,11 @@ var fun =
             Tool.ajax.a01(data, this.a05, this, t);
         }
         else {
-            this.a05([[]], t)
+            this.a05([[]], t);
         }
     },
     a05: function (t1, t2) {
-        let oo = {}
+        let oo = {};
         for (let i = 0; i < t1[0].length; i++) {
             oo[t1[0][i].WaybillNumber] = {
                 orderid: t1[0][i].orderid,
@@ -72,34 +76,40 @@ var fun =
         this.a06(oo, t2)
     },
     a06: function (oo, t2) {
-        let tr = [], arr = t2[0]
+        let tr = [], arr = t2[0];
         for (let i = 0; i < arr.length; i++) {
             tr.push('\
             <tr>\
                 <td class="p-0">'+ this.b03(arr[i].orderInfos) + '</td>\
-                <td class="p-0">'+ this.b05(arr[i].nodeCode, arr[i].statusName, arr[i].ordersn, arr[i].packageId) + '</td>\
-                <td class="p-0">'+ this.b04(arr[i].logisticsProvider, arr[i].expressInfos, oo, arr[i].packageComment) + '</td>\
+                <td class="p-0">'+ this.b05(arr[i].nodeCode, arr[i].statusName) + '</td>\
+                <td class="p-0">'+ this.b14(arr[i].ordersn, arr[i].packageId, arr[i].trackingNos) + '</td>\
+                <td class="p-0">'+ this.b04(arr[i].logisticsProvider, arr[i].expressInfos, oo, arr[i].packageCommentList) + '</td>\
                 <td class="p-0">'+ this.b06(arr[i].gmtLeaving, arr[i].shipByDate, arr[i].orderCancelDay, arr[i].gmtCreate) + '</td>\
             </tr>')
         }
-        let html = Tool.header2(obj.params.jsFile) + this.b07() + '\
+        let html = Tool.header2(o.params.jsFile) + this.b07() + '\
     	<div class="p-2">\
     		<table class="table align-top table-hover">\
-    			<thead class="table-light">'+ this.b01() + '</thead>\
+    			<thead class="table-light">'+ this.b01(t2[2]) + '</thead>\
                 <tbody>'+ tr.join("") + '</tbody>\
-    		</table>\
-            ' + Tool.page(t2[1][0].Count, 10, obj.params.page) + '\
+    		</table>' + Tool.page(t2[1][0].Count, 10, o.params.page) + '\
     	</div>'
         Tool.html(null, null, html);
     },
     /////////////////////////////////////
-    b01: function () {
+    b01: function (t) {
+        let config = {};
+        if (t[0].value) {
+            config = JSON.parse(t[0].value)["包裹管理"]
+            if (!config) { config = {}; }
+        }
         let html = '\
         <tr>\
             <th class="left" style="position: relative;padding-left: 25px;" >'+ this.b02() + '商品信息</th>\
-            <th class="w170 p-0">'+ this.b09("包裹状态", obj.params.statusName, config.statusName) + '</th>\
-            <th>仓配商 / 快递单号 / 包裹备注</th>\
-            <th class="w200 p-0">'+ this.b13("时间", obj.params.time, config.time) + '</th>\
+            <th class="w170 p-0">'+ this.b09("包裹状态", o.params.statusName, config["包裹状态"]) + '</th>\
+            <th class="w200">订单 / 包裹号 / 物流单号</th>\
+            <th class="w400">仓配商 / 快递单号 / 包裹备注</th>\
+            <th class="w200 p-0">'+ this.b13("时间", o.params.time, config["时间"]) + '</th>\
         </tr>'
         return html;
     },
@@ -107,8 +117,9 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-	        <li onClick="Tool.openR(\'?jsFile=js03\');"><a class="dropdown-item pointer">*获取包裹信息</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js16\');"><a class="dropdown-item pointer">*把1688运单号同步过来</a></li>\
+	        <li onClick="Tool.openR(\'jsFile=js17\');"><a class="dropdown-item pointer">更新数量</a></li>\
+	        <li onClick="Tool.openR(\'jsFile=js03\');"><a class="dropdown-item pointer">*获取包裹信息</a></li>\
+	        <li onClick="Tool.openR(\'jsFile=js16\');"><a class="dropdown-item pointer">*把1688运单号同步过来</a></li>\
         </ul>'
     },
     b03: function (orderInfos) {
@@ -131,15 +142,14 @@ var fun =
                 <td class="w50">' + items[i].count + '</td>\
                 <td class="right w50">规格:</td>\
                 <td>' + items[i].sku + '</td>\
-            </tr>\
-           ')
+            </tr>')
         }
         return '<table class="table table-bordered align-middle mb-0">' + rArr.join("") + '</table>'
     },
-    b04: function (logisticsProvider, arr, oo, packageComment) {
+    b04: function (logisticsProvider, arr, oo, packageCommentList) {
         let tr = ['<tr title="仓配商"><td>' + logisticsProvider + '</td></tr>']
         for (let i = 0; i < arr.length; i++) {
-            let alink = arr[i].number
+            let alink = arr[i].number;
             if (oo[arr[i].number]) {
                 alink = '<a href="https://trade.1688.com/order/new_step_order_detail.htm?orderId=' + oo["" + arr[i].number].orderid + '&amp;tracelog=20120313bscentertologisticsbuyer&amp;#logisticsTabTitle" target="_blank" title="点击查看物流">' + arr[i].number + '</a>'
             }
@@ -148,25 +158,15 @@ var fun =
                     arr[i].received ?
                         '（已收件' + (arr[i].gmtReceipt ? " - " + Tool.js_date_time2(Tool.gettime(arr[i].gmtReceipt)) : '') + '）' :
                         this.b11(oo, arr[i].number)
-                ) +
-                '</td></tr>')
+                ) + '</td></tr>')
         }
-        /////////////////////////////////////
-        let comment = "&nbsp;"
-        if (packageComment) {
-            let oo = JSON.parse(packageComment)
-            if (oo.comment) {
-                comment = oo.comment
-            }
-        }
-        tr.push('<tr title="包裹备注"><td class="left">' + comment + '</td></tr>')
+        tr.push('<tr title="包裹备注"><td class="left">' + this.b15(packageCommentList) + '</td></tr>')
         return '<table class="table table-bordered align-middle mb-0">' + tr.join("") + '</table>'
     },
-    b05: function (nodeCode, statusName, ordersn, packageId) {
+    b05: function (nodeCode, statusName) {
         let tr = '\
-        <tr title="包裹状态"><td>【'+ nodeCode + '】' + statusName + '</td></tr>\
-        <tr title="订单编号"><td>' + ordersn + '</td></tr>\
-        <tr title="包裹号"><td>' + packageId + '</td></tr>'
+        <tr title="站点"><td>'+ Tool.site(nodeCode) + '</td></tr>\
+        <tr title="包裹状态"><td>' + statusName + '</td></tr>'
         return '<table class="table table-bordered align-middle mb-0">' + tr + '</table>';
     },
     b06: function (gmtLeaving, shipByDate, orderCancelDay, gmtCreate) {
@@ -180,22 +180,22 @@ var fun =
     b07: function () {
         return '\
         <div class="input-group w-50 m-2">\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b08(obj.params.field) + '</button>\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b08(o.params.field) + '</button>\
             <ul class="dropdown-menu">\
-                <li class="dropdown-item pointer" onclick="fun.c01(1)">订单编号</li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(1)">快递单号</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)">包裹号</a></li>\
-                <li class="dropdown-item pointer" onclick="fun.c01(3)">快递单号</a></li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(3)">订单编号</li>\
             </ul>\
-            <input type="text" class="form-control" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
     b08: function (val) {
         let name = "";
         switch (val) {
-            case "1": name = "订单编号"; break;
+            case "1": name = "快递单号"; break;
             case "2": name = "包裹号"; break;
-            case "3": name = "快递单号"; break;
+            case "3": name = "订单编号"; break;
             default: name = "未知：" + val;
         }
         return name
@@ -213,27 +213,26 @@ var fun =
             "已完成",
         ]
         for (let i = 0; i < arr.length; i++) {
-            optionArr.push('<option value="' + arr[i] + '"' + (arr[i] == statusName ? 'selected="selected"' : '') + '>' + arr[i] + '(' + configArr[i] + ')</option>')
+            optionArr.push('<option value="' + arr[i] + '"' + (arr[i] == statusName ? 'selected="selected"' : '') + '>' + arr[i] + (configArr ? '(' + configArr[i] + ')' : '') + '</option>')
         }
         return '\
-        <select onChange="fun.c03(this.options[this.selectedIndex].value)" class="form-select">\
+        <select onChange=" Tool.open(\'statusName\',this.options[this.selectedIndex].value)" class="form-select">\
           <option value="">'+ name + '</option>\
-          <option value="-1">更新数量</option>\
           '+ optionArr.join("") + '\
         </select>';
     },
     b10: function () {
         let arr = []
-        if (obj.params.searchword) {
-            switch (obj.params.field) {
-                case "1": arr.push("@.ordersn='" + obj.params.searchword + "'"); break;//商品编码
-                case "2": arr.push("@.packageId='" + obj.params.searchword + "'"); break;//包裹号
-                case "3": arr.push("@.expressInfos like '%" + obj.params.searchword + "%'"); break;//采购订单号
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.expressInfos like '%" + o.params.searchword + "%'"); break;//采购订单号
+                case "2": arr.push("@.packageId='" + o.params.searchword + "'"); break;//包裹号
+                case "3": arr.push("@.ordersn='" + o.params.searchword + "'"); break;//商品编码
             }
         }
-        if (obj.params.statusName) { arr.push("@.statusName='" + obj.params.statusName + "'"); }
-        if (obj.params.time) {
-            switch (obj.params.time) {
+        if (o.params.statusName) { arr.push("@.statusName='" + o.params.statusName + "'"); }
+        if (o.params.time) {
+            switch (o.params.time) {
                 case "1": arr.push("@.shipByDate>" + Tool.gettime("") + " and @.shipByDate<" + (Tool.gettime("") + 60 * 60 * 24)); break;//发货截止剩0-1天
                 case "2": arr.push("@.shipByDate>" + (Tool.gettime("") + 60 * 60 * 24 * 1) + " and @.shipByDate<" + (Tool.gettime("") + 60 * 60 * 24 * 2)); break;//发货截止剩1-2天
                 case "3": arr.push("@.shipByDate>" + (Tool.gettime("") + 60 * 60 * 24 * 2) + " and @.shipByDate<" + (Tool.gettime("") + 60 * 60 * 24 * 5)); break;//发货截止剩2-5天
@@ -250,7 +249,7 @@ var fun =
     },
     b11: function (oo, number) {
         let str = '（<font color=#f44336>'
-        if (number == "000") { str += '未收件'; }
+        if (number == "0000") { str += '未收件'; }
         else if (oo[number]) {
             if (oo[number].logisticsStatus == 0) { str += '无跟踪'; }
             else {
@@ -270,17 +269,13 @@ var fun =
             [3, "物流异常"],
             [4, "派送中"],
             [5, "已签收"],
-        ], val = "未知：" + logisticsStatus
+        ], val = "未知：" + logisticsStatus;
         for (let i = 0; i < arr.length; i++) {
-            if (arr[i][0] === logisticsStatus) {
-                val = arr[i][1];
-                break;
-            }
+            if (arr[i][0] === logisticsStatus) { val = arr[i][1]; break; }
         }
         return val;
     },
     b13: function (name, time, configArr) {
-        if (!configArr) configArr = [];
         let optionArr = [], arr = [
             [1, "发货截止剩0-1天"],
             [2, "发货截止剩1-2天"],
@@ -294,14 +289,36 @@ var fun =
             [10, "订单取消剩10-20天"],
         ]
         for (let i = 0; i < arr.length; i++) {
-            optionArr.push('<option value="' + arr[i][0] + '"' + ("" + arr[i][0] == time ? 'selected="selected"' : '') + '>' + arr[i][0] + '.' + arr[i][1] + '(' + configArr[i] + ')</option>')
+            optionArr.push('\
+            <option value="' + arr[i][0] + '"' + ("" + arr[i][0] == time ? 'selected="selected"' : '') + '>\
+            ' + arr[i][0] + '.' + arr[i][1] + (configArr ? '(' + configArr[i] + ')' : '') + '\
+            </option>');
         }
         return '\
-        <select onChange="fun.c04(this.options[this.selectedIndex].value)" class="form-select">\
+        <select onChange=" Tool.open(\'time\',this.options[this.selectedIndex].value)" class="form-select">\
           <option value="">'+ name + '</option>\
-          <option value="-1">更新数量</option>\
           '+ optionArr.join("") + '\
         </select>';
+    },
+    b14: function (ordersn, packageId, trackingNos) {
+        let tr = '\
+        <tr title="订单编号"><td>' + ordersn + '</td></tr>\
+        <tr title="包裹号"><td>' + packageId + '</td></tr>\
+        <tr title="物流单号"><td>' + trackingNos + '</td></tr>'
+        return '<table class="table table-bordered align-middle mb-0">' + tr + '</table>';
+    },
+    b15: function (packageCommentList) {
+        let comment1Arr = [], comment2Arr = [];
+        let arr = JSON.parse(packageCommentList)
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].login == "574754058@qq.com") {
+                comment1Arr.push(arr[i].comment)
+            }
+            else {
+                comment2Arr.push(arr[i].comment)
+            }
+        }
+        return '<font color="red">卖家：</font>' + comment1Arr.join("<br/>") + '<hr/><font color="red">货代：</font>' + comment2Arr.join("<br/>")
     },
     //////////////////////////////////////////
     c01: function (val) {
@@ -311,24 +328,8 @@ var fun =
     c02: function () {
         let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
         if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&page=1&field=" + field + "&searchword=" + searchword);
+            Tool.main("jsFile=" + o.params.jsFile + "&page=1&field=" + field + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
-    },
-    c03: function (val) {
-        if (val == "-1") {
-            Tool.openR("?jsFile=js17");
-        }
-        else {
-            Tool.open("statusName", val);
-        }
-    },
-    c04: function (val) {
-        if (val == "-1") {
-            Tool.openR("?jsFile=js18");
-        }
-        else {
-            Tool.open("time", val);
-        }
     },
 }
 fun.a01();

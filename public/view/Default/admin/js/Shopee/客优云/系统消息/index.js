@@ -2,10 +2,10 @@
 var fun =
 {
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
         this.a02()
     },
     a02: function () {
@@ -28,7 +28,7 @@ var fun =
         let data = [{
             action: "sqlite",
             database: "shopee/客优云/系统消息",
-            sql: "select " + Tool.fieldAs("title,gmtCreate,messageStatusName,messageType") + " FROM @.table" + where + Tool.limit(10, obj.params.page, "sqlite"),
+            sql: "select " + Tool.fieldAs("title,gmtCreate,messageStatusName,messageType") + " FROM @.table" + where +" order by @.gmtCreate desc"+ Tool.limit(20, o.params.page, "sqlite"),
         }, {
             action: "sqlite",
             database: "shopee/客优云/系统消息",
@@ -47,13 +47,13 @@ var fun =
                 <td>'+ this.b03(t[i].messageStatusName) + '</td>\
            </tr>')
         }
-        let html = Tool.header2(obj.params.jsFile) + '\
+        let html = Tool.header2(o.params.jsFile) + '\
 		<div class="p-2">\
 			<table class="table align-top table-hover center">\
 				<thead class="table-light">'+ this.b01() + '</thead>\
                 <tbody>'+ tr.join("") + '</tbody>\
 			</table>\
-            ' + Tool.page(arr[1][0].Count, 10, obj.params.page) + '\
+            ' + Tool.page(arr[1][0].Count, 20, o.params.page) + '\
 		</div>'
         Tool.html(null, null, html)
     },
@@ -72,7 +72,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js07\');"><a class="dropdown-item pointer">*获取系统消息</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js07\');"><a class="dropdown-item pointer">*获取系统消息</a></li>\
         </ul>'
     },
     b03: function (messageStatusName) {

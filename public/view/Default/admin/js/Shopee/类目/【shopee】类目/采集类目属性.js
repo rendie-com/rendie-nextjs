@@ -3,7 +3,7 @@ var fun =
 {
     obj: { A1: 1, A2: 0 },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee -&gt; 类目列表 -&gt; 采集类目属性') + '\
+        let html = Tool.header(o.params.return, 'Shopee -&gt; 类目列表 -&gt; 采集类目属性') + '\
 		<div class="p-2"><table class="table table-hover">\
       <tbody>\
         <tr><td class="right w150">类目进度：</td>'+ Tool.htmlProgress('A') + '</tr><tr><td class="right">请求地址：</td><td id="url" colspan="2"></td></tr>\
@@ -43,43 +43,29 @@ var fun =
     d01: function (t) {
         let url = "https://seller.shopee.cn/api/v3/mtsku/get_mtsku_attribute_tree/?SPC_CDS_VER=2&category_ids=" + t
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
-        gg.getFetch(url,"json", this.d02, this, t)
+        gg.getFetch(url, "json", this.d02, this, t)
     },
     d02: function (json, cateId) {
         let data = [{
             action: "sqlite",
-            database: "shopee/类目/属性",
+            database: "shopee/类目/属性/" + Tool.remainder(cateId, 100),
             sql: "select @.cateId as cateId from @.table where @.cateId=" + cateId + " limit 1",
-        }]
-        let oo = { cateId: cateId, json: json.data.list[0].attribute_tree }
-        Tool.ajax.a01(data, this.d03, this, oo)
-    },
-    d03: function (t, oo) {
-        if (t[0].length == 0) {
-            let data = [{
+            elselist: [{
                 action: "sqlite",
-                database: "shopee/类目/属性",
-                sql: "insert into @.table(@.cateId,@.json)values(" + oo.cateId + "," + Tool.rpsql(JSON.stringify(oo.json)) + ")",
+                database: "shopee/类目/属性/" + Tool.remainder(cateId, 100),
+                sql: "insert into @.table(@.cateId,@.json)values(" + cateId + "," + Tool.rpsql(JSON.stringify(json.data.list[0].attribute_tree)) + ")",
             }]
-            Tool.ajax.a01(data, this.d04, this)
+        }]
+        Tool.ajax.a01(data, this.d03, this)
+    },
+    d03: function (t) {
+        this.obj.A1++;
+        if (this.obj.A1 > this.obj.A2) {
+            $("#state").html("全部完成")
         }
         else {
-            this.d04([[]])
+            this.a03();
         }
     },
-    d04: function (t) {
-        if (t[0].length == 0) {
-            this.obj.A1++;
-            if (this.obj.A1 > this.obj.A2) {
-                $("#state").html("全部完成")
-            }
-            else {
-                this.a03();
-            }
-        }
-        else {
-            Tool.pre(["出错01：", t])
-        }
-    }
 }
 fun.a01();

@@ -6,8 +6,8 @@ var fun =
         A1: 1, A2: 0,
     },
     a01: function () {
-        //obj.params.return         返回URL  
-        let html = Tool.header(obj.params.return, "Shopee &gt; 订单 &gt; 更多 &gt; 从客优云和1688获取采购信息") + '\
+        //o.params.return         返回URL  
+        let html = Tool.header(o.params.return, "Shopee &gt; 订单 &gt; 更多 &gt; 从客优云和1688获取采购信息") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\

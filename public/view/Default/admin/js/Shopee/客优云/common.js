@@ -3,14 +3,14 @@ Object.assign(Tool, {
     let html = '\
         <header class="panel-heading">\
           <div onclick="Tool.main(\'\')"'+ (!jsFile ? ' class="active"' : '') + '>账户</div>\
-          <div onclick="Tool.main(\'?jsFile=js19\')"'+ (jsFile == "js19" ? ' class="active"' : '') + '>店铺授权</div>\
-          <div onclick="Tool.main(\'?jsFile=js14\')"'+ (jsFile == "js14" ? ' class="active"' : '') + '>订单管理</div>\
-          <div onclick="Tool.main(\'?jsFile=js02\')"'+ (jsFile == "js02" ? ' class="active"' : '') + '>包裹管理</div>\
-          <div onclick="Tool.main(\'?jsFile=js04\')"'+ (jsFile == "js04" ? ' class="active"' : '') + '>充值日志</div>\
-          <div onclick="Tool.main(\'?jsFile=js06\')"'+ (jsFile == "js06" ? ' class="active"' : '') + '>系统消息</div>\
-          <div onclick="Tool.main(\'?jsFile=js08\')"'+ (jsFile == "js08" ? ' class="active"' : '') + '>问题件</div>\
-          <div onclick="Tool.main(\'?jsFile=js10\')"'+ (jsFile == "js10" ? ' class="active"' : '') + '>黑名单</div>\
-          <div onclick="Tool.main(\'?jsFile=js12\')"'+ (jsFile == "js12" ? ' class="active"' : '') + '>违禁词</div>\
+          <div onclick="Tool.main(\'jsFile=js19\')"'+ (jsFile == "js19" ? ' class="active"' : '') + '>店铺授权</div>\
+          <div onclick="Tool.main(\'jsFile=js14\')"'+ (jsFile == "js14" ? ' class="active"' : '') + '>订单管理</div>\
+          <div onclick="Tool.main(\'jsFile=js02\')"'+ (jsFile == "js02" ? ' class="active"' : '') + '>包裹管理</div>\
+          <div onclick="Tool.main(\'jsFile=js04\')"'+ (jsFile == "js04" ? ' class="active"' : '') + '>充值日志</div>\
+          <div onclick="Tool.main(\'jsFile=js06\')"'+ (jsFile == "js06" ? ' class="active"' : '') + '>系统消息</div>\
+          <div onclick="Tool.main(\'jsFile=js08\')"'+ (jsFile == "js08" ? ' class="active"' : '') + '>问题件</div>\
+          <div onclick="Tool.main(\'jsFile=js10\')"'+ (jsFile == "js10" ? ' class="active"' : '') + '>黑名单</div>\
+          <div onclick="Tool.main(\'jsFile=js12\')"'+ (jsFile == "js12" ? ' class="active"' : '') + '>违禁词</div>\
         </header>'
     return html;
   },
@@ -26,7 +26,7 @@ Object.assign(Tool, {
     a02: function (t, oo) {
       $("#state").html("正在获得配置参数");
       let data = [{
-        action: "${default_db}",
+        action: o.DEFAULT_DB,
         database: "shopee/客优云/账户",
         sql: "select " + Tool.fieldAs("username,password,cookies,localstorage") + " FROM @.table limit 1",
       }]

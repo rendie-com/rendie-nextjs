@@ -2,7 +2,7 @@
 var fun =
 {
     a01: function () {
-        // obj.params.jsFile    选择JS文件
+        // o.params.jsFile    选择JS文件
         this.a02()
 
     },
@@ -43,7 +43,7 @@ var fun =
                 <td class="p-0">'+ this.b03(authInfo[i].sipShops) + '</td>\
           </tr>')
         }
-        let html = Tool.header2(obj.params.jsFile) + '\
+        let html = Tool.header2(o.params.jsFile) + '\
 		<div class="p-2">\
 			<table class="table align-top table-hover center">\
 				<thead class="table-light">'+ this.b01() + '</thead>\
@@ -58,7 +58,7 @@ var fun =
         <tr>\
             <th class="w120" style="padding-left: 30px;position: relative;">'+ this.b02() + '站点/店铺ID</th>\
             <th class="left">店铺名称</th>\
-            <th class="w170">授权时间/过期时间</th>\
+            <th class="w250">授权时间/过期时间</th>\
             <th class="w170">相关授权</th>\
             <th>SIP子店铺</th>\
         </tr>'
@@ -68,8 +68,8 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js21\');"><a class="dropdown-item pointer">*添加授权</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js20\');"><a class="dropdown-item pointer">*获取授权信息</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js21\');"><a class="dropdown-item pointer">*添加授权</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js20\');"><a class="dropdown-item pointer">*获取授权信息</a></li>\
         </ul>'
     },
     b03: function (sipShops) {
@@ -94,7 +94,7 @@ var fun =
             str = '(授权过期)'
         }
         else {
-            str = Tool.js_date_time2(Tool.gettime(expireTime)) + '<br/>(授权正常)'
+            str = Tool.js_date_time2(Tool.gettime(expireTime)) + '（授权正常）'
         }
         let tr = '<tr><td>' + Tool.js_date_time2(Tool.gettime(authTime)) + '</td></tr><tr><td>' + str + '</td></tr>'
         return '<table class="table table-bordered align-middle mb-0">' + tr + '</table>';

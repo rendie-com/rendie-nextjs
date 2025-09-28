@@ -2,9 +2,9 @@
 var fun =
 {
     a01: function () {
-        //obj.params.jsFile     选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页        
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        //o.params.jsFile     选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页        
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
         this.a02();
     },
     a02: function () {
@@ -31,7 +31,7 @@ var fun =
         {
             action: "sqlite",
             database: "shopee/客优云/违禁词",
-            sql: "select " + Tool.fieldAs("name,id,iswhitelist,addtime") + " FROM @.table" + this.b04() + Tool.limit(50, obj.params.page),
+            sql: "select " + Tool.fieldAs("name,id,iswhitelist,addtime") + " FROM @.table" + this.b04() + Tool.limit(50, o.params.page),
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
@@ -51,14 +51,14 @@ var fun =
                 <td>'+ Tool.js_date_time2(arr1[i].addtime) + '</td>\
             </tr>';
         }
-        html = Tool.header2(obj.params.jsFile) + '\
+        html = Tool.header2(o.params.jsFile) + '\
 		<div class="p-2">\
 			<div class="m-2 p-2">采这个用来干什么？答：在更新shopee商品时，如果出现这些词，就替换为空。</div>\
             '+ this.b01() + '\
 			<table class="table table-hover center">\
 				<thead class="table-light">'+ this.b02() + '</thead>\
 				<tbody>'+ html + '</tbody>\
-			</table>' + Tool.page(t[0][0].total, 50, obj.params.page) + '\
+			</table>' + Tool.page(t[0][0].total, 50, o.params.page) + '\
 		</div>'
         Tool.html(null, null, html)
     },
@@ -66,7 +66,7 @@ var fun =
     b01: function () {
         return '\
         <div class="input-group w-50 mb-2">\
-            <input type="text" class="form-control" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c01();">\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c01();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c01();">搜索</button>\
         </div>'
     },
@@ -83,12 +83,12 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js13\');"><a class="dropdown-item pointer">*获取违禁词</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js13\');"><a class="dropdown-item pointer">*获取违禁词</a></li>\
 		</ul>'
     },
     b04: function () {
         let arr = [];
-        if (obj.params.searchword) { arr.push("@.name like '%" + obj.params.searchword + "%'"); }
+        if (o.params.searchword) { arr.push("@.name like '%" + o.params.searchword + "%'"); }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
     },
     /////////////////////////////////////////

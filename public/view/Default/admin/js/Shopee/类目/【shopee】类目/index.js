@@ -2,20 +2,21 @@
 var fun =
 {
   a01: function () {
-    //obj.params.jsFile     表示选择JS文件
-    let data = [{
-      action: "fs",
-      fun: "access_sqlite",
-      database: "shopee/类目/类目",
-      mode: 0,
-      elselist: [{
-        action: "fs",
-        fun: "download_sqlite",
-        urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/类目/类目.db"],
-        database: "shopee/类目/类目"
-      }]
-    }]
-    Tool.ajax.a01(data, this.a02, this);
+    //o.params.jsFile     表示选择JS文件
+    // let data = [{
+    //   action: "fs",
+    //   fun: "access_sqlite",
+    //   database: "shopee/类目/类目",
+    //   mode: 0,
+    //   elselist: [{
+    //     action: "fs",
+    //     fun: "download_sqlite",
+    //     urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/类目/类目.db"],
+    //     database: "shopee/类目/类目"
+    //   }]
+    // }]
+    // Tool.ajax.a01(data, this.a02, this);
+    this.a02()
   },
   a02: function (t) {
     let data = [{
@@ -47,7 +48,7 @@ var fun =
         <td class="center">'+ arr[i].sort + '</td>\
       </tr>'
     }
-    html = Tool.header(obj.params.jsFile) + '\
+    html = '<header class="panel-heading">【Shopee】类目</header>\
     <div class="p-2">\
       <table class="table table-hover">\
       <thead class="table-light">\
@@ -55,8 +56,8 @@ var fun =
 					<th class="left w30" style="padding-left: 30px;position: relative;">\
 						<button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 						<ul class="dropdown-menu">\
-							<li onClick="Tool.openR(\'?jsFile=js01\')"><a class="dropdown-item pointer">*采集类目</a></li>\
-							<li onClick="Tool.openR(\'?jsFile=js02\')"><a class="dropdown-item pointer">*采集类目属性</a></li>\
+							<li onClick="Tool.openR(\'jsFile=js01\')"><a class="dropdown-item pointer">*采集类目</a></li>\
+							<li onClick="Tool.openR(\'jsFile=js02\')"><a class="dropdown-item pointer">*采集类目属性</a></li>\
 						</ul>\
 					</th>\
           <th class="w50">编号</th>\

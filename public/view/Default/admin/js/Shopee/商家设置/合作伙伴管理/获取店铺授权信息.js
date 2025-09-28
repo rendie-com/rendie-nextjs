@@ -8,9 +8,9 @@ var fun =
         seller: {},
     },
     a01: function () {
-        //obj.params.jsFile         选择JS文件       
-        //obj.params.return         返回URL  
-        let html = Tool.header(obj.params.return, "Shopee &gt; 商家设置 &gt; 合作伙伴管理 &gt; 获取店铺授权信息") + '\
+        //o.params.jsFile         选择JS文件       
+        //o.params.return         返回URL  
+        let html = Tool.header(o.params.return, "Shopee &gt; 商家设置 &gt; 合作伙伴管理 &gt; 获取店铺授权信息") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\

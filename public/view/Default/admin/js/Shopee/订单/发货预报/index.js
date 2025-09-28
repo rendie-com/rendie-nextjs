@@ -5,14 +5,14 @@ var fun =
         siteNum: "",
     },
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'sg'
-        obj.params.field = obj.params.field ? obj.params.field : '1'//搜索字段
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
-        obj.params.binding_status = obj.params.binding_status ? obj.params.binding_status : '0';
-        obj.params.num = obj.params.num ? obj.params.num : '1'//第几个店
-        this.obj.siteNum = Tool.siteNum(obj.params.site, obj.params.num);
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.site = o.params.site ? o.params.site : 'sg'
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
+        o.params.binding_status = o.params.binding_status ? o.params.binding_status : '0';
+        o.params.num = o.params.num ? o.params.num : '1'//第几个店
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num);
         this.a02();
     },
     a02: function () {
@@ -27,7 +27,7 @@ var fun =
                 urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/发货预报/" + this.obj.siteNum + ".db"],
                 database: "shopee/订单/发货预报/" + this.obj.siteNum,
             }]
-        }]
+        }];
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
@@ -39,7 +39,7 @@ var fun =
         }, {
             action: "sqlite",
             database: "shopee/订单/发货预报/" + this.obj.siteNum,
-            sql: "select " + Tool.fieldAs("binding_status,images,ship_by_date,arrange_shipment_time,warehouse_id,channel_id,action_status,is_need_alarm,sls_tn,submit_time,order_sn,shipping_method,fm_tn,carrier_id,binding_status,is_sorting_center_received,is_pick_up_done") + " FROM @.table " + where + " order by @.arrange_shipment_time desc " + Tool.limit(10, obj.params.page),//
+            sql: "select " + Tool.fieldAs("binding_status,images,ship_by_date,arrange_shipment_time,warehouse_id,channel_id,action_status,is_need_alarm,sls_tn,submit_time,order_sn,shipping_method,fm_tn,carrier_id,binding_status,is_sorting_center_received,is_pick_up_done") + " FROM @.table " + where + " order by @.arrange_shipment_time desc " + Tool.limit(10, o.params.page),//
             //包裹关联1688的运单号。
             list: [{
                 action: "sqlite",
@@ -47,14 +47,14 @@ var fun =
                 sql: "select " + Tool.fieldAs("purchaseInfo") + " FROM @.table where @.order_sn='${order_sn}' limit 1",
             }]
         }, {
-            action: "sqlite",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
-        let orderidArr = []
+        let orderidArr = [];
         for (let i = 0; i < t[1].length; i++) {
             let arr = JSON.parse(t[1][i].list[0][0].purchaseInfo);
             for (let j = 0; j < arr.length; j++) {
@@ -77,7 +77,7 @@ var fun =
     a05: function (t1, t2) {
         let tr = [], arr = t2[1], td = ""
         for (let i = 0; i < arr.length; i++) {
-            if (obj.params.binding_status == "0") {
+            if (o.params.binding_status == "0") {
                 td = '\
                 <td class="p-0">' + this.b19(arr[i].warehouse_id, arr[i].channel_id) + '</td>\
                 <td class="p-0">' + this.b15(arr[i].arrange_shipment_time, arr[i].ship_by_date) + '</td>';
@@ -98,28 +98,28 @@ var fun =
                 '+ td + '\
                 <td class="left">' + this.b16(arr[i].list[0][0].purchaseInfo, t1[0]) + '</td>\
             </tr>');
-            //arr[i].binding_status   如果是“2”，则可以删除绑定。
+            //arr[i].binding_status     如果是“2”，则可以删除绑定。
         }
-        let siteArr = JSON.parse(t2[2][0].config)[obj.params.site]
-        let html = Tool.header2(obj.params.jsFile, obj.params.site) + '\
+        let siteArr = JSON.parse(t2[2][0].config)[o.params.site]
+        let html = Tool.header2(o.params.jsFile, o.params.site, o.params.num) + '\
         <div class="p-2">\
-            '+ Tool.tab(obj.params.jsFile, obj.params.site, siteArr, obj.params.num) +
-            '<div style="padding-left:30px;position: relative;top:6px;">' + this.b02() + '</div>' +
-            Tool.binding(obj.params.jsFile, obj.params.site, obj.params.binding_status) +
+            '+ '<div style="padding-left:30px;position: relative;top:6px;">' + this.b02() + '</div>' +
+             Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) +
+            Tool.binding(o.params.jsFile, o.params.site, o.params.num, o.params.binding_status) +
             this.b06() + '\
-        	<table class="table center align-middle table-hover">\
+        	<table class="table center align-top table-hover">\
         		<thead class="table-light">'+ this.b01() + '</thead>\
                 <tbody>'+ tr.join("") + '</tbody>\
         	</table>\
-            ' + Tool.page(t2[0][0].total, 10, obj.params.page) + '\
+            ' + Tool.page(t2[0][0].total, 10, o.params.page) + '\
         </div>';
         Tool.html(null, null, html);
     },
     ///////////////////////////////////////////////////////////////////////////////////
     b01: function () {
         let th = ""
-        if (obj.params.binding_status == "0") {
-            th = '<th>转运仓/物流渠道</th><th>安排出货时间/出货时间</th>'
+        if (o.params.binding_status == "0") {
+            th = '<th class="w350">转运仓/物流渠道</th><th class="w200">安排出货时间/出货时间</th>'
         }
         else {
             th = '\
@@ -142,10 +142,9 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-	        <li onClick="Tool.openR(\'?jsFile=js09&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取未绑定的包裹</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js10&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取包裹图片</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js08&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*获取已绑定的包裹</a></li>\
-	        <li onClick="Tool.openR(\'?jsFile=js11&site='+ obj.params.site + '&num=' + obj.params.num + '\');"><a class="dropdown-item pointer">*开始绑定发货预报</a></li>\
+	        <li onClick="Tool.openR(\'jsFile=js09\');"><a class="dropdown-item pointer">*获取未绑定的包裹</a></li>\
+	        <li onClick="Tool.openR(\'jsFile=js08\');"><a class="dropdown-item pointer">*获取已绑定的包裹</a></li>\
+	        <li onClick="Tool.openR(\'jsFile=js10\');"><a class="dropdown-item pointer">*开始绑定发货预报</a></li>\
         </ul>';
     },
     b03: function (action_status) {
@@ -182,13 +181,13 @@ var fun =
     b06: function () {
         return '\
         <div class="input-group w-50 m-2">\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ obj.params.field + '">' + this.b07(obj.params.field) + '</button>\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b07(o.params.field) + '</button>\
             <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c01(1)">订单编号</li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)">包裹追踪号</a></li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(3)">首公里追踪号</a></li>\
             </ul>\
-            <input type="text" class="form-control" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
@@ -204,16 +203,17 @@ var fun =
     },
     b08: function () {
         let arr = []
-        if (obj.params.searchword) {
-            switch (obj.params.field) {
-                case "1": arr.push("@.order_sn='" + obj.params.searchword + "'"); break;//订单编号
-                case "2": arr.push("@.sls_tn='" + obj.params.searchword + "'"); break;//包裹追踪号
-                case "3": arr.push("@.fm_tn='" + obj.params.searchword + "'"); break;//首公里追踪号
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.order_sn='" + o.params.searchword + "'"); break;//订单编号
+                case "2": arr.push("@.sls_tn='" + o.params.searchword + "'"); break;//包裹追踪号
+                case "3": arr.push("@.fm_tn='" + o.params.searchword + "'"); break;//首公里追踪号
             }
         }
-        if (obj.params.binding_status == "0") {
+        if (o.params.binding_status == "0") {
             //binding_status=0    表示未绑定
             //binding_status=1    表示绑定失败
+            //binding_status=2    表示已删除的绑定或绑定成功
             arr.push("@.binding_status<2");
         } else { arr.push("@.binding_status>0"); }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
@@ -235,6 +235,10 @@ var fun =
             case 90001: str = "Expresso padrão"; break;
             case 110001: str = "Estándar Rápido"; break;
             case 18099: str = "Shopee Collection Point (Overseas)"; break;
+            case 78004: str = "Standard International Delivery (标准渠道)"; break;
+            case 120001: str = "Estándar Rápido"; break;
+            case 38018: str = "蝦皮海外 - 7-11（海運）"; break;
+            case 18049: str = "Express Doorstep Delivery(International) (快速渠道)"; break;
             default: str = "<font color=red>未知：" + channel_id + "</font>"; break;
         }
         return str;
@@ -339,13 +343,13 @@ var fun =
     },
     //////////////////////////////////////////
     c01: function (val) {
-        let name = this.b07("" + val)
+        let name = this.b07("" + val);
         $("#field").html(name).val(val)
     },
     c02: function () {
         let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
         if (searchword) {
-            Tool.main("?jsFile=" + obj.params.jsFile + "&site=" + obj.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
+            Tool.main("jsFile=" + o.params.jsFile + "&site=" + o.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },
 }

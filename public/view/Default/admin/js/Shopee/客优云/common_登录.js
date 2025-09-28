@@ -56,7 +56,7 @@ Object.assign(Tool, {
                 database: "shopee/客优云/账户",
                 sql: 'update @.table set @.cookies=' + Tool.rpsql(JSON.stringify(cookies)) + ' where @.username=' + Tool.rpsql(oo.username),
             }]
-            Tool.ajax.a01(data, this.a08, this, oo)
+            Tool.ajax.a01(data, this.a08, this, oo);
         },
         a08: function (t, oo) {
             Tool.apply(t, oo.next, oo.This, oo.t);

@@ -5,9 +5,11 @@
         A1: 1, A2: 0,
         B1: 1, B2: 0,
         seller: {},//提交要用
+        typeID: 0,//数目ID(一个类目下有我少个品牌)
+        cursor: "",//下一页
     },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee &gt; 品牌 &gt; 正在【获取Shopee品牌】...') + '\
+        let html = Tool.header(o.params.return, 'Shopee &gt; 品牌 &gt; 正在【获取Shopee品牌】...') + '\
         <div class="p-2">\
             <table class="table table-hover align-middle">\
                 <tbody>\
@@ -48,43 +50,32 @@
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a06, this, null, t[0][0].fromid);
     },
     a06: function (typeID) {
-        this.obj.seller.typeID = typeID;
-        this.obj.seller.cursor = "";//下一页
+        this.obj.typeID = typeID;
+        this.obj.cursor = "";//第一页
         this.d01()
-    },
-    ///////////////////////
-    b01: function (brand_id, arr) {
-        let name = "";
-        for (let i = 0; i < arr.length; i++) {
-            if (arr[i].brand_id == brand_id) {
-                name = arr[i].name;
-                break;
-            }
-        }
-        return name;
     },
     /////////////////////////////////////////////
     d01: function () {
         let pArr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "category_ids=" + this.obj.seller.typeID,
+            "category_ids=" + this.obj.typeID,
             "brand_status=1",
             "limit=50",
-            "cursor=" + this.obj.seller.cursor,
+            "cursor=" + this.obj.cursor,
             "brand_name=",
-            "cnsc_shop_id=" + this.obj.seller["my"].shopId,
+            "cnsc_shop_id=" + this.obj.seller["my"][0].shopId,
             "cbsc_shop_region=my"
         ]
         let url = "https://seller.shopee.cn/api/v3/mtsku/get_mtsku_brand_list?" + pArr.join("&")
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
         $("#state").html("正在搜索商品SKU。。。");
-        gg.getFetch(url,"json", this.d02, this)
+        gg.getFetch(url, "json", this.d02, this)
     },
     d02: function (oo) {
         if (oo.code === 0) {
             if (oo.data.list[0].page_info.has_next) {
-                this.obj.seller.cursor = oo.data.list[0].page_info.cursor//下一页
+                this.obj.cursor = oo.data.list[0].page_info.cursor//下一页
                 this.obj.B2 = this.obj.B1 + 1;
             }
             Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d03, this, this.e01, oo.data.list[0].brand_list);
@@ -94,76 +85,69 @@
         }
     },
     d03: function (arr) {
-        let nArr = [];
-        for (let i = 0; i < arr.length; i++) {
-            nArr.push(arr[i].brand_id);
-        }
-        let data = [{
-            action: "sqlite",
-            database: "shopee/品牌",
-            sql: "select " + Tool.fieldAs("brand_id,category_ids") + " FROM @.table where @.brand_id in(" + nArr.join(",") + ") ",
-        }]
-        Tool.ajax.a01(data, this.d04, this, { brand_idArr: nArr, arr: arr });
-    },
-    d04: function (t, oo) {
-        let arr = t[0]
-        let updateArr = [];
-        for (let i = 0; i < arr.length; i++) {
-            //能进来，就说明本地有这个品牌了
-            //那就看能不能增加类目            
-            if (arr[i].category_ids === 0) {
-                arr[i].category_ids = [];
-            }
-            else{
-                arr[i].category_ids = JSON.parse(arr[i].category_ids);
-            }
-            //////////////////////
-            if (arr[i].category_ids.indexOf(this.obj.seller.typeID) == -1) {
-                arr[i].category_ids.push(this.obj.seller.typeID)
-                updateArr.push("update @.table set @.category_ids=" + Tool.rpsql(JSON.stringify(arr[i].category_ids)) + " where @.brand_id=" + arr[i].brand_id)
-            }
-            //删除后就全是要插入的了。
-            oo.brand_idArr = oo.brand_idArr.filter(item => item !== arr[i].brand_id);//删除数组中的指定元素
-        }
-        this.d05(updateArr, oo)
-    },
-    d05: function (updateArr, oo) {
-        let insertArr = [], arr = oo.brand_idArr
-        for (let i = 0; i < arr.length; i++) {
-            insertArr.push('insert into @.table(@.brand_id,@.category_ids,@.name,@.addtime)values(' + arr[i] + ',\'[' + this.obj.seller.typeID + ']\',' + Tool.rpsql(this.b01(arr[i], oo.arr)) + ',' + Tool.gettime("") + ')')
-        }
-        $("#state").html("正在添加或更新品牌。。。");
-        this.d06(updateArr.concat(insertArr))
-    },
-    d06: function (arr) {
-        let data = []
+        $("#state").html("正在获取本地品牌信息。。。");
+        let data = [];
         for (let i = 0; i < arr.length; i++) {
             data.push({
                 action: "sqlite",
-                database: "shopee/品牌",
-                sql: arr[i],
+                database: "shopee/品牌/index",
+                sql: "select " + Tool.fieldAs("brand_id") + " FROM @.table where @.brand_id=" + arr[i].brand_id,
+                list: [{
+                    action: "sqlite",
+                    database: "shopee/品牌/" + Tool.remainder(arr[i].brand_id, 100),
+                    sql: "select " + Tool.fieldAs("brand_id,category_ids") + " FROM @.table where @.brand_id=" + arr[i].brand_id,
+                }],
+                elselist: [{
+                    action: "sqlite",
+                    database: "shopee/品牌/index",
+                    sql: "insert into @.table(@.brand_id,@.name,@.addtime)values(" + arr[i].brand_id + "," + Tool.rpsql(arr[i].name) + "," + Tool.gettime("") + ")"
+                }, {
+                    action: "sqlite",
+                    database: "shopee/品牌/" + Tool.remainder(arr[i].brand_id, 100),
+                    sql: "insert into @.table(@.brand_id,@.category_ids)values(" + arr[i].brand_id + ",'[" + this.obj.typeID + "]')"
+                }]
             })
         }
-        Tool.ajax.a01(data, this.d07, this);
-    },
-    d07: function (t) {
-        let isErr = false
-        for (let i = 0; i < t.length; i++) {
-            if (t[i].length != 0) {
-                isErr = true;
-                break;
-            }
-        }
-        if (isErr) {
-            Tool.pre(["有错误", t])
+        if (data.length == 0) {
+            this.d05();
         }
         else {
-            this.obj.B1++;
-            this.d01();
+            Tool.ajax.a01(data, this.d04, this);
         }
+    },
+    d04: function (t) {
+        let data = [];
+        for (let i = 0; i < t[0].length; i++) {
+            //看是否要更新类目
+            let arr = t[0][i].list[0];
+            if (arr[0] && arr[0].category_ids) {
+                let category_ids = JSON.parse(arr[0].category_ids)
+                if (category_ids.indexOf(this.obj.typeID) == -1) {
+                    category_ids.push(this.obj.typeID)
+                    data.push({
+                        action: "sqlite",
+                        database: "shopee/品牌/" + Tool.remainder(arr[0].brand_id, 100),
+                        sql: "update @.table set @.category_ids=" + Tool.rpsql(JSON.stringify(category_ids)) + " where @.brand_id=" + arr[0].brand_id
+                    })
+                }
+            }
+        }
+        $("#state").html("正在更新品牌。。。");
+        if (data.length == 0) {
+            this.d05()
+        }
+        else {
+            Tool.ajax.a01(data, this.d05, this);
+        }
+    },
+    d05: function () {
+        this.obj.B1++;
+        this.d01();
     },
     ///////////////////////////////////////////////
     e01: function () {
+        this.obj.typeID = 0;
+        this.obj.cursor = "";
         this.obj.B1 = 1; this.obj.B2 = 0;
         this.obj.A1++;
         this.a04();

@@ -9,7 +9,7 @@ var fun =
         sqlArr: [],
     },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee -&gt; 类目列表 -&gt; 采集类目') + '\
+        let html = Tool.header(o.params.return, 'Shopee -&gt; 类目列表 -&gt; 采集类目') + '\
         <div class="p-2">\
             <table class="table table-hover">\
                 <tbody>\
