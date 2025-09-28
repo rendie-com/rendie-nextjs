@@ -3,7 +3,7 @@ var fun =
 {
     obj: { A1: 1, A2: 0 },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee &gt; 违禁词 &gt; 【店小秘】违禁词 &gt; 获取【店小秘】的违禁词') + '\
+        let html = Tool.header(o.params.return, 'Shopee &gt; 违禁词 &gt; 【店小秘】违禁词 &gt; 获取【店小秘】的违禁词') + '\
         <div class="p-2">\
             <table class="table table-hover">\
                 <tbody>\
