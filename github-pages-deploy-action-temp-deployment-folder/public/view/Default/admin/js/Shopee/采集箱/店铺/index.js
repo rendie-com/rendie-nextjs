@@ -1,0 +1,183 @@
+'use strict';
+var fun =
+{
+    obj: {
+        size: 10,
+        siteNum: "",
+    },
+    a01: function () {
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.site = o.params.site ? o.params.site : 'sg'//站点
+        o.params.field = o.params.field ? o.params.field : '1'//搜索字段
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
+        o.params.num = o.params.num ? o.params.num : "1"//该站点的第几个店
+        ///////////////////////////////////////////////////////////////////////
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num);
+        this.a02();
+    },
+    a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/采集箱/店铺/" + o.params.site,
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/店铺/" + o.params.site + ".db"],
+                database: "shopee/采集箱/店铺/" + o.params.site
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
+        let where = this.b03();
+        let data = [{
+            action: "sqlite",
+            database: "shopee/采集箱/店铺/" + this.obj.siteNum,
+            sql: "select count(1) as total FROM @.table" + where,
+        }, {
+            action: "sqlite",
+            database: "shopee/采集箱/店铺/" + this.obj.siteNum,
+            sql: "select " + Tool.fieldAs("shopname,follower_count,get_follower_time,following_count,is_official_shop,last_login_time,nickname,portrait,products,response_rate,response_time,shop_rating,shopee_verified_flag,show_official_shop_label,show_shopee_verified_label,userid,shopid,username,is_in_fss,ps_plus,rating_good,rating_normal,rating_bad,is_shopee_choice,shop_location") + " FROM @.table" + where + " order by @.get_follower_time desc" + Tool.limit(this.obj.size, o.params.page),
+        }, {
+            action: o.DEFAULT_DB,
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
+        }]
+        Tool.ajax.a01(data, this.a04, this);
+    },
+    a04: function (t) {
+        let siteArr = JSON.parse(t[2][0].config)[o.params.site]
+        let html1 = "", arr = t[1]
+        for (let i = 0; i < arr.length; i++) {
+            html1 += '\
+            <tr>\
+                <td>'+ arr[i].userid + '</td>\
+                <td>'+ arr[i].shopid + '</td>\
+                <td>'+ arr[i].shop_location + '</td>\
+                <td>'+ this.b04(arr[i].portrait) + '</td>\
+                <td class="left">\
+                    <b>'+ arr[i].shopname + '</b><br/>\
+                    ' + arr[i].username + '\
+                    <div style="color:#999"><font color=red>' + arr[i].follower_count + '</font> 粉丝 &nbsp; | &nbsp; <font color=red>' + arr[i].following_count + '</font> 关注中</div>\
+                </td>\
+                <td>'+ arr[i].products + '</td>\
+                <td>'+ arr[i].shop_rating + '</td>\
+                <td>'+ arr[i].response_rate + '%</td>\
+                <td>'+ arr[i].response_time + '</td>\
+                <td>'+ arr[i].rating_good + '</td>\
+                <td>'+ arr[i].rating_normal + '</td>\
+                <td>'+ arr[i].rating_bad + '</td>\
+                <td class="p-0">'+ this.b07(arr[i].last_login_time, arr[i].get_follower_time) + '</td>\
+            </tr>'
+        }
+        let html = Tool.header2(o.params.jsFile, o.params.site,o.params.num) + '\
+		<div class="p-2">\
+			'+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b06() + '\
+			<table class="table align-middle table-hover center">\
+				<thead class="table-light">'+ this.b01() + '</thead>\
+				<tbody>'+ html1 + '</tbody>\
+			</table> ' + Tool.page(t[0][0].total, 10, o.params.page) + '\
+		</div>'
+        Tool.html(null, null, html);
+    },
+    //////////////////////////////////////////////
+    b01: function () {
+        let html = '\
+        <tr>\
+          <th style="padding-left:25px;position: relative;">'+ this.b02() + '用户ID</th>\
+          <th>店铺ID</th>\
+          <th>店铺位置</th>\
+          <th class="w60">头像</th>\
+          <th class="left">基本信息</th>\
+          <th>商品数量</th>\
+          <th>评分</th>\
+          <th>聊天回应率</th>\
+          <th>聊天回应时间</th>\
+          <th>好评数量</th>\
+          <th>中评数量</th>\
+          <th>差评数量</th>\
+          <th class="w170">时间</th>\
+        </tr>'
+        return html;
+    },
+    b02: function () {
+        return '\
+        <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
+		<ul class="dropdown-menu">\
+            <li onClick="Tool.openR(\'jsFile=js03&site='+ o.params.site + '&num='+ o.params.num + '\');"><a class="dropdown-item pointer">采集店铺</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js04&site='+ o.params.site  + '&num='+ o.params.num+ '\');"><a class="dropdown-item pointer">从商品中获取店铺ID</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js10&table=users_'+ o.params.site  + '&num='+ o.params.num+ '&database=shopee_gather&newdatabase=shopee/采集箱/店铺/' + o.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+		</ul>'
+    },
+    b03: function () {
+        let arr = [];
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.userid=" + o.params.searchword); break;//用户ID
+                case "2": arr.push("@.shopid=" + o.params.searchword); break;//店铺ID
+                case "3": arr.push("@.shopname like '%" + o.params.searchword + "%'"); break;//店铺名称
+                case "4": arr.push("@.username like '%" + o.params.searchword + "%'"); break;//用户名
+            }
+        }
+        return (arr.length == 0 ? "" : " where " + arr.join(" and "));
+    },
+    b04: function (pic) {
+        let img = "";
+        if (pic) {
+            img = '<a href="https://s-cf-sg.shopeesz.com/file/' + pic + '" target="_blank"><img src="' + pic + '_tn" class="img-fluid w60" style="border-radius:50%;"></a>'
+        }
+        else {
+            img = '<div style="border-radius: 50%;height: 60px;width: 60px;align-items: center;background: #d8d8d8;color: #fff;display: flex;font-size: 0;ont-weight: 500;    justify-content: center;overflow: hidden;"><i style="color: #fff;height: 50%;width: 50%;fill: currentColor;display: inline-block;line-height: 0;"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="chat-icon"><path d="M12 12.255c3.159 0 5.72-2.743 5.72-6.127C17.72 2.743 15.159 0 12 0S6.28 2.743 6.28 6.128c0 3.384 2.561 6.127 5.72 6.127zM9.149 14.298c-4.4 0-8.198 3.026-9.104 7.254C-.225 22.813.755 24 2.068 24h19.864c1.313 0 2.293-1.187 2.023-2.448-.906-4.228-4.704-7.254-9.104-7.254H9.15z"></path></svg></i>'
+        }
+        return img
+    },
+    b05: function (val) {
+        let name = "";
+        switch (val) {
+            case "1": name = "用户ID"; break;
+            case "2": name = "店铺ID"; break;
+            case "3": name = "店铺名称"; break;
+            case "4": name = "用户名"; break;
+            default: name = "未知：" + val;
+        }
+        return name
+    },
+    b06: function () {
+        return '\
+        <div class="input-group w-50 m-2">\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b05(o.params.field) + '</button>\
+            <ul class="dropdown-menu">\
+                <li class="dropdown-item pointer" onclick="fun.c01(1)">用户ID</li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(2)">店铺ID</a></li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(3)">店铺名称</a></li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(4)">用户名</a></li>\
+            </ul>\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
+        </div>'
+    },
+    b07: function (last_login_time, get_follower_time) {
+        return '\
+        <table class="table mb-0 table-bordered">\
+            <tr><td title="最后登陆时间">'+ Tool.js_date_time2(last_login_time) + '</td></tr>\
+            <tr><td title="获取粉丝时间">'+ Tool.js_date_time2(get_follower_time) + '</td></tr>\
+        </table>'
+    },
+    c01: function (val) {
+        let name = this.b05("" + val)
+        $("#field").html(name).val(val)
+    },
+    c02: function () {
+        let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
+        if ((field == "1" || field == "2") && isNaN(searchword)) {
+            alert("【商品ID】或【商品ID】必须是数字。")
+        }
+        else if (searchword) {
+            Tool.main("jsFile=" + o.params.jsFile + "&site=" + o.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
+        } else { alert("请输入搜索内容"); }
+    },
+}
+fun.a01();

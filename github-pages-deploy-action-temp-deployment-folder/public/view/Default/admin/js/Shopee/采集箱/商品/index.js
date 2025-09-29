@@ -1,0 +1,202 @@
+'use strict';
+var fun =
+{
+    obj: {
+        size: 20,
+        siteNum: "",
+    },
+    a01: function () {
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.field = o.params.field ? o.params.field : '1'
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
+        o.params.site = o.params.site ? o.params.site : 'sg'
+        o.params.num = o.params.num ? o.params.num : "1"//该站点的第几个店
+        ///////////////////////////////////////////////////////////////////////
+        this.obj.siteNum = Tool.siteNum(o.params.site, o.params.num);
+        this.a02();
+    },
+    a02: function () {
+        let data = [{
+            action: "fs",
+            fun: "access_sqlite",
+            database: "shopee/采集箱/商品/" + this.obj.siteNum,
+            mode: 0,
+            elselist: [{
+                action: "fs",
+                fun: "download_sqlite",
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/商品/" + this.obj.siteNum + ".db"],
+                database: "shopee/采集箱/商品/" + this.obj.siteNum,
+            }]
+        }]
+        Tool.ajax.a01(data, this.a03, this);
+    },
+    a03: function () {
+        let data = [{
+            action: "sqlite",
+            database: "shopee/采集箱/商品/" + this.obj.siteNum,
+            sql: "select " + Tool.fieldAs("itemid,shopid,title,image,shop_location,currency,price,addtime") + " FROM @.table" + this.b03() + Tool.limit(this.obj.size, o.params.page, "sqlite"),
+        }, {
+            action: "sqlite",
+            database: "shopee/采集箱/商品/" + this.obj.siteNum,
+            sql: "select count(1) as Count FROM @.table" + this.b03(),
+        }, {
+            action: o.DEFAULT_DB,
+            database: "shopee/卖家账户",
+            sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
+        }]
+        Tool.ajax.a01(data, this.a04, this);
+    },
+    a04: function (t) {
+        let html1 = "", arr = Tool.getArr(t[0], "sqlite");
+        let siteArr = JSON.parse(t[2][0].config)[o.params.site]
+        for (let i = 0; i < arr.length; i++) {
+            html1 += '\
+            <tr>\
+                <td>'+ arr[i].itemid + '</td>\
+                <td>'+ arr[i].shopid + '</td>\
+                <td class="nowrap">'+ arr[i].shop_location + '</td>\
+                <td>'+ this.b04(arr[i].image) + '</td>\
+                <td class="left"><a href="https://' + (o.params.site == "tw" ? "xiapi" : o.params.site) + '.xiapibuy.com/product/' + arr[i].shopid + '/' + arr[i].itemid + '/" target="_blank">' + arr[i].title + '</a></td>\
+                <td>'+ arr[i].price + '</td>\
+                <td>'+ Tool.js_date_time2(arr[i].addtime) + '</td>\
+            </tr>'
+        }
+        let html = Tool.header2(o.params.jsFile, o.params.site,o.params.num) + '\
+    	<div class="p-2">\
+    		'+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b06() + '\
+    		<table class="table align-middle table-hover center">\
+    			<thead class="table-light">'+ this.b01() + '</thead>\
+    			<tbody>'+ html1 + '</tbody>\
+    		</table>\
+            ' + Tool.page(t[1][0].Count, this.obj.size, o.params.page) + '\
+    	</div>'
+        Tool.html(null, null, html)
+    },
+    //////////////////////////////////////////////
+    b01: function () {
+        let html = '\
+        <tr>\
+          <th style="padding-left:25px;position: relative;" class="w120">'+ this.b02() + '商品ID</th>\
+          <th class="w120">店铺ID</th>\
+          <th class="w120">店铺位置</th>\
+          <th>图片</th>\
+          <th class="left">标题</th>\
+          <th class="w120">价格</th>\
+          <th class="w170">创建时间</th>\
+        </tr>'
+        return html;
+    },
+    b02: function () {
+        return '\
+        <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
+		<ul class="dropdown-menu">\
+            <li onClick="Tool.openR(\'jsFile=js01&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">采集商品</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js10&table=pro_'+ o.params.site + '&database=shopee_gather&newdatabase=shopee/采集箱/商品/' + o.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js11&table=table&database=shopee/采集箱/商品/'+ o.params.site + '&toaction=dynamodb\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【DynamoDB】数据库</a></li>\
+		</ul>'
+    },
+    b03: function () {
+        let arr = [];
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.itemid='" + o.params.searchword + "'"); break;//商品编码
+                case "2": arr.push("@.shopid=" + o.params.searchword); break;//DH商品ID
+                case "3": arr.push("@.shop_location like '%" + o.params.searchword + "%'"); break;//店铺位置
+                case "4": arr.push("@.name like '%" + o.params.searchword + "%'"); break;//标题
+            }
+        }
+        return (arr.length == 0 ? "" : " where " + arr.join(" and "));
+    },
+    b04: function (pic) {
+        let html = "\
+        <a href=\"https://s-cf-sg.shopeesz.com/file/" + pic + "\" target=\"_blank\">\
+            <img src=\"https://s-cf-sg.shopeesz.com/file/"+ pic + "_tn\" class=\"img-fluid rounded w100\">\
+        </a>"
+        return html;
+    },
+    b05: function (val) {
+        let name = "";
+        switch (val) {
+            case "1": name = "商品ID"; break;
+            case "2": name = "店铺ID"; break;
+            case "3": name = "店铺位置"; break;
+            case "4": name = "标题"; break;
+            default: name = "未知：" + val;
+        }
+        return name
+    },
+    b06: function () {
+        return '\
+        <div class="input-group w-50 m-2">\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="field" value="'+ o.params.field + '">' + this.b05(o.params.field) + '</button>\
+            <ul class="dropdown-menu">\
+                <li class="dropdown-item pointer" onclick="fun.c01(1)">商品ID</li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(2)">店铺ID</a></li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(3)">店铺位置</a></li>\
+                <li class="dropdown-item pointer" onclick="fun.c01(4)">标题</a></li>\
+            </ul>\
+            <input type="text" class="form-control" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
+        </div>'
+    },
+    ////////////////////////////////////////////////////
+    c01: function (val) {
+        let name = this.b05("" + val)
+        $("#field").html(name).val(val)
+    },
+    c02: function () {
+        let field = $("#field").val(), searchword = Tool.Trim($("#searchword").val());
+        if ((field == "1" || field == "2") && isNaN(searchword)) {
+            alert("【商品ID】或【商品ID】必须是数字。")
+        }
+        else if (searchword) {
+            Tool.main("jsFile=" + o.params.jsFile + "&site=" + o.params.site + "&page=1&field=" + field + "&searchword=" + searchword);
+        } else { alert("请输入搜索内容"); }
+    },
+}
+fun.a01();
+
+
+
+// let data = [{
+//     action: "fs",
+//     fun: "access_sqlite",
+//     database: "shopee/采集箱/商品/" + o.params.site,
+//     mode: 0,
+//     elselist: [{
+//         action: "fs",
+//         fun: "download_sqlite",
+//         urlArr: ["https://github.com/rendie-com/rendie-com/releases/download/1/shopee_gather_product_" + o.params.site + ".db", "https://github.com/rendie-com/rendie-com/releases/download/2/shopee_gather_product_" + o.params.site + ".db"],
+//         database: "shopee/采集箱/商品/" + o.params.site
+//     }]
+// }]
+
+// b08: function (size, ExclusiveStartKey) {
+//     let TableName = Tool.getChinaAscii('shopee_采集箱_商品_' + o.params.site + '_table')
+//     let params = {
+//         ProjectionExpression: 'itemid,shopid,title,image,shop_location,currency,price,addtime', // 只获取这些字段
+//         Limit: size, // 每页项目数上限
+//         TableName: TableName,
+//     }
+//     if (ExclusiveStartKey && o.params.page != 1) {//翻页
+//         params.ExclusiveStartKey = ExclusiveStartKey;
+//     }
+//     let data = [{
+//         action: "sqlite",
+//         fun: "scan",
+//         params: params,
+//     }]
+//     /////////////////////////////////////////////
+//     if (o.params.page == 1) {
+//         data.push({
+//             action: "sqlite",
+//             fun: "scan",
+//             params: {
+//                 TableName: TableName,
+//                 Select: 'COUNT' // 请求只返回项目总数
+//             }
+//         })
+//     }
+//     return data;
+// },
