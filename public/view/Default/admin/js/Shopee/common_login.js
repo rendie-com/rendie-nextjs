@@ -45,7 +45,7 @@ Object.assign(Tool, {
             o1.config = JSON.parse(o1.config)
             o1.config.SPC_CDS = SPC_CDS
             o2.seller = o1.config
-            Tool.loginShopee.a01(o1.username, o1.password, JSON.parse(o1.cookies), JSON.parse(o1.localstorage), $("#state"), this.a06, this, o2)
+            Tool.loginShopee.a01(o1.username, o1.password, JSON.parse(o1.cookies), JSON.parse(o1.localstorage), $("#state"), o.DEFAULT_DB, this.a06, this, o2)
         },
         a06: function (t, oo) {
             Tool.apply(oo.seller, oo.next, oo.This, oo.t);

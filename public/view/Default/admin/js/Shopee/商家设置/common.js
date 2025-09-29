@@ -31,7 +31,7 @@ Object.assign(Tool, {
             o1.username = oo.username;
             let cookies = oo.cookies ? JSON.parse(oo.cookies) : cookies
             ///////////////////////////////
-            Tool.loginShopee.a01(oo.username, oo.password, cookies, JSON.parse(oo.localstorage), o1.This, this.a04, this, o1)
+            Tool.loginShopee.a01(oo.username, oo.password, cookies, JSON.parse(oo.localstorage), o1.This, o.DEFAULT_DB, this.a04, this, o1)
         },
         a04: function (t, oo) {
             let url = "https://seller.shopee.cn/"

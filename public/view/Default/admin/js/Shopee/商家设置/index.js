@@ -13,11 +13,7 @@
         case "js02": Tool.scriptArr([path + '卖家账户/更多/index.js']); break;
         case "js03": Tool.scriptArr([path + 'common.js', path + '合作伙伴管理/index.js']); break;
         case "js04": Tool.scriptArr(loginPath.concat([path + 'common.js', path + '合作伙伴管理/取消连接.js'])); break;
-        case "js05": Tool.scriptArr([
-            'admin/js/安装/PostgreSQL/默认表.js',
-            "admin/js/安装/DynamoDB/Shopee/卖家账户.js",
-            "admin/js/Shopee/任务/定时任务/更多/把【sqlite】数据库该表同步到新的数据库.js"
-        ]); break;
+        case "js05": Tool.scriptArr(["admin/js/Shopee/任务/定时任务/更多/把【sqlite】数据库该表同步到新的数据库.js"]); break;
         case "js06": Tool.scriptArr(loginPath.concat([path + 'common.js', path + '合作伙伴管理/获取店铺授权信息.js'])); break;
         case "js07": Tool.scriptArr([path + 'common.js', path + '合作伙伴管理/授权管理.js']); break;
         default: Tool.scriptArr([loginUrl, path + 'common.js', path + '卖家账户/index.js']); break;

@@ -5,13 +5,14 @@ Object.assign(Tool, {
         obj: {
             urlArr: ["https://shopee.cn/", "https://seller.shopee.cn/"]
         },
-        a01: function (username, password, cookies, localStorage, dom, next, This, t) {
+        a01: function (username, password, cookies, localStorage, dom, DEFAULT_DB, next, This, t) {
             let oo = {
                 username: username,
                 password: password,
                 cookies: cookies,
                 localStorage: localStorage,
                 dom: dom,
+                DEFAULT_DB: DEFAULT_DB,
                 next: next,
                 This: This,
                 t: t
@@ -67,7 +68,7 @@ Object.assign(Tool, {
         },
         a09: function (cookies, arr) {
             let data = [{
-                action: "sqlite",
+                action: arr[1].DEFAULT_DB,
                 database: "shopee/卖家账户",
                 sql: 'update @.table set @.cookies=' + Tool.rpsql(JSON.stringify(cookies)) + ' where @.username=' + Tool.rpsql(arr[1].username),
             }]
