@@ -103,20 +103,22 @@ Object.assign(Tool, {
             }
             return nArr.join("<hr/>") + Flat
         },
-        b03: function (pro_weight, arr, type) {
-            arr.sort(function (a, b) {
+        b03: function (pro_weight, arr, type) {  
+            arr.sort(function (a, b) {                
                 return a.start_weight - b.start_weight;
             });
             let nArr = []
             for (let i = 0; i < arr.length; i++) {
                 if (arr[i].type == type) {
-                    nArr.push({
-                        start_weight: arr[i].start_weight,//续重范围【小】
-                        end_weight: arr[i].end_weight,//续重范围【大】
-                        increment_amount: arr[i].increment_amount,//续重价格
-                        increment_unit: arr[i].increment_unit,//续重
-                        original_fee: arr[i].original_fee,//首重价格 
-                    })
+                    
+                        nArr.push({
+                            start_weight: arr[i].start_weight,//续重范围【小】
+                            end_weight: arr[i].end_weight,//续重范围【大】
+                            increment_amount: arr[i].increment_amount,//续重价格
+                            increment_unit: arr[i].increment_unit,//续重
+                            original_fee: arr[i].original_fee,//首重价格 
+                        })
+                    
                 }
             }
             ///////////////////////////////////////

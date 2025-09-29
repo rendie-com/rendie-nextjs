@@ -3,31 +3,13 @@ Object.assign(Tool, {
         let html = '\
         <header class="panel-heading">\
           <div onclick="Tool.main(\'\')"'+ (!jsFile ? ' class="active"' : '') + '>平台关联</div>\
-          <div onclick="Tool.main(\'?jsFile=js40\')"'+ (jsFile == "js40" ? ' class="active"' : '') + '>全球商品</div>\
-          <div onclick="Tool.main(\'?jsFile=js43\')"'+ (jsFile == "js43" ? ' class="active"' : '') + '>全球商品_修改</div>\
-          <div onclick="Tool.main(\'?jsFile=js04\')"'+ (jsFile == "js04" || jsFile == "js15" ? ' class="active"' : '') + '>店铺商品</div>\
-          <div onclick="Tool.main(\'?jsFile=js19\')"'+ (jsFile == "js19" ? ' class="active"' : '') + '>违规或删除</div>\
-          <div onclick="Tool.main(\'?jsFile=js28\')"'+ (jsFile == "js28" || jsFile == "js30" ? ' class="active"' : '') + '>图片</div>\
+          <div onclick="Tool.main(\'jsFile=js40\')"'+ (jsFile == "js40" ? ' class="active"' : '') + '>全球商品</div>\
+          <div onclick="Tool.main(\'jsFile=js43\')"'+ (jsFile == "js43" ? ' class="active"' : '') + '>全球商品_修改</div>\
+          <div onclick="Tool.main(\'jsFile=js04\')"'+ (jsFile == "js04" || jsFile == "js15" ? ' class="active"' : '') + '>店铺商品</div>\
+          <div onclick="Tool.main(\'jsFile=js19\')"'+ (jsFile == "js19" ? ' class="active"' : '') + '>违规或删除</div>\
+          <div onclick="Tool.main(\'jsFile=js28\')"'+ (jsFile == "js28" || jsFile == "js30" ? ' class="active"' : '') + '>图片</div>\
         </header>'
         return html;
-    },
-    siteLanguage: function (site) {
-        let language
-        switch (site) {
-            case "tw": language = "tw"; break;
-            case "ph":
-            case "sg":
-            case "my":
-                language = "en"; break;
-            case "br": language = "pt"; break;
-            case "cl":
-            case "co":
-            case "mx":
-                language = "es"; break;
-            case "vn": language = "vi"; break;
-            case "th": language = "th"; break;
-        }
-        return language
     },
     BeforeReview: [
         [0, "未更新"],
@@ -48,6 +30,10 @@ Object.assign(Tool, {
         [15, "发货天数超过4天"],
         [16, "图片出错"],
         [17, "ps_basicservice_error_10025"],
+        [18, "【标题】不同需要更新"],
+        [19, "【首图】不同需要更新"],
+        [20, "【价格】不同需要更新"],
+        [21, "【加购属性】不同需要更新"],
     ],
     penalty_type: [
         [0, "未违规"],
@@ -59,17 +45,8 @@ Object.assign(Tool, {
         [6, "改善商城商品"],
         [7, "其他上架规范"],
         [8, "发布商品失败"],
-        [9, "发布商品失败"],
-        [10, "发布商品失败"],
-        [11, "发布商品失败"],
-        [12, "发布商品失败"],
-        [13, "发布商品失败"],
-        [14, "发布商品失败"],
-        [15, "发布商品失败"],
-        [16, "发布商品失败"],
-        [17, "发布商品失败"],
     ],
-    ManualReview_1688: [
+    ManualReview_1688_statusArr: [
         [0, "未审核"],
         [1, "使用1688属性图", '<a href="javascript:;" onclick="fun.c10($1);" class="m-2">设置为【未更新】</a>'],
         [2, "需要修改"],
@@ -81,7 +58,7 @@ Object.assign(Tool, {
         [1, "404错误"],
         [2, "商品已下架"],
         [3, "采集内容已改变"],
-        [4, "xxxxx"],
+        [4, "去掉的违禁词"],
         [5, "xxxxx"],
         [6, "库存为零"],
         [7, "1688自已出错了"],
@@ -91,6 +68,8 @@ Object.assign(Tool, {
     shopPro_statusArr: [
         [-3, "问题数据"],
         [-4, "下架失败"],
+        [-5, "删除失败"],
+        [-6, "更新失败"],
         [0, "未知"],
         [1, "上架商品"],
         [2, "修改后【审查中】"],
@@ -98,6 +77,18 @@ Object.assign(Tool, {
         [4, "Shopee删除"],
         [6, "审查中"],
         [8, "未上架"],
+    ],
+    shopPro_ExceptionTypeArr: [
+        [0, "非异常"],
+        [1, "最低购买量_不匹配"],
+        [2, "最终折扣>=80"],
+        [3, "最终折扣<=8"],
+        [4, "敦煌手动审核状态_不匹配"],
+        [5, "敦煌审核后本地状态_不匹配"],
+        [6, "更新后违规类型_不匹配"],
+        [7, "手动审核1688状态_不匹配"],
+        [8, "手动审核后1688商品状态_不匹配"],
+        [9, "修改状态_不匹配"],
     ],
     shopPro_unitWeight: [
         [11, "0-10克", 0, 10],
@@ -118,6 +109,8 @@ Object.assign(Tool, {
         [4, "不需要改价", "@.price_uptime=0"],
         [5, "    已改价", "@.price_uptime>1"],
         [6, "已报名商品活动", "@.isTrueSignUp=1"],
+        [7, "有销量", "@.saleNum>0"],
+        [8, "无销量", "@.saleNum=0"],
     ],
     shopPro_activity: [
         [1, "  能打折", "@.isDiscount=1"],
@@ -128,11 +121,11 @@ Object.assign(Tool, {
         [6, "不能做秒杀", "@.isSeckill=0"],
     ],
     shopPro_price: [
-        [1, "旧折扣&gt;=80", "@.discount>=80"],
-        [2, "旧折扣&lt;=8", "@.discount<=8"],
-        [3, "新折扣&gt;=80", "@.newDiscount>=80"],
-        [4, "新折扣&lt;=8", "@.newDiscount<=8"],
-        [5, "新折扣&gt;=50", "@.newDiscount>=50"],
+        [1, "计划折扣&gt;=80", "@.discount>=80"],
+        [2, "计划折扣&lt;=8", "@.discount<=8"],
+        [3, "最终折扣&gt;=80", "@.newDiscount>=80"],
+        [4, "最终折扣&lt;=8", "@.newDiscount<=8"],
+        [5, "最终折扣&gt;=50", "@.newDiscount>=50"],
         [6, "最终定价&gt;100", "@.input_normal_price>100"],
         [7, "最终定价&gt;200", "@.input_normal_price>200"],
         [8, "最终定价&gt;300", "@.input_normal_price>300"],
