@@ -2,47 +2,35 @@
 var fun =
 {
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'sg'
-        obj.params.field = obj.params.field ? obj.params.field : '1'
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.site = o.params.site ? o.params.site : 'sg'
+        o.params.field = o.params.field ? o.params.field : '1'
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
         //obj.arr[8] = obj.arr[8] ? obj.arr[8] : "-_-20";//广告状态
         //obj.arr[9] = obj.arr[9] ? obj.arr[9] : "-_-20";//版位
         this.a02()
     },
     a02: function () {
-        let data = [{
-            action: "fs",
-            fun: "access_sqlite",
-            database: "shopee/Shopee广告/广告/" + obj.params.site,
-            mode: 0,
-            elselist: [{
-                action: "fs",
-                fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/Shopee广告/广告.db"],
-                database: "shopee/Shopee广告/广告/" + obj.params.site,
-            }]
-        }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.download_sqlite.a01(["shopee/Shopee广告/广告/" + o.params.site], this.a03, this)
     },
     a03: function () {
         //where="'+ this.b08() + '"
-        // where @.site=\''+ obj.params.site + '\' and not(@.state=\'deleted\' or @.state=\'closed\') GROUP BY @.productID HAVING COUNT(1) &gt;1//查重复用的
+        // where @.site=\''+ o.params.site + '\' and not(@.state=\'deleted\' or @.state=\'closed\') GROUP BY @.productID HAVING COUNT(1) &gt;1//查重复用的
         let data = [{
             action: "sqlite",
-            database: "shopee/Shopee广告/广告/" + obj.params.site,
+            database: "shopee/Shopee广告/广告/" + o.params.site,
             sql: "select count(1) as total FROM @.table",
         }, {
             action: "sqlite",
-            database: "shopee/Shopee广告/广告/" + obj.params.site,
-            sql: "select " + Tool.fieldAs("fromid,start_time,end_time,daily_budget,total_budget,state,product_placement,trait_list,productID,report_impression,report_click,image,title") + " FROM @.table order by @.report_impression desc" + Tool.limit(10, obj.params.page, "sqlite"),
+            database: "shopee/Shopee广告/广告/" + o.params.site,
+            sql: "select " + Tool.fieldAs("fromid,start_time,end_time,daily_budget,total_budget,state,product_placement,trait_list,productID,report_impression,report_click,image,title") + " FROM @.table order by @.report_impression desc" + Tool.limit(10, o.params.page, "sqlite"),
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (arr) {
         let t = arr[1];
-        let tr = [], unit = this.b05(obj.params.site)
+        let tr = [], unit = this.b05(o.params.site)
         for (let i = 0; i < t.length; i++) {
             tr.push('\
             <tr>\
@@ -70,12 +58,12 @@ var fun =
                 <td>---</td>\
             </tr>')
         }
-        let html = Tool.header2(obj.params.jsFile) + '\
+        let html = Tool.header2(o.params.jsFile) + '\
         <div class="p-2">\
             <ul class="makeHtmlTab">\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=tw\')"' + (obj.params.site == "tw" ? ' class="hover"' : '') + '>台湾虾皮</li>\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=my\')"' + (obj.params.site == "my" ? ' class="hover"' : '') + '>马来西亚</li>\
-                <li onclick="Tool.main(\'?jsFile=js19&site=br\')"'+ (obj.params.site == "br" ? ' class="hover"' : '') + '>巴西</li>\
+                <li onclick="Tool.main(\'jsFile='+ o.params.jsFile + '&site=tw\')"' + (o.params.site == "tw" ? ' class="hover"' : '') + '>台湾虾皮</li>\
+                <li onclick="Tool.main(\'jsFile='+ o.params.jsFile + '&site=my\')"' + (o.params.site == "my" ? ' class="hover"' : '') + '>马来西亚</li>\
+                <li onclick="Tool.main(\'jsFile=js19&site=br\')"'+ (o.params.site == "br" ? ' class="hover"' : '') + '>巴西</li>\
             </ul>\
             <div style="overflow-x:auto;white-space:nowrap;min-height:600px;">\
             '+ this.b07() + '\
@@ -83,8 +71,8 @@ var fun =
             <thead class="table-light">\
                 <tr>\
                     <th class="w120 left" style="padding-left: 30px;position: relative;">'+ this.b01() + '首图</th>\
-                    <th class="p-0">'+ this.b11("广告状态", 0, 8, config[obj.params.site].ads_state_count) + '</th>\
-                    <th class="p-0">'+ this.b09("版位", 0, 9, config[obj.params.site].ads_type_count) + '</th>\
+                    <th class="p-0">'+ this.b11("广告状态", 0, 8, config[o.params.site].ads_state_count) + '</th>\
+                    <th class="p-0">'+ this.b09("版位", 0, 9, config[o.params.site].ads_type_count) + '</th>\
                     <th>预算</th>\
                     <th>浏览数</th>\
                     <th>点击数</th>\
@@ -107,7 +95,7 @@ var fun =
                 </tr>\
             </thead>\
             <tbody>'+ tr.join("") + '</tbody>\
-            </table>' + Tool.page(arr[0][0].total, 10, obj.params.page) + '\
+            </table>' + Tool.page(arr[0][0].total, 10, o.params.page) + '\
             </div>\
         </div>'
         Tool.html(null, null, html);
@@ -117,9 +105,9 @@ var fun =
         return '\
         <button title = "操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'?jsFile=js01&site='+ obj.params.site + '\')"><a class="dropdown-item pointer">*获取【全部广告】信息</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js23&site='+ obj.params.site + '\')"><a class="dropdown-item pointer">*创建商品广告</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js25&site='+ obj.params.site + '\')"><a class="dropdown-item pointer">*删除重复商品广告</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js01&site='+ o.params.site + '\')"><a class="dropdown-item pointer">*获取【全部广告】信息</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js23&site='+ o.params.site + '\')"><a class="dropdown-item pointer">*创建商品广告</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js25&site='+ o.params.site + '\')"><a class="dropdown-item pointer">*删除重复商品广告</a></li>\
         </ul>'
     },
     b02: function (productID, title, trait_list, state, start_time, end_time, fromid) {
@@ -175,22 +163,22 @@ var fun =
         let str1 = '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" style="left: -12px;"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.open7(\'js24\',\''+ obj.params.site + '\',\'' + state + '\',1)"><a class="dropdown-item pointer">*立即开始</a></li>\
+            <li onClick="Tool.open7(\'js24\',\''+ o.params.site + '\',\'' + state + '\',1)"><a class="dropdown-item pointer">*立即开始</a></li>\
         </ul>'
         let str2 = '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" style="left: -12px;"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.open7(\'js24\',\''+ obj.params.site + '\',\'' + state + '\',2)"><a class="dropdown-item pointer">*暂停</a></li>\
+            <li onClick="Tool.open7(\'js24\',\''+ o.params.site + '\',\'' + state + '\',2)"><a class="dropdown-item pointer">*暂停</a></li>\
         </ul>'
         let str3 = '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" style="left: -12px;"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.open7(\'js24\',\''+ obj.params.site + '\',\'' + state + '\',3)"><a class="dropdown-item pointer">*重启</a></li>\
+            <li onClick="Tool.open7(\'js24\',\''+ o.params.site + '\',\'' + state + '\',3)"><a class="dropdown-item pointer">*重启</a></li>\
         </ul>'
         let str4 = '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" style="left: -12px;"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.open7(\'js24\',\''+ obj.params.site + '\',\'' + state + '\',4)"><a class="dropdown-item pointer">*删除</a></li>\
+            <li onClick="Tool.open7(\'js24\',\''+ o.params.site + '\',\'' + state + '\',4)"><a class="dropdown-item pointer">*删除</a></li>\
         </ul>'
         switch (state) {
             case "paused": txt = str3 + '<span style="color:#eda500;background:#fff7e0;" class="p-1">暂停中</span>'; break;
@@ -207,21 +195,21 @@ var fun =
     b07: function () {
         return '\
         <div class="input-group w-50 my-2">\
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="Field" value="'+ obj.params.field + '">' + this.b12(obj.params.field) + '</button>\
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="Field" value="'+ o.params.field + '">' + this.b12(o.params.field) + '</button>\
             <ul class="dropdown-menu">\
                 <li class="dropdown-item pointer" onclick="fun.c01(1)" value="1">广告ID</li>\
                 <li class="dropdown-item pointer" onclick="fun.c01(2)" value="2">商品ID</a></li>\
             </ul>\
-            <input type="text" class="form-control"id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
+            <input type="text" class="form-control"id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c02();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
     b08: function () {
-        let arr = ["@.site='" + obj.params.site + "'"];
-        if (obj.params.searchword) {
-            switch (obj.params.field) {
-                case "1": arr.push("@.fromid='" + obj.params.searchword + "'"); break;//广告ID
-                case "2": arr.push("@.productID=" + obj.params.searchword); break;//商品ID
+        let arr = ["@.site='" + o.params.site + "'"];
+        if (o.params.searchword) {
+            switch (o.params.field) {
+                case "1": arr.push("@.fromid='" + o.params.searchword + "'"); break;//广告ID
+                case "2": arr.push("@.productID=" + o.params.searchword); break;//商品ID
             }
         }
         //if (obj.arr[8] != "-_-20") { arr.push("@.state='" + Tool.unescape(obj.arr[8]) + "'"); }
@@ -289,12 +277,12 @@ var fun =
         }
         else if (searchword) {
             //searchword = encodeURIComponent(searchword)
-            //Tool.main(obj.arr[3] + "/" + obj.params.site + "/1/" + Field + "/" + searchword);
+            //Tool.main(obj.arr[3] + "/" + o.params.site + "/1/" + Field + "/" + searchword);
         } else { alert("请输入搜索内容"); }
     },
     c03: function (I, val) {
         if (val == "-1") {
-            Tool.openR("js13", obj.params.site);
+            Tool.openR("js13", o.params.site);
         }
         else {
             Tool.open(I, val);
@@ -302,7 +290,7 @@ var fun =
     },
     c04: function (I, val) {
         if (val == "-1") {
-            Tool.openR("js12", obj.params.site);
+            Tool.openR("js12", o.params.site);
         }
         else {
             Tool.open(I, val);

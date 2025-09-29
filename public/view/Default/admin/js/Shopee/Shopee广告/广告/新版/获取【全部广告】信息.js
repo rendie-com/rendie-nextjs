@@ -7,13 +7,13 @@
         seller: {},//提交要用
     },
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        //obj.params.site
-        let html = Tool.header(obj.params.return, 'Shopee &gt; Shopee广告 &gt; 广告 &gt; 新版 &gt; 获取【全部广告】信息') + '\
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        //o.params.site
+        let html = Tool.header(o.params.return, 'Shopee &gt; Shopee广告 &gt; 广告 &gt; 新版 &gt; 获取【全部广告】信息') + '\
         <div class="p-2">\
             <table class="table table-hover align-middle">\
                 <tbody>\
- 		            <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+ 		            <tr><td class="right">站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
                     <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
                     <tr><td class="right">页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                     <tr><td class="right">条进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
@@ -35,8 +35,8 @@
         let pArr = [
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
-            "cbsc_shop_region=" + obj.params.site
+            "cnsc_shop_id=" + this.obj.seller[o.params.site].shopId,
+            "cbsc_shop_region=" + o.params.site
         ]
         let url = "https://seller.shopee.cn/api/pas/v1/homepage/query/?" + pArr.join("&")
 
@@ -83,7 +83,7 @@
         let Barr = this.obj.Barr[this.obj.B1 - 1]
         if (Barr.type == "product_manual") {
             //商品广告
-            Tool.common_keyword.a01(this.obj.seller, obj.params.site, Barr.campaign.campaign_id, this.d03, this)
+            Tool.common_keyword.a01(this.obj.seller, o.params.site, Barr.campaign.campaign_id, this.d03, this)
         }
         else {
             Tool.pre(["出错", Barr])
@@ -119,7 +119,7 @@
                 "@.report_click",
             ]
             let arrR = [
-                "'" + obj.params.site + "'",
+                "'" + o.params.site + "'",
                 arr[i].campaign.campaign_id,
                 arr[i].campaign.daily_budget,
                 arr[i].campaign.total_budget,

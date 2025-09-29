@@ -3,8 +3,8 @@ Object.assign(Tool, {
         let html = '\
         <header class="panel-heading">\
             <div onclick="Tool.main(\'\')"'+ (!jsFile || jsFile == "js19" ? ' class="active"' : '') + '>【Shopee】广告</div>\
-            <div onclick="Tool.main(\'?jsFile=js08\')"'+ (jsFile == "js08" || jsFile == "js21" ? ' class="active"' : '') + '>商品广告_修改</div>\
-            <div onclick="Tool.main(\'?jsFile=js02\')"'+ (jsFile == "js02" ? ' class="active"' : '') + '>搜索关键词</div>\
+            <div onclick="Tool.main(\'jsFile=js08\')"'+ (jsFile == "js08" || jsFile == "js21" ? ' class="active"' : '') + '>商品广告_修改</div>\
+            <div onclick="Tool.main(\'jsFile=js02\')"'+ (jsFile == "js02" ? ' class="active"' : '') + '>搜索关键词</div>\
         </header>'
         return html;
     },

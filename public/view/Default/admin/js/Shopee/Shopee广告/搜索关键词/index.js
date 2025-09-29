@@ -2,10 +2,10 @@
 var fun =
 {
     a01: function () {
-        obj.params.jsFile = obj.params.jsFile ? obj.params.jsFile : ""//选择JS文件
-        obj.params.page = obj.params.page ? parseInt(obj.params.page) : 1;//翻页  
-        obj.params.site = obj.params.site ? obj.params.site : 'sg'
-        obj.params.searchword = obj.params.searchword ? Tool.Trim(obj.params.searchword) : "";//搜索关键词
+        o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
+        o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页  
+        o.params.site = o.params.site ? o.params.site : 'sg'
+        o.params.searchword = o.params.searchword ? Tool.Trim(o.params.searchword) : "";//搜索关键词
         // obj.arr[7] = obj.arr[7] ? obj.arr[7] : "-_-20";//品质分数
         // obj.arr[8] = obj.arr[8] ? obj.arr[8] : "-_-20";//搜索量
         // obj.arr[9] = obj.arr[9] ? obj.arr[9] : "-_-20";//推荐出价
@@ -15,13 +15,13 @@ var fun =
         let data = [{
             action: "fs",
             fun: "access_sqlite",
-            database: "shopee/Shopee广告/关键词/" + obj.params.site,
+            database: "shopee/Shopee广告/关键词/" + o.params.site,
             mode: 0,
             elselist: [{
                 action: "fs",
                 fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/Shopee广告/关键词/" + obj.params.site + ".db"],
-                database: "shopee/Shopee广告/关键词/" + obj.params.site,
+                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/Shopee广告/关键词/" + o.params.site + ".db"],
+                database: "shopee/Shopee广告/关键词/" + o.params.site,
             }]
         }]
         Tool.ajax.a01(data, this.a03, this);
@@ -29,12 +29,12 @@ var fun =
     a03: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/Shopee广告/关键词/" + obj.params.site,
+            database: "shopee/Shopee广告/关键词/" + o.params.site,
             sql: "select count(1) as total FROM @.table" + this.b05(),
         }, {
             action: "sqlite",
-            database: "shopee/Shopee广告/关键词/" + obj.params.site,
-            sql: "select " + Tool.fieldAs("keyword,cn_keyword,productIdArr,recommended_price,search_volume,relevance,addtime,uptime") + " FROM @.table" + this.b05() + " order by @.uptime desc" + Tool.limit(20, obj.params.page, "sqlite"),
+            database: "shopee/Shopee广告/关键词/" + o.params.site,
+            sql: "select " + Tool.fieldAs("keyword,cn_keyword,productIdArr,recommended_price,search_volume,relevance,addtime,uptime") + " FROM @.table" + this.b05() + " order by @.uptime desc" + Tool.limit(20, o.params.page, "sqlite"),
         }]
         Tool.ajax.a01(data, this.a04, this);
     },
@@ -51,19 +51,19 @@ var fun =
                 <td class="p-0">'+ this.b03(arr1[i].addtime, arr1[i].uptime) + '</td>\
             </tr>';
         }
-        html = Tool.header2(obj.params.jsFile) + '\
+        html = Tool.header2(o.params.jsFile) + '\
 		<div class="p-2">\
             <ul class="makeHtmlTab">\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=tw\')"' + (obj.params.site == "tw" ? ' class="hover"' : '') + '>台湾虾皮</li>\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=my\')"' + (obj.params.site == "my" ? ' class="hover"' : '') + '>马来西亚</li>\
-                <li onclick="Tool.main(\'?jsFile='+ obj.params.jsFile + '&site=br\')"' + (obj.params.site == "br" ? ' class="hover"' : '') + '>巴西</li>\
+                <li onclick="Tool.main(\'jsFile='+ o.params.jsFile + '&site=tw\')"' + (o.params.site == "tw" ? ' class="hover"' : '') + '>台湾虾皮</li>\
+                <li onclick="Tool.main(\'jsFile='+ o.params.jsFile + '&site=my\')"' + (o.params.site == "my" ? ' class="hover"' : '') + '>马来西亚</li>\
+                <li onclick="Tool.main(\'jsFile='+ o.params.jsFile + '&site=br\')"' + (o.params.site == "br" ? ' class="hover"' : '') + '>巴西</li>\
             </ul>\
             '+ this.b01() + '\
 			<table class="table table-hover center">\
 				<thead class="table-light">'+ this.b02() + '</thead>\
 				<tbody>'+ html + '</tbody>\
 			</table>\
-            ' + Tool.page(t[0][0].total, 20, obj.params.page) + '\
+            ' + Tool.page(t[0][0].total, 20, o.params.page) + '\
 		</div>'
         Tool.html(null, null, html)
     },
@@ -71,7 +71,7 @@ var fun =
     b01: function () {
         return '\
         <div class="input-group w-50 my-2">\
-            <input type="text" class="form-control" placeholder="请输入关键词" id="searchword" value="'+ obj.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c01();">\
+            <input type="text" class="form-control" placeholder="请输入关键词" id="searchword" value="'+ o.params.searchword + '" onKeyDown="if(event.keyCode==13) fun.c01();">\
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c01();">搜索</button>\
         </div>'
     },
@@ -104,7 +104,7 @@ var fun =
     },
     b05: function () {
         let arr = [];
-        if (obj.params.searchword) { arr.push("@.keyword like '%" + Tool.unescape(obj.params.searchword) + "%'"); }
+        if (o.params.searchword) { arr.push("@.keyword like '%" + Tool.unescape(o.params.searchword) + "%'"); }
         // if (obj.arr[7] != "-_-20") {
         //     if (obj.arr[7] == "asc") {
         //         where = " order by @.relevance asc";
@@ -137,9 +137,9 @@ var fun =
         return '\
         <button title = "操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.open5(\'js06\',\''+ obj.params.site + '\')"><a class="dropdown-item pointer">*获取【店铺商品】的关键词</a></li>\
-            <li onClick="Tool.open5(\'js07\',\''+ obj.params.site + '\')"><a class="dropdown-item pointer">翻译关键词</a></li>\
-            <li onClick="Tool.openR(\'?jsFile=js26&table=keyword&database=shopee_bak&newdatabase=shopee/Shopee广告/关键词\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+            <li onClick="Tool.open5(\'js06\',\''+ o.params.site + '\')"><a class="dropdown-item pointer">*获取【店铺商品】的关键词</a></li>\
+            <li onClick="Tool.open5(\'js07\',\''+ o.params.site + '\')"><a class="dropdown-item pointer">翻译关键词</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js26&table=keyword&database=shopee_bak&newdatabase=shopee/Shopee广告/关键词\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
         </ul>'
     },
     b07: function (keyword, cn_keyword) {
@@ -153,7 +153,7 @@ var fun =
     c01: function () {
         let searchword = Tool.Trim($("#searchword").val());
         if (searchword) {
-            Tool.main(obj.params.jsFile + "/" + obj.params.site + "/1/" + encodeURIComponent(searchword));
+            Tool.main(o.params.jsFile + "/" + o.params.site + "/1/" + encodeURIComponent(searchword));
         }
         else {
             alert("请输入搜索内容");
@@ -170,7 +170,7 @@ var fun =
                 arr.push("-_-20")
             }
         }
-        Tool.main(obj.params.jsFile + "/" + obj.params.site + "/1/" + arr.join("/"))
+        Tool.main(o.params.jsFile + "/" + o.params.site + "/1/" + arr.join("/"))
     },
 }
 fun.a01();

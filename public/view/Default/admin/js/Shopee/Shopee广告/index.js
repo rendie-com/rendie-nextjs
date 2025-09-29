@@ -1,13 +1,13 @@
 'use strict';
 !function () {
-    //obj.params.jsFile     选择JS文件  
+    //o.params.jsFile     选择JS文件  
     let path = "admin/js/Shopee/Shopee广告/"
     let loginPath = [
         "admin/js/Shopee/common.js",
         "admin/js/Shopee/common_login.js",
         "admin/js/Shopee/common_登录.js"
     ]
-    switch (obj.params.jsFile) {
+    switch (o.params.jsFile) {
         case "js01": Tool.scriptArr(loginPath.concat([path + '广告/common_keyword.js', path + '广告/新版/获取【全部广告】信息.js'])); break;
         case "js02": Tool.scriptArr(["admin/js/Shopee/common.js", path + 'common.js', path + '搜索关键词/index.js']); break;
         case "js03": Tool.scriptArr(loginPath.concat([path + '广告/旧版/创建搜索广告.js'])); break;
