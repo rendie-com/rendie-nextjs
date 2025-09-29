@@ -41,7 +41,7 @@ var fun =
     ////////////////////////////////////////////////////
     d01: function (t) {
         let data = [{
-            action: "sqlite",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select " + Tool.fieldAs("app_list") + " FROM @.table where @.isDefault=1 limit 1"
         }];

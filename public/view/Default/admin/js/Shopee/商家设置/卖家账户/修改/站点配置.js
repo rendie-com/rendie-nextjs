@@ -6,7 +6,7 @@ var fun =
     //o.params.id         
     //o.params.return         
     let data = [{
-      action: "sqlite",
+      action: o.DEFAULT_DB,
       database: "shopee/卖家账户",
       sql: "select " + Tool.fieldAs("config") + " FROM @.table where @.id=" + o.params.id + " limit 1"
     }]
@@ -94,7 +94,7 @@ var fun =
       try {
         let json = JSON.parse(val);
         let data = [{
-          action: "sqlite",
+          action: o.DEFAULT_DB,
           database: "shopee/卖家账户",
           sql: "update @.table set @.config=" + Tool.rpsql(JSON.stringify(json)) + " where @.id=" + o.params.id
         }]

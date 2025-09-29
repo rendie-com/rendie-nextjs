@@ -20,7 +20,7 @@ Object.assign(Tool, {
         },
         a02: function (t, oo) {
             let data = [{
-                action: "sqlite",
+                action: o.DEFAULT_DB,
                 database: "shopee/卖家账户",
                 sql: "select " + Tool.fieldAs("username,password,localstorage,cookies") + " FROM @.table where @.id=" + oo.id,
             }]

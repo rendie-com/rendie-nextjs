@@ -6,7 +6,7 @@ var fun =
     //o.params.id         
     //o.params.return         
     let data = [{
-      action: "sqlite",
+      action: o.DEFAULT_DB,
       database: "shopee/卖家账户",
       sql: "select " + Tool.fieldAs("username,password,phone,company,note,sort,withdrawee") + " FROM @.table where @.id=" + o.params.id + " limit 1"
     }]
@@ -70,7 +70,7 @@ var fun =
     if (val != V && !This.attr("disabled")) {
       This.attr("disabled", true);
       let data = [{
-        action: "sqlite",
+        action: o.DEFAULT_DB,
         database: "shopee/卖家账户",
         sql: "update @.table set @." + L + " =" + Tool.rpsql(val) + " where @.id=" + o.params.id
       }]

@@ -108,7 +108,7 @@ var fun =
     },
     f02: function () {
         let data = [{
-            action: "sqlite",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "update @.table set @.app_list=" + Tool.rpsql(JSON.stringify(this.obj.Aarr)) + " where @.isDefault=1",
         }]
