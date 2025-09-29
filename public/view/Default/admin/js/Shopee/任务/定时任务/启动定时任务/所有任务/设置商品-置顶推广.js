@@ -16,7 +16,7 @@ var task = {
         $("#tbody").html('<tr><td class="right">置顶推广进度：</td>' + Tool.htmlProgress('D') + '</tr>')
         Tool.download_sqlite.a01(["shopee/商品/店铺商品/" + oo.siteNum], this.a02, this, oo)
     },
-    a02: function (oo) {
+    a02: function (t, oo) {
         $("#state").html("正在获取商品信息。。。");
         let data = [{
             action: "sqlite",
