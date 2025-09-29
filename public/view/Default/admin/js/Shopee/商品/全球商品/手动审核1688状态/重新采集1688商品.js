@@ -4,7 +4,7 @@ var fun =
         A1: 1, A2: 0,
     },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee &gt; 商品列表 &gt; 全球商品 &gt; 手动审核1688状态_重新采集1688商品') + '\
+        let html = Tool.header(o.params.return, 'Shopee &gt; 商品列表 &gt; 全球商品 &gt; 手动审核1688状态_重新采集1688商品') + '\
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\

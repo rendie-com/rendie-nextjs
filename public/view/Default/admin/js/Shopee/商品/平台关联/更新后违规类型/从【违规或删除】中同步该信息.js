@@ -3,7 +3,7 @@ var fun =
 {
     obj: { A1: 1, A2: 0 },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee &gt; 商品 &gt; 平台关联 &gt; 更新后违规类型 &gt; 从【违规或删除】中同步该信息') + '\
+        let html = Tool.header(o.params.return, 'Shopee &gt; 商品 &gt; 平台关联 &gt; 更新后违规类型 &gt; 从【违规或删除】中同步该信息') + '\
         <div class="p-2">\
           <table class="table table-hover">\
           <tbody>\
@@ -28,7 +28,7 @@ var fun =
             })
         }
         $("#state").html("正在获取信息。。。");
-        Tool.ajax.a01(data, this.a03, this)
+        Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
         if (this.obj.A2 == 0) { this.obj.A2 = Math.ceil(t[1][0].total / 10); }
@@ -60,7 +60,4 @@ var fun =
         }
     },
 }
-
-$(function () {
-    fun.a01();
-})
+$(function () { fun.a01(); })

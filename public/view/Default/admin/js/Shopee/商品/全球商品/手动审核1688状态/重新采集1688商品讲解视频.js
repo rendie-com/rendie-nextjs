@@ -4,7 +4,7 @@ var fun =
         A1: 1, A2: 0,
     },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee &gt; 商品列表 &gt; 全球商品 &gt; 手动审核1688状态_重新采集1688商品讲解视频') + '\
+        let html = Tool.header(o.params.return, 'Shopee &gt; 商品列表 &gt; 全球商品 &gt; 手动审核1688状态_重新采集1688商品讲解视频') + '\
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\
@@ -20,10 +20,10 @@ var fun =
         gg.isRD(this.a03, this);
     },
     a03: function () {
-        //@.ManualReview_1688>0         手动审核1688状态， 非【0.未审核】。
+        //@.ManualReview_1688_status>0         手动审核前1688状态， 非【0.未审核】。
         //let where = " where @.manualreview_1688_fromid=661490307988"
-        //let where = " where @.proid='R861213'"
-        let where = " where @.isup=1 and @.ManualReview_1688>0"
+        //let where = " where @.proid='R539182'"
+        let where = " where @.isup=1 and @.ManualReview_1688_status>0"
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
@@ -49,11 +49,11 @@ var fun =
         }
     },
     a05: function (fromid) {
-        let day10 = parseInt((new Date().getTime() - 1000 * 60 * 60 * 24 * 10) / 1000)// and
+        let day10 = parseInt((new Date().getTime() - 1000 * 60 * 60 * 24 * 3) / 1000)// and
         let data = [{
             action: "sqlite",
-            database: "1688_prodes/" + Tool.remainder(fromid, 99),
-            sql: "select @.fromid as fromid FROM @.prodes where @.fromid=" + fromid + " and @.uptime<" + day10,
+            database: "1688/采集箱/商品列表/详情/" + Tool.remainder(fromid, 1000),
+            sql: "select @.fromid as fromid FROM @.table where @.fromid=" + fromid + " and @.uptime<" + day10,
         }]
         $("#state").html("正在获取商品信息...");
         Tool.ajax.a01(data, this.a06, this);
@@ -64,73 +64,58 @@ var fun =
             this.d03([[], []])
         }
         else {
-             Tool.gatherDetail.a01(t[0][0].fromid, this.d01, this)
+            Tool.gatherDetail.a01(t[0][0].fromid, this.d01, this)
         }
     },
-    ////////////////////////////
+    ////////////////////////////    
     d01: function (oo) {
         if (oo.error) {
             this.e01(oo)
         }
         else {
-            this.d02(oo)
+            if (oo.deliveryLimit && oo.unit) {
+                this.d02(oo)
+            }
+            else {
+                Tool.pre(["出错002", {
+                    saleNum: "---" + oo.saleNum,
+                    deliveryLimit: "---" + oo.deliveryLimit,
+                    unit: "---" + oo.unit,
+                }])
+            }
         }
     },
     d02: function (oo) {
         let data = [{
             action: "sqlite",
-            database: "1688",
-            sql: "update @.proList set @.uptime=" + Tool.gettime("") + ",@.saleNum=" + oo.saleNum + ",@.unit='" + oo.unit + "',@.unitWeight=" + oo.unitWeight + ",@.deliveryLimit=" + oo.deliveryLimit + ",@.freight=" + oo.freight + " where @.fromid=" + oo.fromid,
+            database: "1688/采集箱/商品列表/" + Tool.remainder(oo.fromid, 100),
+            sql: "update @.table set @.uptime=" + Tool.gettime("") + ",@.saleNum=" + oo.saleNum + ",@.unit='" + oo.unit + "',@.unitWeight=" + oo.unitWeight + ",@.deliveryLimit=" + oo.deliveryLimit + ",@.freight=" + oo.freight + " where @.fromid=" + oo.fromid,
         }, {
             action: "sqlite",
-            database: "1688_prodes/" + Tool.remainder(oo.fromid, 99),
-            sql: "update @.prodes set @.des=" + Tool.rpsql(oo.details) + ",@.ExplanationVideo=" + Tool.rpsql(oo.ExplanationVideo) + ",@.uptime=" + Tool.gettime("") + ",@.pic=" + Tool.rpsql(JSON.stringify(oo.pic)) + ",@.attr=" + Tool.rpsql(JSON.stringify(oo.attr)) + ",@.sku=" + Tool.rpsql(JSON.stringify(oo.sku)) + ",@.videoUrl=" + Tool.rpsql(oo.videoUrl) + " where @.fromid=" + oo.fromid,
+            database: "1688/采集箱/商品列表/详情/" + Tool.remainder(oo.fromid, 1000),
+            sql: "update @.table set @.des=" + Tool.rpsql(oo.details) + ",@.ExplanationVideo=" + Tool.rpsql(oo.ExplanationVideo) + ",@.uptime=" + Tool.gettime("") + ",@.pic=" + Tool.rpsql(JSON.stringify(oo.pic)) + ",@.attr=" + Tool.rpsql(JSON.stringify(oo.attr)) + ",@.sku=" + Tool.rpsql(JSON.stringify(oo.sku)) + ",@.videoUrl=" + Tool.rpsql(oo.videoUrl) + " where @.fromid=" + oo.fromid,
         }]
         $("#state").html("正在更新1688商品...");
         Tool.ajax.a01(data, this.d03, this)
     },
     d03: function (t) {
-        if (t[0].length == 0 && t[1].length == 0) {
-            $("#state").html("等1秒后，再下一条...");
-            $("#url,#proid").html("")
-            this.obj.A1++;
-            this.a03();
-        }
-        else {
-            $("#state").html("更新出错,延时1秒后再来。")
-            Tool.pre(["更新出错01：", t]);
-        }
+        $("#state").html("等1秒后，再下一条...");
+        $("#url,#proid").html("")
+        this.obj.A1++;
+        this.a03();
     },
     //////////////////
     e01: function (oo) {
         let data = [{
             action: "sqlite",
-            database: "1688",
-            sql: 'update @.proList set @.state=' + oo.state + ',@.errorMsg=' + Tool.rpsql(oo.error) + ',@.uptime=' + Tool.gettime("") + ' where @.fromid=' + oo.fromid,
+            database: "1688/采集箱/商品列表/" + Tool.remainder(oo.fromid, 100),
+            sql: 'update @.table set @.state=' + oo.state + ',@.errorMsg=' + Tool.rpsql(oo.error) + ',@.uptime=' + Tool.gettime("") + ' where @.fromid=' + oo.fromid,
         }, {
             action: "sqlite",
-            database: "1688_prodes/" + Tool.remainder(oo.fromid, 99),
-            sql: 'update @.prodes set  @.uptime=' + Tool.gettime("") + ' where @.fromid=' + oo.fromid
+            database: "1688/采集箱/商品列表/详情/" + Tool.remainder(oo.fromid, 1000),
+            sql: 'update @.table set  @.uptime=' + Tool.gettime("") + ' where @.fromid=' + oo.fromid
         }]
         Tool.ajax.a01(data, this.d03, this)
     },
-
 }
 fun.a01();
-
-
-
-
-
-
-
-// let data = []
-// for(let i=2; i<100;i++){
-//     data.push({
-//         action: "sqlite",
-//         database: "1688_prodes/"+(String(i).padStart(2, '0')),
-//         //sql: "select " + Tool.fieldAs("id") + " FROM @.prodes limit 1",
-//         sql: "ALTER TABLE @.prodes ADD @.ExplanationVideo varchar(255)",
-//     })
-// }
-// Tool.ajax.a01(data, this.a04, this);

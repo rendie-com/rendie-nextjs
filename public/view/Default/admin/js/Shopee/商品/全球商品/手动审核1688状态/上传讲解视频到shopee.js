@@ -4,7 +4,7 @@ var fun =
         A1: 1, A2: 0,
     },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee &gt; 商品 &gt; 全球商品 &gt; 手动审核1688状态 &gt; 上传讲解视频到shopee') + '\
+        let html = Tool.header(o.params.return, 'Shopee &gt; 商品 &gt; 全球商品 &gt; 手动审核1688状态 &gt; 上传讲解视频到shopee') + '\
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\
@@ -35,7 +35,7 @@ var fun =
             sql: "select " + Tool.fieldAs("ManualReview_1688_fromid,ExplanationVideo,proid") + " FROM @.table " + where + Tool.limit(1, this.obj.A1),
             list: [{
                 action: "sqlite",
-                database: "1688_prodes/${fromid99:ManualReview_1688_fromid}",
+                database: "1688_prodes/${id_99:ManualReview_1688_fromid}",
                 sql: "select " + Tool.fieldAs("ExplanationVideo") + " FROM @.prodes where @.fromid=${ManualReview_1688_fromid}"
             }]
         }]

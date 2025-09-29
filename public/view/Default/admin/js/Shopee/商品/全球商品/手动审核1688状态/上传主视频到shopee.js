@@ -5,7 +5,7 @@ var fun =
         seller: {},
     },
     a01: function () {
-        let html = Tool.header(obj.params.return, 'Shopee &gt; 商品 &gt; 全球商品 &gt; 手动审核1688状态 &gt; 上传主视频到shopee') + '\
+        let html = Tool.header(o.params.return, 'Shopee &gt; 商品 &gt; 全球商品 &gt; 手动审核1688状态 &gt; 上传主视频到shopee') + '\
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\
@@ -29,15 +29,19 @@ var fun =
     },
     a04: function () {
         $("#state").html("正在获得配置参数");
-        let where = " where @.isup=1 and @.ManualReview_1688=1 and @.ManualReview_1688_video_status>3"
+        let where = " where @.isup=1 and @.ManualReview_1688_status=1 and @.ManualReview_1688_video_status>3"
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "select " + Tool.fieldAs("ManualReview_1688_fromid,video,proid") + " FROM @.table " + where + Tool.limit(1, this.obj.A1),
+            sql: "select " + Tool.fieldAs("ManualReview_1688_fromid,proid") + " FROM @.table " + where + Tool.limit(1, this.obj.A1),
             list: [{
                 action: "sqlite",
-                database: "1688_prodes/${fromid99:ManualReview_1688_fromid}",
+                database: "1688_prodes/${id_99:ManualReview_1688_fromid}",
                 sql: "select " + Tool.fieldAs("videoUrl") + " FROM @.prodes where @.fromid=${ManualReview_1688_fromid}"
+            }, {
+                action: "sqlite",
+                database: "shopee/商品/全球商品/${proid_100:proid}",
+                sql: "select " + Tool.fieldAs("video") + " FROM @.table where @.proid='${proid}'"
             }]
         }]
         if (this.obj.A2 == 0) {
@@ -69,7 +73,7 @@ var fun =
         $("#ManualReview_1688_fromid").html('<a href="https://detail.1688.com/offer/' + oo.ManualReview_1688_fromid + '.html" target="_blank">' + oo.ManualReview_1688_fromid + '</a>')
         let videoUrl = oo.list[0][0].videoUrl
         $("#videoUrlA").html('<a href="' + videoUrl + '" target="_blank">' + videoUrl + '</a>')
-        if (oo.video || !videoUrl) {
+        if (oo.list[1][0].video || !videoUrl) {
             this.f05([[]])
         }
         else {
@@ -259,8 +263,8 @@ var fun =
         }]
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/全球商品",
-            sql: "update @.table set @.video=" + Tool.rpsql(JSON.stringify(shopeeVideo)) + " where @.ManualReview_1688_fromid=" + oo.ManualReview_1688_fromid
+            database: "shopee/商品/全球商品/" + Tool.pronum(oo.proid, 100),
+            sql: "update @.table set @.video=" + Tool.rpsql(JSON.stringify(shopeeVideo)) + " where @.proid='" + oo.proid + "'"
         }]
         Tool.ajax.a01(data, this.f05, this)
     },

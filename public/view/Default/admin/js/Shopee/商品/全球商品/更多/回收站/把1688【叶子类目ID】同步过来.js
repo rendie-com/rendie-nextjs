@@ -39,7 +39,7 @@ var fun =
             sqlArr.push("update @.GlobalPro set @.type=" + arr[i].type + " where @.proid='" + arr[i].proid + "'")
         }
         let txt = '"ok"<r: db="sqlite.shopee">' + sqlArr.join("<1/>") + '</r:>'
-        $("#state").html("正在更新折扣。。。");
+        $("#state").html("正在更最终折扣。。。");
         Tool.ajax.a01(txt, 1, this.a05, this)
     },
     a05: function (t) {
