@@ -21,7 +21,6 @@ var fun =
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
-        Tool.pre(t)
         let html = '', arr = Tool.getArr(t[0], o.DEFAULT_DB);
         for (let i = 0; i < arr.length; i++) {
             html += '\
