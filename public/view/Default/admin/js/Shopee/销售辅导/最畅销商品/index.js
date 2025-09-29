@@ -6,7 +6,7 @@ var fun =
         this.a02();
     },
     a02: function () {
-        let html = Tool.header(obj.params.jsFile)+'\
+        let html = Tool.header(o.params.jsFile)+'\
 		<div class="p-2">\
 			<table class="table align-top table-hover">\
 				<tbody><tr><td>未开发1111111111</td></tr></tbody>\
