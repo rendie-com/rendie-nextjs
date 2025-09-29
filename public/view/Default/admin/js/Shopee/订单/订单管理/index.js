@@ -18,19 +18,7 @@ var fun =
         this.a02();
     },
     a02: function () {
-        let data = [{
-            action: "fs",
-            fun: "access_sqlite",
-            database: "shopee/订单/订单管理/" + this.obj.siteNum,
-            mode: 0,
-            elselist: [{
-                action: "fs",
-                fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/订单/订单管理/" + this.obj.siteNum + ".db"],
-                database: "shopee/订单/订单管理/" + this.obj.siteNum,
-            }]
-        }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.download_sqlite.a01(["shopee/订单/订单管理/" + this.obj.siteNum], this.a03, this)
     },
     a03: function () {
         let where = this.b11()
