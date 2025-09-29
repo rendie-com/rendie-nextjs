@@ -177,6 +177,9 @@ td.nowrap {
         font-size: 16px;
         color: #666;
         font-weight: 700;
+        white-space: nowrap;
+        width: 100px; /* 定义容器宽度 */
+        overflow: hidden; /* 隐藏超出部分 */
     }
 
     .logo .color999 {
@@ -857,7 +860,14 @@ a.cur {
     height: 60px;
     line-height: 60px;
 }
-
+.h70 {
+    height: 70px;
+    line-height: 70px;
+}
+.h80 {
+    height: 80px;
+    line-height: 80px;
+}
 .h90 {
     height: 90px;
     line-height: 90px;
