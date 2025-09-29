@@ -6,12 +6,22 @@ var fun =
         this.a02();
     },
     a02: function () {
-        let sessionObj = {}
-        let str = sessionStorage.getItem(window.location.pathname + o.params.jsFile)
-        if (str) sessionObj = JSON.parse(str)
-        Tool.ajax.a01(this.b04(o.DEFAULT_DB, sessionObj[o.params.page]), this.a04, this, sessionObj);
+        let data = [{
+            action: o.DEFAULT_DB,
+            database: "shopee/任务/定时任务",
+            sql: "select " + Tool.fieldAs("id,taskname,runuser,runtime,nexttime,runcycle,isenable,priority") + " FROM @.table order by @.runuser,@.isenable desc,@.priority asc" + Tool.limit(20, o.params.page, o.DEFAULT_DB),
+        }]
+        if (o.params.page == 1) {
+            data.push({
+                action: o.DEFAULT_DB,
+                database: "shopee/任务/定时任务",
+                sql: "select count(1) as count FROM @.table",
+            })
+        }
+        Tool.ajax.a01(data, this.a04, this);
     },
-    a04: function (t, sessionObj) {
+    a04: function (t) {
+        Tool.pre(t)
         let html = '', arr = Tool.getArr(t[0], o.DEFAULT_DB);
         for (let i = 0; i < arr.length; i++) {
             html += '\
@@ -30,7 +40,7 @@ var fun =
             <table class="table table-hover align-middle center">\
                 <thead class="table-light center">'+ this.b01() + '</thead>\
                 <tbody>'+ html + '</tbody>\
-            </table>' + Tool.page(t[1][0].Count, 20, o.params.page) + '\
+            </table>' + Tool.page(t[1][0].count, 20, o.params.page) + '\
         </div>'
         Tool.html(null, null, html);
     },
@@ -68,55 +78,6 @@ var fun =
             <li onClick="Tool.openR(\'jsFile=js02\');"><a class="dropdown-item pointer">*启动定时任务</a></li>\
             <li onClick="Tool.openR(\'jsFile=js05&table=task&database=shopee&newdatabase=shopee/任务/定时任务\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
 		</ul>'
-    },
-    b04: function (DEFAULT_DB, ExclusiveStartKey) {
-        let data = [], size = 20
-        if (DEFAULT_DB == "dynamodb") {
-            data = this.b05(size, DEFAULT_DB, ExclusiveStartKey)
-        }
-        else {
-            data = [{
-                action: DEFAULT_DB,
-                database: "shopee/任务/定时任务",
-                sql: "select " + Tool.fieldAs("id,taskname,runuser,runtime,nexttime,runcycle,isenable,priority") + " FROM @.table order by @.runuser,@.isenable desc,@.priority asc" + Tool.limit(size, o.params.page, o.DEFAULT_DB),
-            }]
-            if (o.params.page == 1) {
-                data.push({
-                    action: DEFAULT_DB,
-                    database: "shopee/任务/定时任务",
-                    sql: "select count(1) as Count FROM @.table",
-                })
-            }
-        }
-        return data;
-    },
-    b05: function (size, DEFAULT_DB, ExclusiveStartKey) {
-        let TableName = Tool.getChinaAscii('shopee_任务_定时任务_table')
-        let params = {
-            ProjectionExpression: 'id,taskname,runtime,nexttime,runcycle,isenable,priority', // 只获取这些字段
-            Limit: size, // 每页项目数上限
-            TableName: TableName,
-        }
-        if (ExclusiveStartKey && o.params.page != 1) {//翻页
-            params.ExclusiveStartKey = ExclusiveStartKey;
-        }
-        let data = [{
-            action: DEFAULT_DB,
-            fun: "scan",
-            params: params,
-        }]
-        /////////////////////////////////////////////
-        if (o.params.page == 1) {
-            data.push({
-                action: DEFAULT_DB,
-                fun: "scan",
-                params: {
-                    TableName: TableName,
-                    Select: 'COUNT' // 请求只返回项目总数
-                }
-            })
-        }
-        return data;
     },
     ///////////////////////////////////////////////
     c01: function () {
