@@ -2,8 +2,7 @@
 var fun =
 {
     obj: {
-        A1: 1,
-        A2: 0,
+        A1: 1, A2: 0,
         config: {},
         logistics: [],
     },
@@ -32,7 +31,7 @@ var fun =
                 "sku":<:sku tag=0/>,\
             </r:prodes>\
 	    }\
-        </r:shopPro_'+ obj.arr[5] + '>]'
+        </r:shopPro_'+ obj.arr[5] + '>]';
         //update rd_shopPro_my set rd_price_uptime=0 where rd_price_uptime=1
         //update rd_shopPro_br set rd_price_uptime=0 where rd_price_uptime=1
         Tool.at("要个功能要重做")

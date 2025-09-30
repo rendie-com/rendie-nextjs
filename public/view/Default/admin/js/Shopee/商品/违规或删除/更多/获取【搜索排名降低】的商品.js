@@ -28,7 +28,7 @@ var fun =
     },
     a02: function () {
         let data = [{
-            action: "sqlite",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]

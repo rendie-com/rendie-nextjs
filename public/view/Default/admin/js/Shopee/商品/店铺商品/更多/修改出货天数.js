@@ -8,13 +8,13 @@ var fun =
         day: 0,
     },
     a01: function () {
-        //obj.params.return        返回URL
-        //obj.params.site          站点
-        let html = Tool.header(obj.params.return, "Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 更多 &gt; 修改出货天数") + '\
+        //o.params.return        返回URL
+        //o.params.site          站点
+        let html = Tool.header(o.params.return, "Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 更多 &gt; 修改出货天数") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
-		    <tr><td class="w150 right">修改站点：</td><td colspan="2">'+ Tool.site(obj.params.site) + '</td></tr>\
+		    <tr><td class="w150 right">修改站点：</td><td colspan="2">'+ Tool.site(o.params.site) + '</td></tr>\
 		    <tr><td class="right">出货天数：</td><td colspan="2">'+ this.b01() + '</td></tr>\
 		    <tr><td class="right">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
@@ -22,7 +22,7 @@ var fun =
 		    <tr><td class="right">状态：</td><td id="state" colspan="2"></td></tr>\
           </tbody>\
           </table>\
-        </div>'
+        </div>';
         Tool.html(this.a02, this, html)
     },
     //////////////////////////////////////////////
@@ -55,13 +55,13 @@ var fun =
     d03: function () {
         let data = [{
             action: "sqlite",
-            database: "shopee/商品/店铺商品/" + obj.params.site,
+            database: "shopee/商品/店铺商品/" + o.params.site,
             sql: "select " + Tool.fieldAs("fromid") + " FROM @.table" + Tool.limit(10, this.obj.A1, "sqlite"),
         }]
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "shopee/商品/店铺商品/" + obj.params.site,
+                database: "shopee/商品/店铺商品/" + o.params.site,
                 sql: "select count(1) as count FROM @.table",
             })
         }
@@ -94,8 +94,8 @@ var fun =
             "source=attribute_tool",
             "SPC_CDS=" + this.obj.seller.SPC_CDS,
             "SPC_CDS_VER=2",
-            "cnsc_shop_id=" + this.obj.seller[obj.params.site].shopId,
-            "cbsc_shop_region=" + obj.params.site
+            "cnsc_shop_id=" + this.obj.seller[o.params.site].shopId,
+            "cbsc_shop_region=" + o.params.site
         ]
         let url = "https://seller.shopee.cn/api/v3/product/update_product/?" + arr.join("&")
         $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
