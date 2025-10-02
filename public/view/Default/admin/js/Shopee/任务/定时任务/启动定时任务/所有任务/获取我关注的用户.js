@@ -24,14 +24,17 @@ var task = {
         Tool.x1x2("D", this.obj.D1, this.obj.D2, this.a03, this, this.d01, oo)
     },
     a03: function (oo) {
+        Tool.download_sqlite.a01(["shopee/采集箱/粉丝/" + oo.siteNum + "/" + (this.obj.D1.toString().padStart(3, '0'))], this.a04, this, oo)
+    },
+    a04: function (t, oo) {
         let data = [{
             action: "sqlite",
             database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + (this.obj.D1.toString().padStart(3, '0')),
             sql: "update @.table set @.is_my_following=0 where @.is_my_following=1",
         }]
-        Tool.ajax.a01(data, this.a04, this, oo);
+        Tool.ajax.a01(data, this.a05, this, oo);
     },
-    a04: function (t, oo) {
+    a05: function (t, oo) {
         this.obj.D1++;
         this.a02(oo);
     },

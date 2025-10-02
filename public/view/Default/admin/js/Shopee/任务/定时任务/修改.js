@@ -21,12 +21,9 @@ var fun =
     Tool.ajax.a01(data, this.a03, this);
   },
   a03: function (t) {
-    let optionArr = ['<option>===请选择执行者用户名===</option>'], oo = t[0][0];
-    for (let i = 0; i < t[1].length; i++) {
-      optionArr.push('<option value="' + t[1][i].id + "||" + t[1][i].username + '" ' + (t[1][i].id == oo.runuserid ? 'selected="selected"' : '') + '>' + (i + 1) + '. ' + t[1][i].username + '</option>')
-    }
+    let oo = t[0][0];
     if (!oo.taskname) oo.taskname = "";
-    let jsfile = ""; if (oo.jsfile) { jsfile = JSON.stringify(JSON.parse(oo.jsfile), null, 2); }//
+    let jsfile = ""; if (oo.jsfile) { jsfile = JSON.stringify(JSON.parse(oo.jsfile), null, 2); }
     if (!oo.remark) oo.remark = "";
     let html = Tool.header(o.params.return, "Shopee  &gt; 定时任务 &gt; 修改") + '\
     <div class="p-2">\
@@ -44,17 +41,12 @@ var fun =
           </tr>\
           <tr>\
             <td class="right">执行者用户名：</td>\
-            <td><select onchange="fun.c05($(this))" class="form-select">'+ optionArr.join("") + '</select></td>\
+            <td><select onchange="fun.c05($(this))" class="form-select">'+ this.b01(t[1], oo.runuserid) + '</select></td>\
             <td></td>\
           </tr>\
           <tr>\
             <td class="right">执行周期：</td>\
-            <td>\
-              <div class="input-group w150">\
-              <input class="form-control center" type="text" value="' + oo.runcycle + '" onblur="fun.c01($(this),\'runcycle\',\'' + oo.runcycle + '\')">\
-              <span class="input-group-text">分钟</span>\
-              </div>\
-            </td>\
+            <td><select onchange="fun.c01($(this),\'runcycle\')" class="form-select">'+ this.b02(oo.runcycle) + '</select></td>\
             <td></td>\
           </tr>\
           <tr>\
@@ -80,6 +72,29 @@ var fun =
       </table>\
     </div>'
     Tool.html(null, null, html);
+  },
+  //////////////////////////////////////////////
+  b01: function (arr, runuserid) {
+    let optionArr = ['<option>===请选择执行者用户名===</option>'];
+    for (let i = 0; i < arr.length; i++) {
+      optionArr.push('<option value="' + arr[i].id + "||" + arr[i].username + '" ' + (arr[i].id == runuserid ? 'selected="selected"' : '') + '>' + arr[i].username + '</option>')
+    }
+    return optionArr.join("")
+  },
+  b02: function (runcycle) {
+    let arr = [
+      [0, "不执行"],
+      [1, "5分种"],
+      [2, "4小时"],
+      [3, "1天"],
+      [4, "3天"],
+      [5, "7天"]
+    ]
+    let optionArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      optionArr.push('<option value="' + arr[i][0] + '" ' + (arr[i][0] == runcycle ? 'selected="selected"' : '') + '>' + arr[i][1] + '</option>')
+    }
+    return optionArr.join("")
   },
   //////////////////////////////////////////////
   c01: function (This, L, V) {
@@ -144,3 +159,5 @@ var fun =
   },
 }
 fun.a01();
+//<input class="form-control center" type="text" value="' + oo.runcycle + '" onblur="fun.c01($(this),\'runcycle\',\'' + oo.runcycle + '\')">\
+//<span class="input-group-text">分钟</span>

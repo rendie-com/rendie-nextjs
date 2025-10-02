@@ -56,6 +56,18 @@ var fun =
         this.d01()
     },
     //////////////////////////////////////
+    b01: function (runcycle) {
+        let arr = ["异常", 0]
+        switch (runcycle) {
+            case 1: arr = ["5分钟", 5]; break;
+            case 2: arr = ["4小时", 60 * 4]; break;
+            case 3: arr = ["1天", 60 * 24]; break;
+            case 4: arr = ["3天", 60 * 24 * 3]; break;
+            case 5: arr = ["7天", 60 * 24 * 7]; break;
+        }
+        return arr;
+    },
+    //////////////////////////////////////
     c01: function () {
         if (!this.obj.stop) {
             Tool.Time("time1", 1000, this.c02, this);
@@ -68,7 +80,7 @@ var fun =
     /////////////////////////////
     d01: function () {
         $("#state").html("正在获取任务信息。。。");
-        let where = "where @.nexttime<" + this.obj.runtime + " and @.isenable=1 and @.runuser=\'" + Tool.getStorage("username") + "\'"
+        let where = "where @.nexttime<" + this.obj.runtime + " and @.runcycle>0 and @.isenable=1 and @.runuser=\'" + Tool.getStorage("username") + "\'"
         let data = [{
             action: o.DEFAULT_DB,
             database: "shopee/任务/定时任务",
@@ -95,7 +107,7 @@ var fun =
         let oo = this.obj.Aobj
         $("#taskname").html(oo.taskname);
         $("#remark").html(oo.remark);
-        $("#runcycle").html(oo.runcycle + " 分钟");
+        $("#runcycle").html(this.b01(oo.runcycle)[0]);
         Tool.jsArr(JSON.parse(oo.jsfile), this.e01, this);
     },
     /////////////////////////////////////////////
@@ -132,7 +144,7 @@ var fun =
         let data = [{
             action: o.DEFAULT_DB,
             database: "shopee/任务/定时任务",
-            sql: "update @.table set @.runtime=" + this.obj.runtime + ",@.nexttime=" + (this.obj.runtime + oo.runcycle * 60) + " where @.id=" + oo.id,
+            sql: "update @.table set @.runtime=" + this.obj.runtime + ",@.nexttime=" + (this.obj.runtime + this.b01(oo.runcycle)[1] * 60) + " where @.id=" + oo.id,
         }]
         Tool.ajax.a01(data, this.f02, this);
     },

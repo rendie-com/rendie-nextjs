@@ -89,7 +89,7 @@ var task = {
     d03: function (oo) {
         $("#state").html("置顶推广完成。。。");
         this.obj.D1++;
-        this.a02(oo);
+        this.a03(null, oo);
     },
     d04: function (oo) {
         this.obj.D1 = 1; this.obj.D2 = 0;

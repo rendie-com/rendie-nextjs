@@ -62,7 +62,7 @@ var fun =
                 <td>'+ Tool.js_date_time2(arr[i].addtime) + '</td>\
             </tr>'
         }
-        let html = Tool.header2(o.params.jsFile, o.params.site,o.params.num) + '\
+        let html = Tool.header2(o.params.jsFile, o.params.site, o.params.num) + '\
     	<div class="p-2">\
     		'+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b06() + '\
     		<table class="table align-middle table-hover center">\
