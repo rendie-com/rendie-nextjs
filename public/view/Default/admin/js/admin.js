@@ -245,8 +245,6 @@ var Tool = {
         if (t[0].length == 0) { location.reload(); }
         else { Tool.at(t); }
     },
-    save: function (txt) { let url = '/' + o.path + 'temp.html'; Tool.ajax.a01('""<r: file="' + url + '">' + txt + '</r:>', 1, this.save02, this, url); },
-    save02: function (t, url) { if (t == "") { t = "保存成功！【" + url + "】"; } this.at(t); },
     fileImg: function (a, b) {
         if (a) { if (a.indexOf(".") != -1) { a = a.substr(1); } }
         let str = ""

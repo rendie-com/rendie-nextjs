@@ -305,11 +305,12 @@ Object.assign(Tool, {
                 This: This,
                 t: t
             }
-            this.a02(arr, oo)
+            this.a02(arr, oo);
         },
         a02: function (arr, oo) {
-            let data = []
+            let data = [], item = "rendie-com"
             for (let i = 0; i < arr.length; i++) {
+                if (arr[i].indexOf("shopee/采集箱/") != -1) { item = "rendie-4hour.yml" }
                 data.push({
                     action: "fs",
                     fun: "access_sqlite",
@@ -318,7 +319,7 @@ Object.assign(Tool, {
                     elselist: [{
                         action: "fs",
                         fun: "download_sqlite",
-                        urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/" + arr[i] + ".db"],
+                        urlArr: ["https://raw.githubusercontent.com/rendie-com/" + item + "/refs/heads/main/sqlite3/" + arr[i] + ".db"],
                         database: arr[i]
                     }]
                 })
