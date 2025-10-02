@@ -29,7 +29,7 @@ var fun =
                 <td>'+ (arr[i].isenable ? '<font color="blue">已开启</font>' : '已关闭') + '</td>\
                 <td style="padding-left: 30px;position: relative;" class="left">'+ this.b02(arr[i].id) + arr[i].taskname + '</td>\
                 <td>'+ arr[i].runuser + ' </td>\
-                <td>'+ arr[i].runcycle + ' 分钟</td>\
+                <td>'+ this.b04(arr[i].runcycle) + '</td>\
                 <td>'+ Tool.js_date_time2(arr[i].runtime) + '</td>\
                 <td>'+ Tool.js_date_time2(arr[i].nexttime) + '</td>\
             </tr>'
@@ -77,6 +77,17 @@ var fun =
             <li onClick="Tool.openR(\'jsFile=js02\');"><a class="dropdown-item pointer">*启动定时任务</a></li>\
             <li onClick="Tool.openR(\'jsFile=js05&table=task&database=shopee&newdatabase=shopee/任务/定时任务\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
 		</ul>'
+    },
+    b04: function (runcycle) {
+        let str = "异常"
+        switch (runcycle) {
+            case 1: str = "5分钟"; break;
+            case 2: str = "4小时"; break;
+            case 3: str = "1天"; break;
+            case 4: str = "3天"; break;
+            case 5: str = "7天"; break;
+        }
+        return str;
     },
     ///////////////////////////////////////////////
     c01: function () {
