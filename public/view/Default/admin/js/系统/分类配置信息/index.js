@@ -6,6 +6,7 @@ var fun =
         let path = "admin/js/系统/分类配置信息/"
         switch (o.params.jsFile) {
             case "js01": Tool.scriptArr(["admin/js/menuList.js", path + '修改.js']); break;
+            case "js02": Tool.scriptArr(["admin/js/Shopee/任务/定时任务/更多/把【sqlite】数据库该表同步到新的数据库.js"]); break;
             default: this.a02();
         }
     },
@@ -47,6 +48,10 @@ var fun =
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdown0"><div></div><div></div><div></div></button>\
                         <ul class="dropdown-menu" aria-labelledby="dropdown0">\
                             <li><a class="dropdown-item pointer" onClick="fun.c01()">添加</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js02&table=config&database=main&toaction=pg01\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg01】数据库</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js02&table=config&database=main&toaction=pg02\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg02】数据库</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js02&table=config&database=main&toaction=pg03\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg03】数据库</a></li>\
+                            <li onClick="Tool.openR(\'jsFile=js02&table=config&database=main&toaction=pg04\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg04】数据库</a></li>\
                         </ul>ID\
                     </th>\
                     <th>分类名称</th>\

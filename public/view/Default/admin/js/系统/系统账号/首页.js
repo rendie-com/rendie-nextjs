@@ -12,12 +12,21 @@ var fun =
     this.a02();
   },
   a02: function () {
-    let sessionObj = {}
-    let str = sessionStorage.getItem(window.location.pathname + o.params.jsFile)
-    if (str) sessionObj = JSON.parse(str)
-    Tool.ajax.a01(this.b04(o.DEFAULT_DB, sessionObj[o.params.page]), this.a04, this, sessionObj);
+    let data = [{
+      action: o.DEFAULT_DB,
+      database: "main",
+      sql: "select " + Tool.fieldAs("id,realname,groupid,logintime,loginip,logintimes,islocked,username") + " FROM @.manager" + " order by @.id desc" + Tool.limit(this.obj.size, o.params.page, o.DEFAULT_DB)
+    }]
+    if (o.params.page == 1) {
+      data.push({
+        action: DEFAULT_DB,
+        database: "main",
+        sql: "select count(1) as count FROM @.manager",
+      })
+    }
+    Tool.ajax.a01(data, this.a04, this);
   },
-  a04: function (t, sessionObj) {
+  a04: function (t) {
     let html = '', arr = Tool.getArr(t[0], o.DEFAULT_DB);
     for (let i = 0; i < arr.length; i++) {
       html += '\
@@ -55,7 +64,7 @@ var fun =
       <table class="table table-hover align-middle center">\
         <thead class="table-light">'+ this.b01() + '</thead>\
         <tbody>'+ html + '</tbody>\
-      </table>' + Tool.page2(sessionObj, t[0].LastEvaluatedKey, t[1], this.obj.DEFAULT_DB, this.obj.size, o.params.page, o.params.jsFile) + '\
+      </table>' + Tool.page(t[1][0].count, this.obj.size, o.params.page) + '\
     </div>'
     Tool.html(null, null, html)
   },
@@ -66,6 +75,9 @@ var fun =
             <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdown0"><div></div><div></div><div></div></button>\
             <ul class="dropdown-menu" aria-labelledby="dropdown0">\
               <li><a class="dropdown-item pointer" onClick="fun.c04()">添加用户</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg01\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg01】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg02\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg02】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg03\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg03】数据库</a></li>\
             </ul>\
           </th>\
           <th>用户名</th>\
@@ -97,56 +109,7 @@ var fun =
     }
     return name
   },
-  b04: function (DEFAULT_DB, ExclusiveStartKey) {
-    if (DEFAULT_DB == "dynamodb") {
-      return this.b05(this.obj.size, DEFAULT_DB, ExclusiveStartKey)
-    }
-    else {
-      return this.b06(this.obj.size, DEFAULT_DB)
-    }
-  },
-  b05: function (size, DEFAULT_DB, ExclusiveStartKey) {
-    let params = {
-      ProjectionExpression: 'id,realname,groupid,logintime,loginip,logintimes,username,islocked', // 只获取这些字段
-      Limit: size, // 每页项目数上限
-      TableName: 'main_manager',
-    }
-    if (ExclusiveStartKey && o.params.page != 1) {//翻页
-      params.ExclusiveStartKey = ExclusiveStartKey;
-    }
-    let data = [{
-      action: DEFAULT_DB,
-      fun: "scan",
-      params: params,
-    }]
-    /////////////////////////////////////////////
-    if (o.params.page == 1) {
-      data.push({
-        action: DEFAULT_DB,
-        fun: "scan",
-        params: {
-          TableName: 'main_manager',
-          Select: 'COUNT' // 请求只返回项目总数
-        }
-      })
-    }
-    return data;
-  },
-  b06: function (size, DEFAULT_DB) {
-    let data = [{
-      action: DEFAULT_DB,
-      database: "main",
-      sql: "select " + Tool.fieldAs("id,realname,groupid,logintime,loginip,logintimes,islocked,username") + " FROM @.manager" + " order by @.id desc" + Tool.limit(size, o.params.page, DEFAULT_DB)
-    }]
-    if (o.params.page == 1) {
-      data.push({
-        action: DEFAULT_DB,
-        database: "main",
-        sql: "select count(1) as Count FROM @.manager",
-      })
-    }
-    return data;
-  },
+  //////////////////////////////////////
   c01: function () { },
   c02: function () {
     let searchword = Tool.Trim($("#searchword").val());
