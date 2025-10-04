@@ -95,7 +95,7 @@ Object.assign(Tool, {
         e04: function (t, oo) {
             if (t[0].length == 0) {
                 $("#state").html("没有用户可以关注了")
-                //this.f01(oo)
+                this.f01(oo)
             }
             else {
                 $("#userid").html(t[0][0].userid)
