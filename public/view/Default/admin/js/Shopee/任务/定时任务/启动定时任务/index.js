@@ -144,8 +144,9 @@ var fun =
         let data = [{
             action: o.DEFAULT_DB,
             database: "shopee/任务/定时任务",
-            sql: "update @.table set @.runtime=" + this.obj.runtime + ",@.nexttime=" + (this.obj.runtime + this.b01(oo.runcycle)[1] * 60) + " where @.id=" + oo.id,
+            sql: "update @.table set @.runtime=" + this.obj.runtime + ",@.nexttime=" + ((this.obj.runtime + this.b01(oo.runcycle)[1] * 60) - (60 * 5)) + " where @.id=" + oo.id,
         }]
+        //为什么要减5分钟？答：因为【github Actions】启动要时间。
         Tool.ajax.a01(data, this.f02, this);
     },
     f02: function (t) {
