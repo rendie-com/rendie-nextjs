@@ -23,19 +23,7 @@ var fun =
         this.a02();
     },
     a02: function () {
-        let data = [{
-            action: "fs",
-            fun: "access_sqlite",
-            database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname,
-            mode: 0,
-            elselist: [{
-                action: "fs",
-                fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname + ".db"],
-                database: "shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname
-            }]
-        }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.download_sqlite.a01(["shopee/采集箱/粉丝/" + this.obj.siteNum + "/" + o.params.dbname], this.a03, this)
     },
     a03: function (t) {
         let where = this.b03();

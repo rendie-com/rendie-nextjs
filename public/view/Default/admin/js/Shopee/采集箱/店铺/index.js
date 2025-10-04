@@ -17,19 +17,7 @@ var fun =
         this.a02();
     },
     a02: function () {
-        let data = [{
-            action: "fs",
-            fun: "access_sqlite",
-            database: "shopee/采集箱/店铺/" + o.params.site,
-            mode: 0,
-            elselist: [{
-                action: "fs",
-                fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/采集箱/店铺/" + o.params.site + ".db"],
-                database: "shopee/采集箱/店铺/" + o.params.site
-            }]
-        }]
-        Tool.ajax.a01(data, this.a03, this);
+        Tool.download_sqlite.a01(["shopee/采集箱/店铺/" + o.params.site], this.a03, this)
     },
     a03: function () {
         let where = this.b03();
@@ -73,7 +61,7 @@ var fun =
                 <td class="p-0">'+ this.b07(arr[i].last_login_time, arr[i].get_follower_time) + '</td>\
             </tr>'
         }
-        let html = Tool.header2(o.params.jsFile, o.params.site,o.params.num) + '\
+        let html = Tool.header2(o.params.jsFile, o.params.site, o.params.num) + '\
 		<div class="p-2">\
 			'+ Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b06() + '\
 			<table class="table align-middle table-hover center">\
@@ -107,9 +95,9 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'jsFile=js03&site='+ o.params.site + '&num='+ o.params.num + '\');"><a class="dropdown-item pointer">采集店铺</a></li>\
-            <li onClick="Tool.openR(\'jsFile=js04&site='+ o.params.site  + '&num='+ o.params.num+ '\');"><a class="dropdown-item pointer">从商品中获取店铺ID</a></li>\
-            <li onClick="Tool.openR(\'jsFile=js10&table=users_'+ o.params.site  + '&num='+ o.params.num+ '&database=shopee_gather&newdatabase=shopee/采集箱/店铺/' + o.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js03&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">采集店铺</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js04&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">从商品中获取店铺ID</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js10&table=users_'+ o.params.site + '&num=' + o.params.num + '&database=shopee_gather&newdatabase=shopee/采集箱/店铺/' + o.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
 		</ul>'
     },
     b03: function () {
