@@ -77,38 +77,6 @@ Object.assign(Tool, {
         str = str + '</ul>'
         return str
     },
-    page2: function (sessionObj, LastEvaluatedKey, obj, DEFAULT_DB, size, CurrentPage, jsFile) {
-        let name = window.location.pathname + jsFile;
-        if (DEFAULT_DB == "dynamodb") {
-            if (CurrentPage == 1) {
-                sessionObj = { count: obj.Count, "2": LastEvaluatedKey }
-                sessionStorage.setItem(name, JSON.stringify(sessionObj));
-            }
-            else {
-                sessionObj[CurrentPage + 1] = LastEvaluatedKey
-                sessionStorage.setItem(name, JSON.stringify(sessionObj));
-            }
-            ////////////////////////////////////////////////////////
-            let Count = sessionObj.count
-            let CountPage = Math.ceil(Count / size)
-            let str = '<ul class="pagination justify-content-end"><li class="col p-2">显示 ' + Count + ' 条中的 ' + (((CurrentPage - 1) * size) + 1) + '-' + (((CurrentPage - 1) * size) + size) + ' 条</li>'
-            if (CurrentPage != 1) {
-                str += '<li class="page-item"><a href="javascript:" class="page-link" onclick="Tool.pageTo(' + (CurrentPage - 1) + ')">&#8249; 上一页</a></li>';
-            }
-            str += '<li class="page-item"><span class="page-link">' + CurrentPage + "/" + CountPage + '</span></li>';
-            if (CurrentPage != CountPage) {
-                str += '<li class="page-item"><a href="javascript:" class="page-link" onclick="Tool.pageTo(' + (CurrentPage + 1) + ')">下一页 &#8250;</a></li>';
-            }
-            return str + '</ul>'
-        }
-        else {
-            if (CurrentPage == 1) {
-                sessionObj = { count: obj[0].Count }
-                sessionStorage.setItem(name, JSON.stringify(sessionObj));
-            }
-            return this.page(sessionObj.count, size, CurrentPage)
-        }
-    },
     pageTo: function (page) {
         let urlParams = Tool.setQueryParam(location.search, "page", page)
         Tool.url(location.href.split("?")[0] + "?" + urlParams);
@@ -310,7 +278,7 @@ Object.assign(Tool, {
         a02: function (arr, oo) {
             let data = [], item = "rendie-com"
             for (let i = 0; i < arr.length; i++) {
-                if (arr[i].indexOf("shopee/采集箱/") != -1||arr[i].indexOf("shopee/聊聊/") != -1) { item = "rendie-4hour.yml" }
+                if (arr[i].indexOf("shopee/采集箱/") != -1 || arr[i].indexOf("shopee/聊聊/") != -1) { item = "rendie-4hour.yml" }
                 data.push({
                     action: "fs",
                     fun: "access_sqlite",
