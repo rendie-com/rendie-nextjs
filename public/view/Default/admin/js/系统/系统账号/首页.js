@@ -19,7 +19,7 @@ var fun =
     }]
     if (o.params.page == 1) {
       data.push({
-        action: DEFAULT_DB,
+        action: o.DEFAULT_DB,
         database: "main",
         sql: "select count(1) as count FROM @.manager",
       })
@@ -123,30 +123,12 @@ var fun =
     $("#Field").html(name).val(val)
   },
   c04: function () {
-    let DEFAULT_DB = this.obj.DEFAULT_DB
-    let data = []
-    if (DEFAULT_DB == "dynamodb") {
-      data = [{
-        action: DEFAULT_DB,
-        fun: "putItem",
-        params: {
-          TableName: "main_manager",
-          Item: {
-            "id": { S: Tool.guid() },
-            "username": { S: "新用户" },
-            "islocked": { N: "1" },
-            "groupid": { N: "1" },
-          }
-        },
-      }]
-    }
-    else {
-      data = [{
-        action: DEFAULT_DB,
-        database: "main",
-        sql: "insert into @.manager(@.username)values(\'新用户\')",
-      }]
-    }
+    let DEFAULT_DB = o.DEFAULT_DB
+    let data = [{
+      action: DEFAULT_DB,
+      database: "main",
+      sql: "insert into @.manager(@.username)values(\'新用户\')",
+    }]
     Tool.ajax.a01(data, this.c05, this);
   },
   c05: function (t) {
