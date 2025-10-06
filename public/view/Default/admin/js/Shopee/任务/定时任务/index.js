@@ -81,8 +81,8 @@ var fun =
         let str = "异常"
         switch (runcycle) {
             case 1: str = "5分钟"; break;
-            case 2: str = "4小时"; break;
-            case 3: str = "1天"; break;
+            case 2: str = "3小时"; break;
+            case 3: str = "23小时"; break;
             case 4: str = "3天"; break;
             case 5: str = "7天"; break;
         }
