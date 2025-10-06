@@ -8,9 +8,9 @@ mssql = mssql.concat([
         sql: [
             "create index userid ON @.table(@.userid)"
         ],
-        run: [
-            "alter table @.table add @.isLock integer default 0",
-        ],
+        // run: [
+        //     "alter table @.table add @.isLock integer default 0",
+        // ],
         table: [{
             name: "id",
             type: "integer primary key",
