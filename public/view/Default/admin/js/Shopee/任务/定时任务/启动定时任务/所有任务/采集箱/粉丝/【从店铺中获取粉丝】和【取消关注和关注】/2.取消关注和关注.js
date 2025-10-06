@@ -29,13 +29,13 @@ Object.assign(Tool, {
         a03: function (oo) {
             let dbname = oo.Aarr[oo.A1 - 1]
             $("#dbname").html(dbname)
-            //@.is_my_following=1      表示被我关注的用户
+            //@.is_my_following=1      表示[被我关注]的用户
             let data = [{
                 action: "sqlite",
                 database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + dbname,
                 sql: "select count(1) as count FROM @.table where @.is_my_following=1"
             }]
-            $("#state").html("正在获取被我关注的用户。。。")
+            $("#state").html("正在获取[被我关注]的用户。。。")
             Tool.ajax.a01(data, this.a04, this, oo);
         },
         a04: function (t, oo) {
@@ -55,10 +55,11 @@ Object.assign(Tool, {
             else {
                 //去取关
                 //@.is_my_following     表示是否被我关注
+                //@.isLock              表示是否锁定（排序的目的是想优先取消关注）
                 let data = [{
                     action: "sqlite",
                     database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + oo.Aarr[oo.A1 - 1],
-                    sql: "select @.userid as userid FROM @.table where @.is_my_following=1 order by @.follow_time asc limit 1",
+                    sql: "select @.userid as userid FROM @.table where @.is_my_following=1 order by @.isLock desc,@.follow_time asc limit 1",
                 }]
                 Tool.ajax.a01(data, this.d03, this, oo);
             }
@@ -85,10 +86,11 @@ Object.assign(Tool, {
             //@.follow_count           关注次数
             //@.is_following           是否关注我  
             //@.last_active_time       最后活跃时间
+            //@.isLock=0               表示不用锁定的用户
             let data = [{
                 action: "sqlite",
                 database: "shopee/采集箱/粉丝/" + oo.siteNum + "/" + oo.Aarr[oo.A1 - 1],
-                sql: "select @.userid as userid FROM @.table where @.is_my_following=0 and @.follow_count=0 order by @.follow_count asc,@.last_active_time desc limit 1"
+                sql: "select @.userid as userid FROM @.table where @.is_my_following=0 and @.isLock=0 order by @.follow_count asc,@.last_active_time desc limit 1"
             }]
             Tool.ajax.a01(data, this.e04, this, oo);
         },

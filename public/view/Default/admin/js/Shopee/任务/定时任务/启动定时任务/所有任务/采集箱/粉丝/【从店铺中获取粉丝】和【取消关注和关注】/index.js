@@ -8,8 +8,8 @@ var task = {
             next: next,
             This: This,
             t: t,
-            siteNum: Tool.siteNum(site, num),
             ///////////////////////////////////////////////////////////////
+            siteNum: Tool.siteNum(site, num),
             D1: 1, D2: 0,
             Dobj: {
                 shopid: 0,//店铺ID

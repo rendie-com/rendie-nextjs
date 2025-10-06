@@ -89,9 +89,6 @@ Object.assign(Tool, {
             this.e04(oo)
         },
         e04: function (oo) {
-
-
-
             config[oo.site].shopId_arr = this.obj.yArr;
             let str = '"ok"<r: file="/' + o.path + 'admin/js/Shopee/定时任务/开始启动/config.js">let config=' + JSON.stringify(config, null, 2) + '</r:>';
             Tool.ajax.a01(str, 1, this.e04, this, oo);

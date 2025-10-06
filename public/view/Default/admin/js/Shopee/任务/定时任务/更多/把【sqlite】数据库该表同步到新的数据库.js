@@ -33,13 +33,13 @@ var fun =
             data.push({
                 action: "sqlite",
                 database: o.params.database,
-                sql: "select count(1) as total FROM @." + o.params.table,
+                sql: "select count(1) as count FROM @." + o.params.table,
             })
         }
         Tool.ajax.a01(data, this.a04, this);
     },
     a04: function (t) {
-        if (this.obj.A2 == 0) { this.obj.A2 = Math.ceil(t[1][0].total / 10) }
+        if (this.obj.A2 == 0) { this.obj.A2 = Math.ceil(t[1][0].count / 10) }
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d01, this, null, t[0]);
     },
     //////////////////////////////////////////
