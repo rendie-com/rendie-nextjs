@@ -172,7 +172,7 @@ mssql = mssql.concat([
         database: "main",
         action: "sqlite",
         sql: [
-            "insert into @.manager(@.username,@.pwd,@.state,@.groupid)values('admin','1a55179d134cd8af19b11439eb6387472ae8ddc02a5190a3f47f8acf423d479e',1,1)"
+            "insert into @.manager(@.username,@.pwd,@.groupid)values('admin','1a55179d134cd8af19b11439eb6387472ae8ddc02a5190a3f47f8acf423d479e',1)"
         ],
         table: [
             {
