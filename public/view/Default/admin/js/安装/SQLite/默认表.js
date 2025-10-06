@@ -172,7 +172,7 @@ mssql = mssql.concat([
         database: "main",
         action: "sqlite",
         sql: [
-            "insert into @.manager(@.name,@.pwd,@.state,@.GroupID)values('admin','1a55179d134cd8af19b11439eb6387472ae8ddc02a5190a3f47f8acf423d479e',1,1)"
+            "insert into @.manager(@.username,@.pwd,@.state,@.groupid)values('admin','1a55179d134cd8af19b11439eb6387472ae8ddc02a5190a3f47f8acf423d479e',1,1)"
         ],
         table: [
             {
@@ -236,25 +236,25 @@ mssql = mssql.concat([
                 des: "加密的随机数"
             },
             {
-                name: "GroupID",
+                name: "groupid",
                 type: "integer",
                 default: "0",
                 des: "所属用户组ID"
             },
             {
-                name: "RealName",
+                name: "realname",
                 type: "varchar(100)",
                 default: "",
                 des: "真实姓名"
             },
             {
-                name: "TelPhone",
+                name: "telphone",
                 type: "varchar(50)",
                 default: "",
                 des: "联系电话"
             },
             {
-                name: "Sex",
+                name: "sex",
                 type: "varchar(5)",
                 default: "",
                 des: "性别"
@@ -266,19 +266,19 @@ mssql = mssql.concat([
                 des: "电子信箱"
             },
             {
-                name: "LastLoginIP",
+                name: "lastloginip",
                 type: "varchar(100)",
                 default: "",
                 des: "最后登陆IP"
             },
             {
-                name: "LastLoginTime",
+                name: "lastlogintime",
                 type: "integer",
                 default: "0",
                 des: "上次登陆时间"
             },
             {
-                name: "LoginTimes",
+                name: "logintimes",
                 type: "integer",
                 default: "0",
                 des: "登录次数"

@@ -3,7 +3,7 @@
 //     {
 //         name: "table",
 //         des: "shopee类目表",
-//         database: "shopee/类目/类目",
+//         database: "shopee/类目/index",
 //         action: "pg02",
 //         //"sql": [
 //         //  "create index pk_upid ON @.table(@.upid)",

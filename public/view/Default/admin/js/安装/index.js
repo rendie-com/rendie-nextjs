@@ -8,6 +8,7 @@
         case "5": Tool.scriptArr([path + '5.js']); break;
         case "6": Tool.scriptArr([
             path + 'PostgreSQL/默认表.js',
+            //path + 'PostgreSQL/Shopee/客优云.js',
             //path + 'PostgreSQL/Shopee/类目/index.js',
             //path + 'PostgreSQL/Shopee/类目/属性划分100个文件.js',
             //path + 'PostgreSQL/Shopee/买家账户.js',
@@ -31,7 +32,7 @@
             //path + 'SQLite/Shopee/商品/图片-划分100个文件.js',
             //path + 'SQLite/Shopee/采集箱/商品.js',
             //path + 'SQLite/Shopee/采集箱/店铺.js',
-            //path + 'SQLite/Shopee/采集箱/粉丝.js',//这个要花的时间长
+            path + 'SQLite/Shopee/采集箱/粉丝.js',//这个要花的时间长
             //path + 'SQLite/Shopee/订单.js',
             //path + 'SQLite/Shopee/Shopee广告.js',
             //path + 'SQLite/Shopee/任务.js',

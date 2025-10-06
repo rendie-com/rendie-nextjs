@@ -1,6 +1,28 @@
 'use strict';
 let mssql = [
     // {
+    //     name: "config",
+    //     des: "后台的参数配置",
+    //     database: "main",
+    //     action: "pg02",
+    //     table: [{
+    //         name: "id",
+    //         type: "integer primary key",
+    //         default: "",
+    //         des: "索引"
+    //     }, {
+    //         name: "name",
+    //         type: "varchar(255)",
+    //         default: "",
+    //         des: "名称"
+    //     }, {
+    //         name: "value",
+    //         type: "text",
+    //         default: "",
+    //         des: "值"
+    //     }]
+    // },
+    // {
     //     name: "sqlhelp",
     //     des: "SQL帮助表",
     //     database: "main",
@@ -167,134 +189,113 @@ let mssql = [
     // {
     //     name: "manager",
     //     des: "管理员表",
-    //     action: "pg04",
+    //     action: "pg02",
     //     database: "main",
     //     sql: [
-    //         "insert into @.manager(@.name,@.pwd,@.state,@.GroupID)values('admin','1a55179d134cd8af19b11439eb6387472ae8ddc02a5190a3f47f8acf423d479e',1,1)"
+    //         "insert into @.manager(@.name,@.pwd,@.state,@.groupid)values('admin','1a55179d134cd8af19b11439eb6387472ae8ddc02a5190a3f47f8acf423d479e',1,1)"
     //     ],
-    //     table: [
-    //         {
-    //             name: "id",
-    //             type: "serial primary key",
-    //             default: "",
-    //             des: "索引"
-    //         },
-    //         {
-    //             name: "username",
-    //             type: "varchar(20)",
-    //             default: "",
-    //             des: "名称"
-    //         },
-    //         {
-    //             name: "pwd",
-    //             type: "varchar(64)",
-    //             default: "",
-    //             des: "密码（sha256加密）"
-    //         },
-    //         {
-    //             name: "access_token",
-    //             type: "varchar(64)",
-    //             default: "",
-    //             des: "access_token不能超过1天【expires_in:为access_token的到期时间戳】"
-    //         },
-    //         {
-    //             name: "expires_in",
-    //             type: "integer",
-    //             default: "0",
-    //             des: "access_token的到期时间戳"
-    //         },
-    //         {
-    //             name: "refresh_token",
-    //             type: "varchar(64)",
-    //             default: "",
-    //             des: "refresh_token不能超过30天"
-    //         },
-    //         {
-    //             name: "islocked",
-    //             type: "smallint",
-    //             default: "0",
-    //             des: "是否锁定"
-    //         },
-    //         {
-    //             name: "logintime",
-    //             type: "integer",
-    //             default: "0",
-    //             des: "登陆时间"
-    //         },
-    //         {
-    //             name: "loginip",
-    //             type: "varchar(100)",
-    //             default: "",
-    //             des: "登陆IP"
-    //         },
-    //         {
-    //             name: "random",
-    //             type: "varchar(64)",
-    //             default: "",
-    //             des: "加密的随机数"
-    //         },
-    //         {
-    //             name: "GroupID",
-    //             type: "integer",
-    //             default: "0",
-    //             des: "所属用户组ID"
-    //         },
-    //         {
-    //             name: "groupname",
-    //             type: "varchar(64)",
-    //             default: "",
-    //             des: "所属用户组"
-    //         },
-    //         {
-    //             name: "RealName",
-    //             type: "varchar(100)",
-    //             default: "",
-    //             des: "真实姓名"
-    //         },
-    //         {
-    //             name: "TelPhone",
-    //             type: "varchar(50)",
-    //             default: "",
-    //             des: "联系电话"
-    //         },
-    //         {
-    //             name: "Sex",
-    //             type: "varchar(5)",
-    //             default: "",
-    //             des: "性别"
-    //         },
-    //         {
-    //             name: "email",
-    //             type: "varchar(50)",
-    //             default: "",
-    //             des: "电子信箱"
-    //         },
-    //         {
-    //             name: "LastLoginIP",
-    //             type: "varchar(100)",
-    //             default: "",
-    //             des: "最后登陆IP"
-    //         },
-    //         {
-    //             name: "LastLoginTime",
-    //             type: "integer",
-    //             default: "0",
-    //             des: "上次登陆时间"
-    //         },
-    //         {
-    //             name: "LoginTimes",
-    //             type: "integer",
-    //             default: "0",
-    //             des: "登录次数"
-    //         },
-    //         {
-    //             name: "des",
-    //             type: "text",
-    //             default: "",
-    //             des: "简要说明"
-    //         }
-    //     ]
-    // },
+    //     table: [{
+    //         name: "id",
+    //         type: "serial primary key",
+    //         default: "",
+    //         des: "索引"
+    //     }, {
+    //         name: "username",
+    //         type: "varchar(20)",
+    //         default: "",
+    //         des: "名称"
+    //     }, {
+    //         name: "pwd",
+    //         type: "varchar(64)",
+    //         default: "",
+    //         des: "密码（sha256加密）"
+    //     }, {
+    //         name: "access_token",
+    //         type: "varchar(64)",
+    //         default: "",
+    //         des: "access_token不能超过1天【expires_in:为access_token的到期时间戳】"
+    //     }, {
+    //         name: "expires_in",
+    //         type: "integer",
+    //         default: "0",
+    //         des: "access_token的到期时间戳"
+    //     }, {
+    //         name: "refresh_token",
+    //         type: "varchar(64)",
+    //         default: "",
+    //         des: "refresh_token不能超过30天"
+    //     }, {
+    //         name: "islocked",
+    //         type: "smallint",
+    //         default: "0",
+    //         des: "是否锁定"
+    //     }, {
+    //         name: "logintime",
+    //         type: "integer",
+    //         default: "0",
+    //         des: "登陆时间"
+    //     }, {
+    //         name: "loginip",
+    //         type: "varchar(100)",
+    //         default: "",
+    //         des: "登陆IP"
+    //     }, {
+    //         name: "random",
+    //         type: "varchar(64)",
+    //         default: "",
+    //         des: "加密的随机数"
+    //     }, {
+    //         name: "groupid",
+    //         type: "integer",
+    //         default: "0",
+    //         des: "所属用户组ID"
+    //     }, {
+    //         name: "randomnum",
+    //         type: "varchar(64)",
+    //         default: "",
+    //         des: "加密的随机数"
+    //     }, {
+    //         name: "realname",
+    //         type: "varchar(100)",
+    //         default: "",
+    //         des: "真实姓名"
+    //     }, {
+    //         name: "telphone",
+    //         type: "varchar(50)",
+    //         default: "",
+    //         des: "联系电话"
+    //     }, {
+    //         name: "sex",
+    //         type: "varchar(5)",
+    //         default: "",
+    //         des: "性别"
+    //     }, {
+    //         name: "email",
+    //         type: "varchar(50)",
+    //         default: "",
+    //         des: "电子信箱"
+    //     }, {
+    //         name: "lastloginip",
+    //         type: "varchar(100)",
+    //         default: "",
+    //         des: "最后登陆IP"
+    //     }, {
+    //         name: "lastlogintime",
+    //         type: "integer",
+    //         default: "0",
+    //         des: "上次登陆时间"
+    //     }, {
+    //         name: "logintimes",
+    //         type: "integer",
+    //         default: "0",
+    //         des: "登录次数"
+    //     }, {
+    //         name: "des",
+    //         type: "text",
+    //         default: "",
+    //         des: "简要说明"
+    //     }]
+    //},
     // {
     //     name: "download",
     //     des: "应用商店-下载源",
