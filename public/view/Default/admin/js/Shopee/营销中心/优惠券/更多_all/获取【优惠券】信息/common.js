@@ -74,7 +74,7 @@ Object.assign(Tool, {
         d03: function (t, oo) {
             oo.A1++;
             $("#state").html("正在进入第" + oo.A1 + "页。。。");
-            this.d01(oo);
+            this.a03(null, oo);
         },
         //////////////////////////////
         e01: function (oo) {
