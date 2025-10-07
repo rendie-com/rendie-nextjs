@@ -278,7 +278,8 @@ Object.assign(Tool, {
         a02: function (arr, oo) {
             let data = [], item = "rendie-com"
             for (let i = 0; i < arr.length; i++) {
-                if (arr[i].indexOf("shopee/采集箱/") != -1 || arr[i].indexOf("shopee/聊聊/") != -1) { item = "rendie-4hour.yml" }
+                if (arr[i].indexOf("shopee/采集箱/") != -1 || arr[i].indexOf("shopee/聊聊/") != -1) { item = "rendie-4hour.yml"; }
+                else if (arr[i].indexOf("shopee/商品/") != -1) { item = "rendie-1day.yml"; }
                 data.push({
                     action: "fs",
                     fun: "access_sqlite",
