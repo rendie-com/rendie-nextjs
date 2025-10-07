@@ -23,22 +23,25 @@ Object.assign(Tool, {
             this.a02(oo);
         },
         a02: function (oo) {
+            Tool.download_sqlite.a01(["shopee/商品/店铺商品/" + oo.siteNum], this.a03, this, oo);
+        },
+        a03: function (t, oo) {
             let data = [{
                 action: o.DEFAULT_DB,
                 database: "main",
                 sql: "select @.value as value FROM @.config where @.name='Shopee/营销中心/index.js'",
             }]
-            Tool.ajax.a01(data, this.a03, this, oo);
+            Tool.ajax.a01(data, this.a04, this, oo);
         },
-        a03: function (t, oo) {
+        a04: function (t, oo) {
             let config = JSON.parse(t[0][0].value)["营销中心"]
             if (!config) config = {}
             if (!config[oo.siteNum]) { config[oo.siteNum] = {} }
             if (!config[oo.siteNum]["折扣活动"]) { config[oo.siteNum]["折扣活动"] = 0 }
             oo.config = config;
-            this.a04(oo)
+            this.a05(oo)
         },
-        a04: function (oo) {
+        a05: function (oo) {
             oo.start_time = oo.config[oo.siteNum]["折扣活动"]
             if (!oo.start_time) { oo.start_time = 0 }
             if (oo.start_time < Tool.gettime("")) {
@@ -48,12 +51,12 @@ Object.assign(Tool, {
             const oneDay = 24 * 60 * 60; // 一天的毫秒数
             let day = (Tool.gettime(Tool.userDate13(Date.now())) + 60 * 60 * 24 * 10) - oo.start_time//计算到活动结束速差多少天。
             oo.D2 = Math.ceil(day / (oneDay * 2))//为什么“*2”？答：因为活动一次2天。
-            this.a05(oo)
-        },
-        a05: function (oo) {
-            Tool.x1x2("D", oo.D1, oo.D2, this.a06, this, this.g01, oo);
+            this.a06(oo)
         },
         a06: function (oo) {
+            Tool.x1x2("D", oo.D1, oo.D2, this.a07, this, this.g01, oo);
+        },
+        a07: function (oo) {
             oo.end_time = oo.start_time - 1 + 60 * 60 * 24 * 2;//2天(因为每个活动都是从00:0:00到23:59:59)
             if (this.b03(oo.start_time)) {
                 this.d01(oo);
@@ -261,7 +264,7 @@ Object.assign(Tool, {
             oo.E1 = 1; oo.E2 = 0;
             $("#E1").css("width", "0%"); $("#E1,#E2").html("");
             oo.start_time = oo.end_time + 1//修改开始时间，准备做下一个时段的活动。
-            this.a05(oo);
+            this.a06(oo);
         },
         //////////////////////////
         g01: function (oo) {

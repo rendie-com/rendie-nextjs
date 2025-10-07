@@ -56,6 +56,9 @@ Object.assign(Tool, {
             this.a02(oo)
         },
         a02: function (oo) {
+            Tool.download_sqlite.a01(["shopee/商品/店铺商品/" + oo.siteNum], this.a03, this, oo);
+        },
+        a03: function (t, oo) {
             let arr = [
                 "SPC_CDS=" + oo.seller.SPC_CDS,
                 "SPC_CDS_VER=2",
@@ -66,22 +69,22 @@ Object.assign(Tool, {
             ]
             let url = "https://seller.shopee.cn/api/marketing/v4/shop_flash_sale/time_slot/?" + arr.join("&")
             $("#state").html("正在获取秒杀时段的个数。。。");
-            gg.getFetch(url, "json", this.a03, this, oo);
+            gg.getFetch(url, "json", this.a04, this, oo);
         },
-        a03: function (t, oo) {
+        a04: function (t, oo) {
             if (t.code == 0) {
                 oo.Darr = t.data
                 oo.D2 = t.data.length
-                this.a04(oo)
+                this.a05(oo)
             }
             else {
                 $("#state").html("到不了这里。。。");
             }
         },
-        a04: function (oo) {
-            Tool.x1x2("D", oo.D1, oo.D2, this.a05, this, this.e01, oo);
-        },
         a05: function (oo) {
+            Tool.x1x2("D", oo.D1, oo.D2, this.a06, this, this.e01, oo);
+        },
+        a06: function (oo) {
             let Darr = oo.Darr[oo.D1 - 1]
             $("#timeA").html(Tool.js_date_time2(Darr.start_time));
             $("#timeB").html(Tool.js_date_time2(Darr.end_time));
@@ -198,7 +201,7 @@ Object.assign(Tool, {
         },
         d06: function (oo) {
             oo.D1++
-            this.a04(oo);
+            this.a05(oo);
         },
         //////////////////////////
         e01: function (oo) {
