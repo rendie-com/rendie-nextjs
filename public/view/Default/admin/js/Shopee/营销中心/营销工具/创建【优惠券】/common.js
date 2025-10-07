@@ -18,42 +18,45 @@ Object.assign(Tool, {
             this.a02(oo);
         },
         a02: function (oo) {
+            Tool.download_sqlite.a01(["shopee/商品/店铺商品/" + oo.siteNum], this.a03, this, oo);
+        },
+        a03: function (t, oo) {
             let data = [{
                 action: o.DEFAULT_DB,
                 database: "main",
                 sql: "select @.value as value FROM @.config where @.name='Shopee/营销中心/index.js'",
             }]
-            Tool.ajax.a01(data, this.a03, this, oo);
+            Tool.ajax.a01(data, this.a04, this, oo);
         },
-        a03: function (t, oo) {
+        a04: function (t, oo) {
             let config = JSON.parse(t[0][0].value)["营销中心"]
             if (!config) config = {}
             if (!config[oo.siteNum]) { config[oo.siteNum] = {} }
             if (!config[oo.siteNum]["优惠券"]) { config[oo.siteNum]["优惠券"] = [0, 0, 0, 0, 0, 0, 0, 0] }
             oo.config = config;
-            this.a04(oo)
-        },
-        a04: function (oo) {
-            Tool.x1x2("D", oo.D1, oo.D2, this.a05, this, this.g03, oo);
+            this.a05(oo)
         },
         a05: function (oo) {
+            Tool.x1x2("D", oo.D1, oo.D2, this.a06, this, this.g03, oo);
+        },
+        a06: function (oo) {
             oo.start_time = oo.config[oo.siteNum]["优惠券"][oo.D1 - 1]
             if (oo.start_time < Tool.gettime("")) {
                 oo.start_time = Tool.gettime(Tool.userDate13(Date.now())) + 60 * 60 * 24 * 2
             }
             $("#timeA").html(Tool.js_date_time2(oo.start_time));
-            this.a06(oo);
+            this.a07(oo);
         },
-        a06: function (oo) {
+        a07: function (oo) {
             if (Tool.create_coupon_b.b02(oo.start_time)) {
-                this.a07(oo);
+                this.a08(oo);
             }
             else {
                 $("#state").html("活动不在30天以内，程序已终止。")
                 this.g02("", oo);
             }
         },
-        a07: function (oo) {
+        a08: function (oo) {
             if (oo.D1 == 6) {//关注礼优惠券
                 oo.end_time = oo.start_time + 60 * 60 * 24 * 30 - 1;
                 $("#timeB").html(Tool.js_date_time2(oo.end_time) + "（30天）")
@@ -217,7 +220,7 @@ Object.assign(Tool, {
         g02: function (t, oo) {
             $("#state").html("更新活动时间成功。")
             oo.D1++;
-            this.a04(oo);
+            this.a05(oo);
         },
         g03: function (oo) {
             $("#D1").css("width", "0%");
