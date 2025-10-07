@@ -18,7 +18,7 @@ var fun =
 		        <tr><td class="right">站点进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">第几个店铺：</td><td colspan="2" id="num"></td></tr>\
 		        <tr><td class="right">店铺进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
-                <tr><td class="right">页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
+                <tr><td class="right">优惠券页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
                 <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
             </tbody>\
             </table>\

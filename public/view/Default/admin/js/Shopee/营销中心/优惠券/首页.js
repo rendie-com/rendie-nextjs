@@ -250,7 +250,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01\');"><a class="dropdown-item pointer">*获取【店铺商品】信息</a></li>\
+            <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01\');"><a class="dropdown-item pointer">*获取【优惠券】信息</a></li>\
         </ul>'
     },
     /////////////////////////////////////////////////
