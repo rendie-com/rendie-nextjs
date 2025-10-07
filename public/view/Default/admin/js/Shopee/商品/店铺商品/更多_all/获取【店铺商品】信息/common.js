@@ -13,20 +13,24 @@ Object.assign(Tool, {
                 //////////////////////////////////////////////
                 siteNum: Tool.siteNum(site, num),
                 A1: 1, A2: 0,
-                products: []
+                products: [],
+                data: [],
             }
             this.a02(oo);
         },
         a02: function (oo) {
+            Tool.download_sqlite.a01(["shopee/商品/店铺商品/" + oo.siteNum, "shopee/商品/全球商品"], this.a03, this, oo);
+        },
+        a03: function (t, oo) {
             $("#state").html("正在初始化。。。");
             let data = [{
                 action: "sqlite",
                 database: "shopee/商品/店铺商品/" + oo.siteNum,
                 sql: "update @.table set @.status=0",//状态设置为【未知】
             }]
-            Tool.ajax.a01(data, this.a03, this, oo);
+            Tool.ajax.a01(data, this.a04, this, oo);
         },
-        a03: function (t, oo) {
+        a04: function (t, oo) {
             this.d01(oo);
         },
         //////////////////////////////////////////   
@@ -122,7 +126,7 @@ Object.assign(Tool, {
         b05: function (promotion, model_list, siteNum, proid) {
             //@.promotion     活动信息
             //@.model_list    价格和价格ID信息
-            let pronum = Tool.pronum(proid, 100, 3)
+            let pronum = Tool.pronum(proid, 100)
             let data = {
                 action: "sqlite",
                 database: "shopee/商品/店铺商品/" + siteNum + "/" + pronum,
@@ -198,7 +202,7 @@ Object.assign(Tool, {
                 "@.isUnlisted",//能不能下架
                 "@.isTrueSignUp",//是否已报名活动
                 "@.saleNum",//销量
-            ], data = []
+            ], data = [], sqlite_data = []
             for (let i = 0; i < oo.products.length; i++) {
                 let arrR = [
                     oo.products[i].id,
@@ -215,12 +219,19 @@ Object.assign(Tool, {
                 ]
                 data.push(...this.b04(arrL, arrR, oo.site, oo.siteNum, oo.products[i].id, oo.products[i].parent_sku));
                 data.push(this.b05(oo.products[i].promotion, oo.products[i].model_list, oo.siteNum, oo.products[i].parent_sku));
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                sqlite_data.push("shopee/商品/店铺商品/" + oo.siteNum + "/" + Tool.pronum(oo.products[i].parent_sku, 100))
             }
             $("#updateFields").html(this.b03(arrL));
             $("#state").html("正在更新本地商品状态。。。");
-            Tool.ajax.a01(data, this.d05, this, oo);
+            oo.data = data;
+            Tool.download_sqlite.a01(sqlite_data, this.d05, this, oo);
         },
         d05: function (t, oo) {
+            Tool.ajax.a01(oo.data, this.d06, this, oo);
+        },
+        d06: function (t, oo) {
+            oo.data = [];
             oo.products = [];
             oo.A1++;
             $("#state").html("正在进入第" + oo.A1 + "页。。。");
