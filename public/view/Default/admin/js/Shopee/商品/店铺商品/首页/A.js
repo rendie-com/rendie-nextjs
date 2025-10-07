@@ -3,7 +3,7 @@ var fun =
 {
     obj: {
         siteNum: "",
-        pagesize: 10
+        pagesize: 10,
     },
     a01: function () {
         o.params.jsFile = o.params.jsFile ? o.params.jsFile : ""//选择JS文件
@@ -24,30 +24,7 @@ var fun =
         Tool.logistics.a01(o.params.site, null, this.a02, this)
     },
     a02: function (logistics) {
-        let data = [{
-            action: "fs",
-            fun: "access_sqlite",
-            database: "shopee/卖家账户",
-            mode: 0,
-            elselist: [{
-                action: "fs",
-                fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/卖家账户.db"],
-                database: "shopee/卖家账户",
-            }]
-        }, {
-            action: "fs",
-            fun: "access_sqlite",
-            database: "shopee/商品/店铺商品/" + this.obj.siteNum,
-            mode: 0,
-            elselist: [{
-                action: "fs",
-                fun: "download_sqlite",
-                urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/商品/店铺商品/" + this.obj.siteNum + ".db"],
-                database: "shopee/商品/店铺商品/" + this.obj.siteNum,
-            }]
-        }]
-        Tool.ajax.a01(data, this.a03, this, logistics);
+        Tool.download_sqlite.a01(["shopee/商品/店铺商品/" + this.obj.siteNum], this.a03, this, logistics)
     },
     a03: function (t, logistics) {
         let where = this.b08();
