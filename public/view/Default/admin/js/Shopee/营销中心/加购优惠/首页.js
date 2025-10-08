@@ -11,7 +11,7 @@ var fun =
     },
     a02: function () {
         let siteNum = Tool.siteNum(o.params.site, o.params.num);
-        Tool.download_sqlite.a01(["shopee/营销中心/折扣/" + siteNum], this.a03, this, siteNum)
+        Tool.download_sqlite.a01(["shopee/营销中心/加购优惠/" + siteNum], this.a03, this, siteNum)
     },
     a03: function (t, siteNum) {
         let where = this.b03();
