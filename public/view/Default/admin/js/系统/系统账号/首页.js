@@ -75,9 +75,9 @@ var fun =
             <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdown0"><div></div><div></div><div></div></button>\
             <ul class="dropdown-menu" aria-labelledby="dropdown0">\
               <li><a class="dropdown-item pointer" onClick="fun.c04()">添加用户</a></li>\
-              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg01\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg01】数据库</a></li>\
-              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg02\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg02】数据库</a></li>\
-              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg03\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【PostgreSQL】【pg03】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg01\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【PostgreSQL-pg01】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg02\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【PostgreSQL-pg02】数据库</a></li>\
+              <li onClick="Tool.openR(\'jsFile=js02&table=manager&database=main&toaction=pg03\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【PostgreSQL-pg03】数据库</a></li>\
             </ul>\
           </th>\
           <th>用户名</th>\
