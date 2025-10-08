@@ -91,7 +91,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
-            <li onClick="Tool.openR(\'jsFile=js03&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*获取【优惠券】信息</a></li>\
+            <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&site=' + o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*获取【优惠券】信息</a></li>\
 		</ul>'
     },
     b03: function (name, voucher_code, value) {

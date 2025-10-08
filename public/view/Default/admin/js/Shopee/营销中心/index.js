@@ -14,9 +14,7 @@
             path + '营销工具/创建【折扣活动】/common.js',
             path + '营销工具/创建【折扣活动】/index.js'
         ])); break;
-        case "js06": Tool.scriptArr(loginPath.concat([path + 'common.js', path + '折扣/index.js'])); break;
-        case "js07": Tool.scriptArr(loginPath.concat([path + '折扣/获取【折扣】信息.js'])); break;
-        case "js08": Tool.scriptArr(loginPath.concat([path + '折扣/状态_删除.js'])); break;
+        case "js06": Tool.scriptArr([path + '折扣/index.js']); break;
         case "js09": Tool.scriptArr(loginPath.concat([
             path + '营销工具/创建【店内秒杀】/common1.js',
             path + '营销工具/创建【店内秒杀】/common2.js',
@@ -34,7 +32,6 @@
         case "js15": Tool.scriptArr(loginPath.concat([path + '加购优惠/获取【加购优惠】信息.js'])); break;
         case "js16": Tool.scriptArr(loginPath.concat([path + '加购优惠/状态_删除.js'])); break;
         case "js17": Tool.scriptArr(loginPath.concat([path + '营销工具/创建【套装优惠】.js'])); break;
-        case "js18": Tool.scriptArr(loginPath.concat([path + '折扣/状态_结束.js'])); break;
         case "js20": Tool.scriptArr(loginPath.concat([
             path + '商品活动/立即报名/common1.js',
             path + '商品活动/立即报名/common2-3.js',
