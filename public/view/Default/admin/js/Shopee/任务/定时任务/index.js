@@ -70,9 +70,9 @@ var fun =
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
 		<ul class="dropdown-menu">\
             <li onClick="fun.c01();"><a class="dropdown-item pointer">添加任务</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js03&table=table&database=shopee/任务/定时任务&toaction=sqlite\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【sqlite】数据库</a></li>\
             <li onClick="Tool.openR(\'jsFile=js03&table=table&database=shopee/任务/定时任务&toaction=pg01\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【PostgreSQL-pg01】数据库</a></li>\
             <li onClick="Tool.openR(\'jsFile=js03&table=table&database=shopee/任务/定时任务&toaction=pg02\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【PostgreSQL-pg02】数据库</a></li>\
-            <li onClick="Tool.openR(\'jsFile=js03&table=table&database=shopee/任务/定时任务&toaction=sqlite\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【sqlite】数据库</a></li>\
             <li onClick="Tool.openR(\'jsFile=js03&table=table&database=shopee/任务/定时任务&toaction=pg03\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【PostgreSQL-pg03】数据库</a></li>\
             <li onClick="Tool.openR(\'jsFile=js02\');"><a class="dropdown-item pointer">*启动定时任务</a></li>\
             <li onClick="Tool.openR(\'jsFile=js05&table=task&database=shopee&newdatabase=shopee/任务/定时任务\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\

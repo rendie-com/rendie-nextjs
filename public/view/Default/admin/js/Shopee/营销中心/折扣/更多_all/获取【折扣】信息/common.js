@@ -70,7 +70,6 @@ Object.assign(Tool, {
             } else {
                 let data = []
                 for (let i = 0; i < discount_list.length; i++) {
-                    let ins1 = "@.promotion_id,@.title,@.status,@.start_time,@.end_time,@.addtime,@.images,@.total_product"
                     let ins2 = discount_list[i].promotion_id + "," + Tool.rpsql(discount_list[i].title) + "," + oo.A1 + "," + discount_list[i].start_time + "," + discount_list[i].end_time + "," + Tool.gettime("") + "," + Tool.rpsql(JSON.stringify(discount_list[i].images)) + "," + discount_list[i].total_product
                     data.push({
                         action: "sqlite",
@@ -84,7 +83,7 @@ Object.assign(Tool, {
                         elselist: [{
                             action: "sqlite",
                             database: "shopee/营销中心/折扣/" + oo.siteNum,
-                            sql: "insert into @.table(" + ins1 + ")values(" + ins2 + ")",
+                            sql: "insert into @.table(@.promotion_id,@.title,@.status,@.start_time,@.end_time,@.addtime,@.images,@.total_product)values(" + ins2 + ")",
                         }]
                     })
                 }
@@ -113,5 +112,3 @@ Object.assign(Tool, {
         },
     }
 })
-
-
