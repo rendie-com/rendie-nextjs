@@ -48,7 +48,7 @@
             path + '商品活动/立即报名/common5.js',
             path + '商品活动/删除【尚未提交】商品.js'
         ])); break;
-        case "js24": Tool.scriptArr(loginPath.concat([path + 'common.js', path + '运费促销/index.js'])); break;
+        case "js24": Tool.scriptArr([path + '运费促销/index.js']); break;
         case "js25": Tool.scriptArr(loginPath.concat([path + '营销工具/创建【运费促销】.js'])); break;
         default: Tool.scriptArr([path + 'common.js', 'admin/js/Shopee/common.js', path + '首页.js']);
     }

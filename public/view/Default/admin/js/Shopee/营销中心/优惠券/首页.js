@@ -55,8 +55,10 @@ var fun =
            </tr>'
         }
         let html = Tool.header(o.params.jsFile, o.params.site) + '\
-        <div class="p-2"><div style="top:6px;position:relative;">'+ this.b12() + '</div>' + Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b09() + '\
-           <table class="table align-middle center table-hover">\
+        <div class="p-2">\
+            <div style="top:6px;position:relative;">'+ this.b12() + '</div>' 
+            + Tool.tab(o.params.jsFile, o.params.site, siteArr, o.params.num) + this.b09() + '\
+            <table class="table align-middle center table-hover">\
   			    <thead class="table-light">'+ this.b01() + '</thead>\
 				<tbody>'+ html1 + '</tbody>\
             </table>' + Tool.page(t[0][0].total, 10, o.params.page) + '\

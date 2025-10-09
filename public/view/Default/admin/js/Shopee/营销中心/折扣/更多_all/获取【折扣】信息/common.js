@@ -38,7 +38,7 @@ Object.assign(Tool, {
             let data = {
                 "need_count": true,
                 "need_image": true,
-                "offset": + ((oo.B1 - 1) * 10),//第一页为“0”    第二页为“10”        第三页为：“20”
+                "offset":  ((oo.B1 - 1) * 10),//第一页为“0”    第二页为“10”        第三页为：“20”
                 "limit": 10,
                 "schedule_status": oo.A1,
                 "primary_key": "DiscountList"
