@@ -1,12 +1,13 @@
 ﻿'use strict';
 Object.assign(Tool, {
     voucher_list: {
-        a01: function (seller, site, num, progress, next, This, t) {
+        a01: function (seller, site, num, progress, endTime, next, This, t) {
             let oo = {
                 seller: seller,
                 site: site,
                 num: num,
                 progress: progress,
+                endTime: endTime,
                 next: next,
                 This: This,
                 t: t,
@@ -50,26 +51,31 @@ Object.assign(Tool, {
             Tool.x1x2(oo.progress, oo.A1, oo.A2, this.d02, this, this.e01, oo)
         },
         d02: function (oo) {
-            let arr = oo.voucher_list, data = [];
-            for (let i = 0; i < arr.length; i++) {
-                data.push({
-                    action: "sqlite",
-                    database: "shopee/营销中心/优惠券/" + oo.siteNum,
-                    sql: "select @.voucher_id as voucher_id from @.table where @.voucher_id=" + arr[i].voucher_id,
-                    list: [{
+            let arr = oo.voucher_list;
+            if (oo.endTime != 0 && arr[0].end_time < oo.endTime) {
+                this.e01(oo);//获取范围
+            } else {
+                let data = []
+                for (let i = 0; i < arr.length; i++) {
+                    data.push({
                         action: "sqlite",
                         database: "shopee/营销中心/优惠券/" + oo.siteNum,
-                        sql: "update @.table set @.uptime=" + arr[i].mtime + ",@.fe_status=" + arr[i].fe_status + "  where @.voucher_id=" + arr[i].voucher_id,
-                    }],
-                    elselist: [{
-                        action: "sqlite",
-                        database: "shopee/营销中心/优惠券/" + oo.siteNum,
-                        sql: "insert into @.table(@.voucher_id,@.name,@.voucher_code,@.start_time,@.end_time,@.discount,@.usage_quantity,@.min_price,@.max_value,@.value,@.addtime,@.uptime,@.fe_display_coin_amount,@.rule,@.fe_status)values(" + arr[i].voucher_id + "," + Tool.rpsql(arr[i].name) + "," + Tool.rpsql(arr[i].voucher_code) + "," + arr[i].start_time + "," + arr[i].end_time + "," + arr[i].discount + "," + arr[i].usage_quantity + "," + arr[i].min_price + "," + arr[i].max_value + "," + arr[i].value + "," + arr[i].ctime + "," + arr[i].mtime + "," + (arr[i].fe_display_coin_amount ? arr[i].fe_display_coin_amount : 0) + "," + Tool.rpsql(JSON.stringify(arr[i].rule)) + "," + arr[i].fe_status + ")",
-                    }]
-                })
+                        sql: "select @.voucher_id as voucher_id from @.table where @.voucher_id=" + arr[i].voucher_id,
+                        list: [{
+                            action: "sqlite",
+                            database: "shopee/营销中心/优惠券/" + oo.siteNum,
+                            sql: "update @.table set @.uptime=" + arr[i].mtime + ",@.fe_status=" + arr[i].fe_status + "  where @.voucher_id=" + arr[i].voucher_id,
+                        }],
+                        elselist: [{
+                            action: "sqlite",
+                            database: "shopee/营销中心/优惠券/" + oo.siteNum,
+                            sql: "insert into @.table(@.voucher_id,@.name,@.voucher_code,@.start_time,@.end_time,@.discount,@.usage_quantity,@.min_price,@.max_value,@.value,@.addtime,@.uptime,@.fe_display_coin_amount,@.rule,@.fe_status)values(" + arr[i].voucher_id + "," + Tool.rpsql(arr[i].name) + "," + Tool.rpsql(arr[i].voucher_code) + "," + arr[i].start_time + "," + arr[i].end_time + "," + arr[i].discount + "," + arr[i].usage_quantity + "," + arr[i].min_price + "," + arr[i].max_value + "," + arr[i].value + "," + arr[i].ctime + "," + arr[i].mtime + "," + (arr[i].fe_display_coin_amount ? arr[i].fe_display_coin_amount : 0) + "," + Tool.rpsql(JSON.stringify(arr[i].rule)) + "," + arr[i].fe_status + ")",
+                        }]
+                    })
+                }
+                $("#state").html("正在更新本地商品状态。。。");
+                Tool.ajax.a01(data, this.d03, this, oo)
             }
-            $("#state").html("正在更新本地商品状态。。。");
-            Tool.ajax.a01(data, this.d03, this, oo)
         },
         d03: function (t, oo) {
             oo.A1++;

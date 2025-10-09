@@ -62,10 +62,7 @@ Object.assign(Tool, {
         d02: function (oo) {
             //说明：discount_list[i].status  这个没什么用。
             let discount_list = oo.discount_list
-            if (discount_list.length == 0) {
-                this.d04(oo)
-            }
-            else if (oo.endTime != 0 && discount_list[0].end_time < oo.endTime) {
+            if (oo.endTime != 0 && discount_list[0].end_time < oo.endTime) {
                 this.d04(oo);//获取范围
             } else {
                 let data = []

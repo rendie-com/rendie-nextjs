@@ -79,6 +79,7 @@ var fun =
         <ul class="dropdown-menu">\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&site=' + o.params.site + "&num=" + o.params.num + '&day=all\');"><a class="dropdown-item pointer">*获取【折扣】信息（所有）</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&site=' + o.params.site + "&num=" + o.params.num + '&day=3\');"><a class="dropdown-item pointer">*获取【折扣】信息（近3天）</a></li>\
+            <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&site=' + o.params.site + "&num=" + o.params.num + '&day=30\');"><a class="dropdown-item pointer">*获取【折扣】信息（近30天）</a></li>\
         </ul>'
     },
     b03: function () {

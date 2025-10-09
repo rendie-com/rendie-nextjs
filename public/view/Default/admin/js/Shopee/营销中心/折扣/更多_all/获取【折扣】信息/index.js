@@ -56,9 +56,6 @@ var fun =
         this.a04();
     },
     a04: function () {
-        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d01, this, null)
-    },
-    a04: function () {
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a05, this, this.e02)
     },
     a05: function () {

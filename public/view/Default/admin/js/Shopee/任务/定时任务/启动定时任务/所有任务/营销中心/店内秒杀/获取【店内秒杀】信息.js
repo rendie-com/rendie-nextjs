@@ -10,13 +10,14 @@ var task = {
             t: t
         }
         $("#tbody").html('\
-            <tr><td class="right">优惠券页进度：</td>' + Tool.htmlProgress('D') + '</tr>\
+            <tr><td class="right">页进度：</td>' + Tool.htmlProgress('D') + '</tr>\
             <tr><td class="right">获取范围：</td><td colspan="2" id="endTime"></td></tr>\
-            <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>');
+            <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>\
+        ');
         this.a02(oo);
     },
     a02: function (oo) {
-        Tool.voucher_list.a01(oo.seller, oo.site, oo.num, "D", this.b01(3), this.a03, this, oo)
+        Tool.flash_sale_list.a01(oo.seller, oo.site, oo.num, "D", this.b01(3), this.a03, this, oo)
     },
     a03: function (oo) {
         $("#D1").css("width", "0%");

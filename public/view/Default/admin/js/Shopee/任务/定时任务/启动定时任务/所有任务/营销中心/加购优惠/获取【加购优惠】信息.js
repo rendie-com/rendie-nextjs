@@ -10,7 +10,7 @@ var task = {
             t: t
         }
         $("#tbody").html('\
-            <tr><td class="right">活动进度：</td>' + Tool.htmlProgress('D') + '</tr>\
+            <tr><td class="right">页进度：</td>' + Tool.htmlProgress('D') + '</tr>\
             <tr><td class="right">获取范围：</td><td colspan="2" id="endTime"></td></tr>\
             <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>\
         ');

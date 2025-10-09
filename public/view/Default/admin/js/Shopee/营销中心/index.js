@@ -20,9 +20,7 @@
             path + '营销工具/创建【店内秒杀】/common2.js',
             path + '营销工具/创建【店内秒杀】/index.js'
         ])); break;
-        case "js10": Tool.scriptArr(loginPath.concat([path + 'common.js', path + '店内秒杀/index.js'])); break;
-        case "js11": Tool.scriptArr(loginPath.concat([path + '店内秒杀/获取【店内秒杀】信息.js'])); break;
-        case "js12": Tool.scriptArr(loginPath.concat([path + '店内秒杀/状态_删除.js'])); break;
+        case "js10": Tool.scriptArr([path + '店内秒杀/index.js']); break;
         case "js13": Tool.scriptArr(loginPath.concat([
             path + '营销工具/创建【加购优惠】/common_折扣.js',
             path + '营销工具/创建【加购优惠】/common_赠品.js',
@@ -44,7 +42,6 @@
             path + '商品活动/立即报名/common5.js',
             path + '商品活动/撤销报名.js'
         ])); break;
-
         case "js23": Tool.scriptArr(loginPath.concat([
             path + '商品活动/立即报名/common2-3.js',
             path + '商品活动/立即报名/common4.js',

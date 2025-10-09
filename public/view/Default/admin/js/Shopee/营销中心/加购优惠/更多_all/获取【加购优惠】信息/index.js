@@ -3,9 +3,9 @@ var fun =
 {
     obj:
     {
-        A1: 1, A2: 0,// 页进度
+        A1: 1, A2: 0, Aarr: [],
+        B1: 1, B2: 0,
         seller: {},
-        siteNum: Tool.siteNum(o.params.site, o.params.num),
     },
     a01: function () {
         //o.params.site       站点       
@@ -56,10 +56,7 @@ var fun =
         this.a04();
     },
     a04: function () {
-        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.d01, this, null)
-    },
-    a04: function () {
-        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a05, this, this.e02)
+        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a05, this, null)
     },
     a05: function () {
         let oo = this.obj.Aarr[this.obj.A1 - 1]

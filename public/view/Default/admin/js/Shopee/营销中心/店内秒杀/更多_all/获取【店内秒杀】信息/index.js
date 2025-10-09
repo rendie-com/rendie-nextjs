@@ -8,8 +8,8 @@ var fun =
         seller: {},
     },
     a01: function () {
-        //o.params.site       站点
-        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 优惠券列表 &gt; 获取【优惠券】信息") + '\
+        //o.params.site           站点
+        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 折扣列表 &gt; 获取【店内秒杀】信息") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
@@ -19,7 +19,8 @@ var fun =
                 <tr><td class="right">第几个店铺：</td><td colspan="2" id="num"></td></tr>\
 		        <tr><td class="right">店铺进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
                 <tr><td class="right">获取范围：</td><td colspan="2" id="endTime"></td></tr>\
-                <tr><td class="right">优惠券页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
+                <tr><td class="right">页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
+                <tr><td class="right">访问地址：</td><td id="url" colspan="2"></td></tr>\
                 <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
             </tbody>\
             </table>\
@@ -27,7 +28,7 @@ var fun =
         Tool.html(this.a02, this, html);
     },
     a02: function () {
-        Tool.login.a01(this.a03, this);
+        Tool.login.a01(this.a03, this)
     },
     a03: function (t) {
         this.obj.seller = t;
@@ -52,10 +53,10 @@ var fun =
             this.obj.Aarr = arr;
             this.obj.A2 = arr.length;
         }
-        this.a04()
+        this.a04();
     },
     a04: function () {
-        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a05, this, this.e02)
+        Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a05, this, null)
     },
     a05: function () {
         let oo = this.obj.Aarr[this.obj.A1 - 1]
@@ -81,7 +82,7 @@ var fun =
     },
     d02: function () {
         $("#num").html(this.obj.B1)//第几个店铺
-        Tool.voucher_list.a01(this.obj.seller, this.obj.Aarr[this.obj.A1 - 1].site, this.obj.B1, "C", this.b01(o.params.day), this.d03, this)
+        Tool.flash_sale_list.a01(this.obj.seller, this.obj.Aarr[this.obj.A1 - 1].site, this.obj.B1, "C", this.b01(o.params.day), this.d03, this)
     },
     d03: function () {
         this.obj.B1++;
