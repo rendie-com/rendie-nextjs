@@ -16,7 +16,12 @@ var task = {
         this.a02(oo);
     },
     a02: function (oo) {
-        Tool.create_coupon.a01(oo.seller, oo.site, oo.num, this.a03, this, oo)
+        if (oo.seller[oo.site][oo.num - 1].isLock) {
+            this.a03(oo);
+        }
+        else {
+            Tool.common1.a01(oo.seller, oo.site, oo.num, "D", this.a03, this, oo)
+        }
     },
     a03: function (oo) {
         $("#D1").css("width", "0%");

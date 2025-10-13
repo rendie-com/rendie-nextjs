@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 var fun =
 {
     obj:
@@ -9,7 +9,7 @@ var fun =
     },
     a01: function () {
         //o.params.site       站点
-        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 优惠券 &gt; 获取【优惠券】信息") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 优惠券 &gt; 创建【优惠券】") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
@@ -18,9 +18,20 @@ var fun =
 		        <tr><td class="right">站点进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">第几个店铺：</td><td colspan="2" id="num"></td></tr>\
 		        <tr><td class="right">店铺进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
-                <tr><td class="right">获取范围：</td><td colspan="2" id="endTime"></td></tr>\
-                <tr><td class="right">优惠券页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
+                <tr><td class="right">活动进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
+                <tr><td class="right">活动开始时间：</td><td id="timeA" colspan="2"></td></tr>\
+                <tr><td class="right">活动结束时间：</td><td id="timeB" colspan="2"></td></tr>\
                 <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
+                <tr><td class="right">活动说明：</td><td colspan="2">\
+                    （1）【店铺优惠券1】：3% Shopee币回扣，最高上限数额1，最低消费15，可使用总数100。（3天一个活动，做3天）<hr/>\
+                    （2）【店铺优惠券2】：折扣金额1，最低消费20，可使用总数100。（3天一个活动，做3天）<hr/>\
+                    （3）【新买家优惠券】：折扣金额2，最低消费30，可使用总数100。（3天一个活动，做3天，要过期后创建新的）<hr/>\
+                    （4）【回购买家优惠券】：折扣金额3，最低消费50，可使用总数100。（30天一个活动，做3天，要过期后创建新的）<hr/>\
+                    （5）【商品优惠券】：折扣金额10，最低消费100，可使用总数100。（3天一个活动，做3天，选100个来源销量大的商品）<hr/>\
+                    （6）【关注礼优惠券】：最低消费20，折扣金额2，可使用总数100。（30天一个活动，做30天）<hr/>\
+                    （7）【非公开优惠券】：折扣金额3，最低消费50，可使用总数100。（30天一个活动，做30天）<hr/>\
+                    （8）【直播优惠券】：折扣金额3，最低消费50，可使用总数100。（3天一个活动，做3天）\
+                </td></tr>\
             </tbody>\
             </table>\
         </div>'
@@ -61,27 +72,20 @@ var fun =
         let oo = this.obj.Aarr[this.obj.A1 - 1]
         $("#site").html(Tool.site(oo.site));
         this.obj.B2 = oo.B2;
-        this.d01()
-    },
-    ///////////////////////////////////////////////////
-    b01: function (day) {
-        let numDay = Tool.int(day), endTime = 0;
-        if (numDay) {
-            endTime = Tool.gettime("") - 60 * 60 * 24 * numDay;
-            $("#endTime").html("当【已过期】活动结束时间小于【" + Tool.js_date_time2(endTime, "-") + "】，则不再翻页。")
-        }
-        else {
-            $("#endTime").html("获取所有【已过期】活动。")
-        }
-        return endTime;
+        this.d01();
     },
     /////////////////////////////////////////////////////
     d01: function () {
-        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d02, this, this.e01)
+        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d02, this, this.e01);
     },
     d02: function () {
         $("#num").html(this.obj.B1)//第几个店铺
-        Tool.voucher_list.a01(this.obj.seller, this.obj.Aarr[this.obj.A1 - 1].site, this.obj.B1, "C", this.b01(o.params.day), this.d03, this)
+        if (this.obj.seller[this.obj.Aarr[this.obj.A1 - 1].site][this.obj.B1 - 1].isLock) {
+            this.d03();
+        }
+        else {
+            Tool.common1.a01(this.obj.seller, this.obj.Aarr[this.obj.A1 - 1].site, this.obj.B1, "C", this.d03, this);
+        }
     },
     d03: function () {
         this.obj.B1++;

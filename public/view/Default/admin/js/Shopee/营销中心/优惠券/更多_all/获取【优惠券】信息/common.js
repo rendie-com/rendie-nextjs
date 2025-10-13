@@ -46,6 +46,32 @@ Object.assign(Tool, {
                 Tool.pre(["出错2025/10/7", t])
             }
         },
+        ///////////////////////////////////
+        b01: function (val, k) {
+            if (typeof (val) == "string") {
+                val = Tool.rpsql(val)
+            }
+            else if (typeof (val) == "number") {
+                val = val;
+            }
+            else if (typeof (val) == "object") {
+                val = Tool.rpsql(JSON.stringify(val))
+            }
+            else if (typeof (val) == "boolean") {
+                val = val ? 1 : 0;
+            }
+            return val;
+        },
+        b02: function (oo) {
+            let arrL = [], arrR = [], updateArr = []
+            for (let k in oo) {
+                arrL.push("@." + k);
+                oo[k] = this.b01(oo[k], k)
+                arrR.push(oo[k]);
+                if (k != "voucher_id") { updateArr.push("@." + k + "=" + oo[k]); }
+            }
+            return [arrL, arrR, updateArr]
+        },
         /////////////////////////////////////////
         d01: function (oo) {
             Tool.x1x2(oo.progress, oo.A1, oo.A2, this.d02, this, this.e01, oo)
@@ -57,19 +83,20 @@ Object.assign(Tool, {
             } else {
                 let data = []
                 for (let i = 0; i < arr.length; i++) {
+                    let arrLRU = this.b02(arr[i]);
                     data.push({
                         action: "sqlite",
                         database: "shopee/营销中心/优惠券/" + oo.siteNum,
-                        sql: "select @.voucher_id as voucher_id from @.table where @.voucher_id=" + arr[i].voucher_id,
+                        sql: "select @.voucher_id from @.table where @.voucher_id=" + arr[i].voucher_id,
                         list: [{
                             action: "sqlite",
                             database: "shopee/营销中心/优惠券/" + oo.siteNum,
-                            sql: "update @.table set @.uptime=" + arr[i].mtime + ",@.fe_status=" + arr[i].fe_status + "  where @.voucher_id=" + arr[i].voucher_id,
+                            sql: "update @.table set " + arrLRU[2].join(",") + "  where  @.voucher_id=" + arr[i].voucher_id,
                         }],
                         elselist: [{
                             action: "sqlite",
                             database: "shopee/营销中心/优惠券/" + oo.siteNum,
-                            sql: "insert into @.table(@.voucher_id,@.name,@.voucher_code,@.start_time,@.end_time,@.discount,@.usage_quantity,@.min_price,@.max_value,@.value,@.addtime,@.uptime,@.fe_display_coin_amount,@.rule,@.fe_status)values(" + arr[i].voucher_id + "," + Tool.rpsql(arr[i].name) + "," + Tool.rpsql(arr[i].voucher_code) + "," + arr[i].start_time + "," + arr[i].end_time + "," + arr[i].discount + "," + arr[i].usage_quantity + "," + arr[i].min_price + "," + arr[i].max_value + "," + arr[i].value + "," + arr[i].ctime + "," + arr[i].mtime + "," + (arr[i].fe_display_coin_amount ? arr[i].fe_display_coin_amount : 0) + "," + Tool.rpsql(JSON.stringify(arr[i].rule)) + "," + arr[i].fe_status + ")",
+                            sql: "insert into @.table(" + arrLRU[0].join(",") + ")values(" + arrLRU[1].join(",") + ")",
                         }]
                     })
                 }
