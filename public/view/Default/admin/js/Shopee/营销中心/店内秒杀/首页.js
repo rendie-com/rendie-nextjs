@@ -104,14 +104,14 @@ var fun =
         return '\
         <table class="table mb-0">\
             <tr><td title="活动开始时间">'+ Tool.js_date_time2(start_time, "-") + '</td></tr>\
-            <tr><td title="活动结束时间">'+ Tool.js_date_time2(end_time, "-") + '</td></tr>\
+            <tr><td title="活动结束时间" class="border-bottom-0">'+ Tool.js_date_time2(end_time, "-") + '</td></tr>\
         </table>'
     },
     b06: function (addtime, uptime) {
         return '\
         <table class="table mb-0">\
             <tr><td title="添加时间">'+ Tool.js_date_time2(addtime) + '</td></tr>\
-            <tr><td title="更新时间">'+ Tool.js_date_time2(uptime) + '</td></tr>\
+            <tr><td title="更新时间" class="border-bottom-0">'+ Tool.js_date_time2(uptime) + '</td></tr>\
         </table>'
     },
     b07: function (type) {
@@ -121,7 +121,7 @@ var fun =
             <div style="position: relative;top: -8px;left: 0px;">\
                 <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
                 <ul class="dropdown-menu">\
-                    <li onclick="Tool.openR(\'jsFile=js12&site='+ o.params.site + '&num=' + o.params.num + '&type=' + type + '\')"  title="为什么要删除？答：不删除，商品就不能下架。"><a class="dropdown-item pointer">*删除</a></li>\
+                    <li onclick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=02&site=' + o.params.site + '&num=' + o.params.num + '&type=' + type + '\')"  title="为什么要删除？答：不删除，商品就不能下架。"><a class="dropdown-item pointer">*删除</a></li>\
                 </ul>\
             </div>\
             <span class="p-1" style="color:#ee4d2d;background-color:#fff1f0;">接下来的活动</span>'

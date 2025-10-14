@@ -8,30 +8,32 @@ var fun =
         seller: {},
     },
     a01: function () {
-        //o.params.site       站点
-        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 优惠券 &gt; 更多_all &gt; 创建【优惠券】") + '\
+        //o.params.jsFile         选择JS文件
+        //o.params.site           站点
+        //o.params.num            第几个店铺
+        //o.params.return         返回URL
+        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 折扣  &gt; 更多_all &gt; 创建【折扣】活动") + '\
         <div class="p-2">\
-        <table class="table table-hover">\
+        <table class="table table-hover align-middle">\
             <tbody>\
 		        <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
 		        <tr><td class="right">站点：</td><td colspan="2" id="site"></td></tr>\
 		        <tr><td class="right">站点进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
                 <tr><td class="right">第几个店铺：</td><td colspan="2" id="num"></td></tr>\
 		        <tr><td class="right">店铺进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
-                <tr><td class="right">活动进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
+                <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
                 <tr><td class="right">活动开始时间：</td><td id="timeA" colspan="2"></td></tr>\
                 <tr><td class="right">活动结束时间：</td><td id="timeB" colspan="2"></td></tr>\
                 <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr>\
                 <tr><td class="right">活动说明：</td><td colspan="2">\
-                    （1）【店铺优惠券1】：3% Shopee币回扣，最高上限数额1，最低消费15，可使用总数100。（3天一个活动，做3天）<hr/>\
-                    （2）【店铺优惠券2】：折扣金额1，最低消费20，可使用总数100。（3天一个活动，做3天）<hr/>\
-                    （3）【新买家优惠券】：折扣金额2，最低消费30，可使用总数100。（3天一个活动，做3天，要过期后创建新的）<hr/>\
-                    （4）【回购买家优惠券】：折扣金额3，最低消费50，可使用总数100。（30天一个活动，做3天，要过期后创建新的）<hr/>\
-                    （5）【商品优惠券】：折扣金额10，最低消费100，可使用总数100。（3天一个活动，做3天，选100个来源销量大的商品）<hr/>\
-                    （6）【关注礼优惠券】：最低消费20，折扣金额2，可使用总数100。（30天一个活动，做30天）<hr/>\
-                    （7）【非公开优惠券】：折扣金额3，最低消费50，可使用总数100。（30天一个活动，做30天）<hr/>\
-                    （8）【直播优惠券】：折扣金额3，最低消费50，可使用总数100。（3天一个活动，做3天）\
+                    （1）3天一个活动。<hr/>\
+                    （2）活动时间可以重叠，但同一时间商品不能重复。<hr/>\
+                    （3）每个商品都有自己的折扣。（即：指定折扣）<hr/>\
+                    （4）在指定折扣且包邮门槛下，利润达到10%的商品。（就是“能打折”的商品）<hr/>\
+                    （5）设置折扣为： 指定折扣 - 6。（例如：指定折扣50，那现在是44。为什么要减6？答：报名商品活动时shopee要求的。）<hr/>\
                 </td></tr>\
+                <tr><td class="right">准备商品：</td><td colspan="2"><textarea rows="10" class="form-control" disabled="" id="product" ></textarea></td></tr>\
+                <tr><td class="right">提交商品：</td><td colspan="2"><textarea rows="10" class="form-control" disabled="" id="discount_model_list" ></textarea></td></tr>\
             </tbody>\
             </table>\
         </div>'

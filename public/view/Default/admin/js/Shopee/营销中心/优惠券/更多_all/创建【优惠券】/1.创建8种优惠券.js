@@ -9,8 +9,8 @@ Object.assign(Tool, {
                 next: next,
                 This: This,
                 t: t,
-                siteNum: Tool.siteNum(site, num),
                 /////////////////////////////////
+                siteNum: Tool.siteNum(site, num),
                 A1: 1, A2: 8,// 要做8种活动的进度。
             }
             this.a02(oo);

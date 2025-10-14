@@ -8,7 +8,7 @@ var fun =
         siteNum: Tool.siteNum(o.params.site, o.params.num),
     },
     a01: function () {
-        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 店内秒杀列表 &gt; 状态_删除") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 店内秒杀 &gt; 状态_删除") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
@@ -57,7 +57,7 @@ var fun =
             "cnsc_shop_id=" + this.obj.seller[o.params.site][Tool.int(o.params.num) - 1].shopId,
             "cbsc_shop_region=" + o.params.site
         ]
-        let url = "https://seller.shopee.cn/api/marketing/v4/shop_flash_sale/set/?" + arr2.join("&")
+        let url = "https://seller.shopee.cn/api/marketing/v4/shop_flash_sale/set_shop_flash_sale/?" + arr2.join("&")
         let data = {
             flash_sale_id: arr1[0].flash_sale_id,
             time_slot_id: arr1[0].timeslot_id,
@@ -67,14 +67,15 @@ var fun =
         gg.postFetch(url, JSON.stringify(data), this.d04, this, arr1[0].flash_sale_id)
     },
     d04: function (t, flash_sale_id) {
+
         if (t.code == 0) {
             $("#state").html("删除成功。");
             this.d05(flash_sale_id)
         }
-        else if (t.message == "voucher not exists") {
-            $("#state").html("这个已经删除过了。");
-            this.d05(flash_sale_id)
-        }
+        // else if (t.message == "spex common error") {
+        //     $("#state").html("这个已经删除过了。");
+        //     this.d05(flash_sale_id)
+        // }
         else {
             Tool.pre(["出错222", t])
         }

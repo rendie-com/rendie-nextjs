@@ -9,7 +9,7 @@ var fun =
     },
     a01: function () {
         //o.params.site       站点
-        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 折扣列表 &gt; 获取【折扣】信息") + '\
+        let html = Tool.header(o.params.return, "Shopee &gt; 营销中心 &gt; 折扣 &gt; 更多_all &gt; 获取【折扣】信息") + '\
         <div class="p-2">\
         <table class="table table-hover">\
             <tbody>\
@@ -69,10 +69,10 @@ var fun =
         let numDay = Tool.int(day), endTime = 0;
         if (numDay) {
             endTime = Tool.gettime("") - 60 * 60 * 24 * numDay;
-            $("#endTime").html("当【已过期】活动结束时间小于【" + Tool.js_date_time2(endTime, "-") + "】，则不再翻页。")
+            $("#endTime").html("当活动结束时间小于【" + Tool.js_date_time2(endTime, "-") + "】，则不再翻页。")
         }
         else {
-            $("#endTime").html("获取所有【已过期】活动。")
+            $("#endTime").html("获取所有活动。")
         }
         return endTime;
     },

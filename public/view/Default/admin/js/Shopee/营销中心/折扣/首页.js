@@ -7,7 +7,7 @@ var fun =
         o.params.page = o.params.page ? parseInt(o.params.page) : 1;//翻页
         o.params.field = o.params.field ? o.params.field : "1";//搜索字段
         o.params.searchword = o.params.searchword ? o.params.searchword : "";//搜索关键词
-        o.params.status = o.params.status ? o.params.status : "";//状态
+        o.params.self_status = o.params.self_status ? o.params.self_status : "";//状态
         o.params.num = o.params.num ? o.params.num : "1"//该站点的第几个店
         this.a02();
     },
@@ -24,7 +24,7 @@ var fun =
         }, {
             action: "sqlite",
             database: "shopee/营销中心/折扣/" + siteNum,
-            sql: "select " + Tool.fieldAs("title,status,images,start_time,end_time,addtime") + " FROM @.table" + where + " order by @.start_time desc " + Tool.limit(10, o.params.page),
+            sql: "select " + Tool.fieldAs("title,self_status,images,start_time,end_time") + " FROM @.table" + where + " order by @.start_time desc " + Tool.limit(10, o.params.page),
         }, {
             action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
@@ -40,8 +40,8 @@ var fun =
             <tr>\
                 <td>'+ arr[i].title + '</td>\
                 <td>'+ this.b08(arr[i].images) + '</td>\
-                <td class="center">'+ this.b07(arr[i].status) + '</td>\
-                <td class="p-0">'+ this.b05(arr[i].start_time, arr[i].end_time, arr[i].addtime) + '</td>\
+                <td class="center">'+ this.b07(arr[i].self_status) + '</td>\
+                <td class="p-0">'+ this.b05(arr[i].start_time, arr[i].end_time) + '</td>\
            </tr>'
         }
         let html = Tool.header(o.params.jsFile, o.params.site) + '\
@@ -62,11 +62,11 @@ var fun =
             <th style="padding-left: 30px;position: relative;">'+ this.b02() + '促销名称</th>\
             <th>商品</th>\
             <th class="p-0 w160">\
-                <select onChange="Tool.open(\'status\',this.options[this.selectedIndex].value)" class="form-select">\
+                <select onChange="Tool.open(\'self_status\',this.options[this.selectedIndex].value)" class="form-select">\
                     <option value="">状态</option>\
-                    <option value="1" '+ (o.params.status == "1" ? 'selected="selected"' : '') + '>接下来的活动</option>\
-                    <option value="2" '+ (o.params.status == "2" ? 'selected="selected"' : '') + '>进行中的活动</option>\
-                    <option value="3" '+ (o.params.status == "3" ? 'selected="selected"' : '') + '>已过期</option>\
+                    <option value="1" '+ (o.params.self_status == "1" ? 'selected="selected"' : '') + '>1.接下来的活动</option>\
+                    <option value="2" '+ (o.params.self_status == "2" ? 'selected="selected"' : '') + '>2.进行中的活动</option>\
+                    <option value="3" '+ (o.params.self_status == "3" ? 'selected="selected"' : '') + '>3.已过期</option>\
                 </select>\
             </th>\
             <th class="w160 center">时间</th>\
@@ -77,6 +77,7 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
+            <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=02&site=' + o.params.site + "&num=" + o.params.num + '\');"><a class="dropdown-item pointer">*创建【折扣】活动</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&site=' + o.params.site + "&num=" + o.params.num + '&day=all\');"><a class="dropdown-item pointer">*获取【折扣】信息（所有）</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&site=' + o.params.site + "&num=" + o.params.num + '&day=3\');"><a class="dropdown-item pointer">*获取【折扣】信息（近3天）</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&site=' + o.params.site + "&num=" + o.params.num + '&day=30\');"><a class="dropdown-item pointer">*获取【折扣】信息（近30天）</a></li>\
@@ -89,7 +90,7 @@ var fun =
                 case "1": arr.push("@.title like '%" + o.params.searchword + "%'"); break;//优惠券名
             }
         }
-        if (o.params.status) { arr.push("@.status=" + o.params.status); }
+        if (o.params.self_status) { arr.push("@.self_status=" + o.params.self_status); }
         return (arr.length == 0 ? "" : " where " + arr.join(" and "));
     },
     b04: function (val) {
@@ -100,12 +101,11 @@ var fun =
         }
         return name
     },
-    b05: function (start_time, end_time, addtime) {
+    b05: function (start_time, end_time) {
         return '\
         <table class="table mb-0">\
             <tr><td title="优惠券领取开始时间">'+ Tool.js_date_time2(start_time) + '</td></tr>\
-            <tr><td title="优惠券领取结束时间">'+ Tool.js_date_time2(end_time) + '</td></tr>\
-            <tr><td title="添加时间">'+ Tool.js_date_time2(addtime) + '</td></tr>\
+            <tr><td title="优惠券领取结束时间" class="border-bottom-0">'+ Tool.js_date_time2(end_time) + '</td></tr>\
         </table>'
     },
     b06: function () {
@@ -119,33 +119,19 @@ var fun =
             <button class="btn btn-outline-secondary" type="button"onclick="fun.c02();">搜索</button>\
         </div>'
     },
-    b07: function (val) {
+    b07: function (self_status) {
         let str = ""
-        if (val == 1) {
-            str = '\
-            <div style="position: relative;top: -8px;left: 0px;">\
-                <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
-                <ul class="dropdown-menu">\
-                    <li onclick="Tool.openR(\'jsFile=js08&site='+ o.params.site + '&num=' + o.params.num + '&status=' + val + '\')"><a class="dropdown-item pointer">*删除</a></li>\
-                </ul>\
-            </div>\
-            <span class="p-1" style="color:#ee4d2d;background-color:#fff1f0;">接下来的活动</span>'
+        if (self_status == 1) {
+            str = this.b10("*删除", "03", self_status) + '<span class="p-1" style="color:#ee4d2d;background-color:#fff1f0;">接下来的活动</span>'
         }
-        else if (val == 2) {
-            str = '\
-            <div style="position: relative;top: -8px;left: 0px;">\
-                <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
-                <ul class="dropdown-menu">\
-                    <li onclick="Tool.openR(\'jsFile=js18&site='+ o.params.site + '&num=' + o.params.num + '&status=' + val + '\')"><a class="dropdown-item pointer">*结束</a></li>\
-                </ul>\
-            </div>\
-            <span class="p-1" style="color: #5c7;background-color:#eaf9ef;">进行中的活动</span>'
+        else if (self_status == 2) {
+            str = this.b10("*结束", "04", self_status) + '<span class="p-1" style="color: #5c7;background-color:#eaf9ef;">进行中的活动</span>'
         }
-        else if (val == 3) {
+        else if (self_status == 3) {
             str = '<span class="p-1" style="color: #666;background-color:#eee;">已过期</span>'
         }
         else {
-            str = "未知：" + val;
+            str = "未知：" + self_status;
         }
         return str;
     },
@@ -166,10 +152,20 @@ var fun =
         return '\
         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
         <ul class="dropdown-menu">\
+            <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=02\');"><a class="dropdown-item pointer">*创建【折扣】活动</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&day=all\');"><a class="dropdown-item pointer">*获取【折扣】信息（所有）</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&day=3\');"><a class="dropdown-item pointer">*获取【折扣】信息（近3天）</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=01&day=30\');"><a class="dropdown-item pointer">*获取【折扣】信息（近30天）</a></li>\
         </ul>'
+    },
+    b10: function (name, jsFile2, self_status) {
+        return '\
+        <div style="position: relative;top: -8px;left: 0px;">\
+            <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
+            <ul class="dropdown-menu">\
+                <li onclick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=' + jsFile2 + '&site=' + o.params.site + '&num=' + o.params.num + '&self_status=' + self_status + '\')"><a class="dropdown-item pointer">' + name + '</a></li>\
+            </ul>\
+        </div>'
     },
     /////////////////////////////////////////////////
     c01: function (val) {

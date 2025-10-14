@@ -68,10 +68,10 @@ var fun =
         let numDay = Tool.int(day), endTime = 0;
         if (numDay) {
             endTime = Tool.gettime("") - 60 * 60 * 24 * numDay;
-            $("#endTime").html("当【已过期】活动结束时间小于【" + Tool.js_date_time2(endTime, "-") + "】，则不再翻页。")
+            $("#endTime").html("当活动结束时间小于【" + Tool.js_date_time2(endTime, "-") + "】，则不再翻页。")
         }
         else {
-            $("#endTime").html("获取所有【已过期】活动。")
+            $("#endTime").html("获取所有活动。")
         }
         return endTime;
     },
