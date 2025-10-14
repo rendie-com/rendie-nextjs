@@ -204,11 +204,11 @@ Object.assign(Tool, {
         },
         b06: function (A1, shopName, start_time) {
             //（3）【新买家优惠券】：折扣金额2，最低消费30，可使用总数100。（3天一个活动，做3天）
-            if (start_time < Tool.gettime("")) { start_time = Tool.gettime("") + 60 * 10; }//加10分钟
-            $("#timeA").html(Tool.js_date_time2(start_time));
-            let end_time = start_time + 60 * 60 * 24 * 3;
-            $("#timeB").html(Tool.js_date_time2(end_time) + "（3天）")
-            if (this.b02(start_time)) {//活动开始时间不能在3天后
+            if (start_time < Tool.gettime("")) {//这个活动要做完了才能做下一个活动
+                start_time = Tool.gettime("") + 60 * 10; //加10分钟
+                $("#timeA").html(Tool.js_date_time2(start_time));
+                let end_time = start_time + 60 * 60 * 24 * 3;
+                $("#timeB").html(Tool.js_date_time2(end_time) + "（3天）")
                 let voucher_code = shopName.substring(0, 4).toUpperCase() + Tool.randomRange(10000, 99999);
                 let timeStr = Tool.userDate13(start_time * 1000, "/").substr(5) + " - " + Tool.userDate13(end_time * 1000 + 1000, "/").substr(5);
                 let data = {
@@ -252,11 +252,11 @@ Object.assign(Tool, {
         },
         b07: function (A1, shopName, start_time) {
             //（4）【回购买家优惠券】：折扣金额3，最低消费50，可使用总数100。（30天一个活动，做3天）
-            if (start_time < Tool.gettime("")) { start_time = Tool.gettime("") + 60 * 10; }//加10分钟
-            $("#timeA").html(Tool.js_date_time2(start_time));
-            let end_time = start_time + 60 * 60 * 24 * 3;
-            $("#timeB").html(Tool.js_date_time2(end_time) + "（3天）")
-            if (this.b02(start_time)) {//活动开始时间不能在3天后
+            if (start_time < Tool.gettime("")) {
+                start_time = Tool.gettime("") + 60 * 10; //加10分钟
+                $("#timeA").html(Tool.js_date_time2(start_time));
+                let end_time = start_time + 60 * 60 * 24 * 3;
+                $("#timeB").html(Tool.js_date_time2(end_time) + "（3天）")
                 let voucher_code = shopName.substring(0, 4).toUpperCase() + Tool.randomRange(10000, 99999);
                 let timeStr = Tool.userDate13(start_time * 1000, "/").substr(5) + " - " + Tool.userDate13(end_time * 1000 + 1000, "/").substr(5);
                 let data = {
