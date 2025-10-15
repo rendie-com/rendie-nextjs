@@ -18,7 +18,6 @@
             path + '营销工具/创建【折扣活动】/common.js',
             path + '营销工具/创建【折扣活动】/index.js'
         ])); break;
-
         case "js17": Tool.scriptArr(loginPath.concat([path + '营销工具/创建【套装优惠】.js'])); break;
         case "js25": Tool.scriptArr(loginPath.concat([path + '营销工具/创建【运费促销】.js'])); break;
         case "js20": Tool.scriptArr(loginPath.concat([

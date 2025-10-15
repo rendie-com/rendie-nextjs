@@ -148,10 +148,10 @@ Object.assign(Tool, {
             gg.postFetch(url, JSON.stringify(data), this.d04, this, oo)
         },
         d04: function (t, oo) {
-            if (t.error == 0) {
+            if (t.error == 0 || t.error == 1400100025) {
                 //1400101314     表示：iscount model price invalid（折扣型号价格无效）
                 //1400101307     表示：some item has participated in promotion(某些项目已参与促销)
-                //1400100025     表示：promo_price cannot be more than or equal to item's normal price [促销价格不能大于或等于商品的正常价格]
+                //1400100025     表示：promo_price cannot be more than or equal to item's normal price [促销价格不能大于或等于商品的正常价格]（注：这个活动是成功的）
                 this.d05(oo)
             }
             else {

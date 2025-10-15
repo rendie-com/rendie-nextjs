@@ -14,10 +14,6 @@ var fun =
             action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
-        }, {
-            action: o.DEFAULT_DB,
-            database: "main",
-            sql: "select @.value as value FROM @.config where @.name='" + o.params.template + "'",
         }]
         Tool.ajax.a01(data, this.a02, this);
     },
@@ -29,7 +25,7 @@ var fun =
             <table class="table align-middle">\
             <tbody>\
                 <tr><td class="right w200">商品活动：</td><td>'+ this.b03() + '</td></tr>\
-                <tr><td class="right">营销工具：</td><td class="p-0">'+ this.b01(t[1]) + '</td></tr>\
+                <tr><td class="right">营销工具：</td><td class="p-0">'+ this.b01() + '</td></tr>\
                 <tr><td class="right">与买家互动：</td><td>'+ this.b02() + '</td></tr>\
                 <tr>\
                     <td class="right">跨境活动报名：</td>\
@@ -41,9 +37,7 @@ var fun =
         Tool.html(null, null, html);
     },
     //营销工具
-    b01: function (t1) {
-        let config = JSON.parse(t1[0].value)["营销中心"]
-        if (!config) config = {}
+    b01: function () {
         return '\
         <table class="table mb-0 center table-hover align-top">\
             <thead class="table-light">\
@@ -54,23 +48,6 @@ var fun =
                 </tr>\
             </thead>\
             <tbody>\
-                <tr>\
-                    <td style="padding-left: 20px;position: relative;">\
-                        <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
-		                <ul class="dropdown-menu">\
-                            <li onClick="Tool.openR(\'jsFile=js05&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">*创建【折扣活动】</a></li>\
-		                </ul>\
-                        折扣活动\
-                    </td>\
-                    <td>'+ this.b05(config[this.obj.siteNum]) + '</td>\
-                    <td class="left">\
-                    （1）2天一个活动，做10天。<br/>\
-                    （2）活动时间可以重叠，但同一时间商品不能重复。<br/>\
-                    （3）每个商品都有自己的折扣。（即：指定折扣）<br/>\
-                    （4）在指定折扣且包邮门槛下，利润达到10%的商品。（就是“能打折”的商品）<br/>\
-                    （5）设置折扣为： 指定折扣 - 6。（例如：指定折扣50，那现在是44。为什么要减6？答：报名商品活动时shopee要求的。）\
-                    </td>\
-                </tr>\
                 <tr>\
                     <td style="padding-left: 20px;position: relative;">\
                         <button title="操作" class="menu-button" data-bs-toggle="dropdown" aria-expanded="false"><div></div><div></div><div></div></button>\
@@ -90,7 +67,7 @@ var fun =
 		                </ul>\
                         加购优惠\
                     </td>\
-                    <td>'+ this.b06(config[this.obj.siteNum]) + '</td>\
+                    <td></td>\
                     <td class="left">\
                     （1）做近30天内<br/>\
                     （2）为每个商品做一个加购优惠，商加商品选100个来源销量大的商品。<br/>\
@@ -181,16 +158,6 @@ var fun =
         <br/>例如1：原价100卖130利润率是30%，定价185.71<sup>-30%</sup>=130，那185.71<sup>-35%</sup>=121，利润率只有21%了。\
         <br/>例如2：原价100卖130利润率是30%，定价650<sup>-80%</sup>=130，那650<sup>-85%</sup>=97.5，这时就亏了。'
     },
-    b05: function (oo) {
-        if (!oo) oo = {}
-        if (!oo["折扣活动"]) oo["折扣活动"] = 0
-        return Tool.js_date_time2(oo["折扣活动"]);
-    },
-    b06: function (oo) {
-        if (!oo) oo = {};
-        if (!oo["加购优惠"]) oo["加购优惠"] = 0
-        return Tool.js_date_time2(oo["加购优惠"]);
-    }
 }
 fun.a01();
 
