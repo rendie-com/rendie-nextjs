@@ -159,16 +159,16 @@ Object.assign(Tool, {
                 "page_number=" + oo.A1,
                 "page_size=12",
                 "list_type=all",
-                "count_list_types=sold_out,banned,deboosted,deleted,unlisted,reviewing",
+                "need_ads=true",
                 "cnsc_shop_id=" + oo.seller[oo.site][oo.num - 1].shopId,
                 "cbsc_shop_region=" + oo.site
             ]
-            let url = "https://seller.shopee.cn/api/v3/mpsku/list/get_product_list?" + arr.join("&")
+            let url = "https://seller.shopee.cn/api/v3/opt/mpsku/list/v2/get_product_list?" + arr.join("&")
             $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>');
             $("#state").html("正在获取第" + oo.A1 + "页商品。。。");
             gg.getFetch(url, "json", this.d02, this, oo);
         },
-        d02: function (o1, o2) {
+        d02: function (o1, o2) {            
             if (o1.code == 0) {
                 o2.A2 = Math.ceil(o1.data.page_info.total / o1.data.page_info.page_size)
                 o2.products = o1.data.products
@@ -212,7 +212,7 @@ Object.assign(Tool, {
                     Tool.rpsql(oo.products[i].parent_sku),
                     oo.products[i].create_time,
                     oo.products[i].modify_time,
-                    oo.products[i].model_list[0].price_info.input_normal_price,
+                    oo.products[i].model_list[0].price_detail.origin_price,//原价
                     this.b01(oo.products[i].promotion),
                     this.b02(oo.products[i].promotion), //是否已报名活动
                     this.b06(oo.products[i].model_list), //销量
