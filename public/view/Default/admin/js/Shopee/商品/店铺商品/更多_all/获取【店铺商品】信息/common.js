@@ -178,10 +178,10 @@ Object.assign(Tool, {
             //     $("#state").html("请不要要求太频繁");
             //     //Tool.Time("name", 1000, this.d03, this,);
             //}
-            else if (o1.error == 90309999 || o1.message == null) {
-                $("#state").html("访问不了,重试看行不行。");
-                Tool.Time("name", 1000, this.d01, this, o2);
-            }
+            // else if (o1.error == 90309999 || o1.message == null) {
+            //     $("#state").html("访问不了,重试看行不行。");
+            //     Tool.Time("name", 1000, this.d01, this, o2);
+            // }
             else {
                 Tool.pre(["出错：2025/8/12", o1])
             }
