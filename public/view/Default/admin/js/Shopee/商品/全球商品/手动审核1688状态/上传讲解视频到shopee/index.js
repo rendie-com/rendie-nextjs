@@ -2,18 +2,17 @@ var fun =
 {
     obj: {
         A1: 1, A2: 0,
-        seller: {},
     },
     a01: function () {
-        let html = Tool.header(o.params.return, 'Shopee &gt; 商品 &gt; 全球商品 &gt; 手动审核1688状态 &gt; 上传主视频到shopee') + '\
+        let html = Tool.header(o.params.return, 'Shopee &gt; 商品 &gt; 全球商品 &gt; 手动审核1688状态 &gt; 上传讲解视频到shopee') + '\
         <div class="p-2">\
             <table class="table table-hover">\
             <tbody>\
 		        <tr><td class="right w150">商品条进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		        <tr><td class="right">商品编码：</td><td id="proid" colspan="2"></td></tr></tbody>\
 		        <tr><td class="right">1688详情ID：</td><td id="ManualReview_1688_fromid" colspan="2"></td></tr></tbody>\
-		        <tr><td class="right">上传视频前地址：</td><td id="videoUrlA" colspan="2"></td></tr></tbody>\
-		        <tr><td class="right">上传视频后地址：</td><td id="videoUrlB" colspan="2"></td></tr></tbody>\
+		        <tr><td class="right">上传视频前地址：</td><td id="ExplanationVideoA" colspan="2"></td></tr></tbody>\
+		        <tr><td class="right">上传视频后地址：</td><td id="ExplanationVideoB" colspan="2"></td></tr></tbody>\
 		        <tr><td class="right">提示：</td><td id="state" colspan="2"></td></tr></tbody>\
             </table>\
         </div>'
@@ -28,7 +27,7 @@ var fun =
     },
     a04: function () {
         $("#state").html("正在获得配置参数");
-        let where = " where @.isup=1 and @.ManualReview_1688_status=1 and @.ManualReview_1688_video_status>3"
+        let where = " where @.isup=1 and @.ManualReview_1688_status=1 and @.ManualReview_1688_ExplanationVideo_status>3"
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
@@ -36,11 +35,11 @@ var fun =
             list: [{
                 action: "sqlite",
                 database: "1688/采集箱/商品列表/详情/${id_1000:ManualReview_1688_fromid}",
-                sql: "select " + Tool.fieldAs("videoUrl") + " FROM @.table where @.fromid=${ManualReview_1688_fromid}"
+                sql: "select " + Tool.fieldAs("ExplanationVideo") + " FROM @.table where @.fromid=${ManualReview_1688_fromid}"
             }, {
                 action: "sqlite",
                 database: "shopee/商品/全球商品/${proid_100:proid}",
-                sql: "select " + Tool.fieldAs("video") + " FROM @.table where @.proid='${proid}'"
+                sql: "select " + Tool.fieldAs("ExplanationVideo") + " FROM @.table where @.proid='${proid}'"
             }]
         }]
         if (this.obj.A2 == 0) {
@@ -49,7 +48,7 @@ var fun =
                 database: "shopee/商品/全球商品",
                 sql: "select count(1) as count FROM @.table" + where,
             })
-        }       
+        }
         Tool.ajax.a01(data, this.a05, this)
     },
     a05: function (t) {
@@ -60,18 +59,20 @@ var fun =
     d01: function (arr) {
         $("#proid").html(arr[0].proid)
         $("#ManualReview_1688_fromid").html('<a href="https://detail.1688.com/offer/' + arr[0].ManualReview_1688_fromid + '.html" target="_blank">' + arr[0].ManualReview_1688_fromid + '</a>')
-        let videoUrl = arr[0].list[0][0].videoUrl
-        $("#videoUrlA").html('<a href="' + videoUrl + '" target="_blank">' + videoUrl + '</a>')
-        this.d02(videoUrl, arr[0])
+        if (arr[0].list[0][0].ExplanationVideo) { arr[0].list[0][0].ExplanationVideo = "https:" + arr[0].list[0][0].ExplanationVideo; }
+        let ExplanationVideo = arr[0].list[0][0].ExplanationVideo
+        $("#ExplanationVideoA").html('<a href="' + ExplanationVideo + '" target="_blank">' + ExplanationVideo + '</a>');
+        this.d02(ExplanationVideo, arr[0])
     },
-    d02: function (videoUrl, oo) {
-        if (oo.list[1][0].video || !videoUrl) {
-            //oo.list[1][0].video           表示已上传过视频
-            //!videoUrl                     表示1688都没有视频
+    d02: function (ExplanationVideo, oo) {
+        if (oo.list[1][0].ExplanationVideo || !ExplanationVideo) {
+            //oo.list[1][0].ExplanationVideo        表示已上传过视频
+            //!ExplanationVideo                     表示1688都没有视频
+            $("#state").html("执行跳过")
             this.d04()
         }
         else {
-            Tool.uploadShopeeVideo.a01(videoUrl, this.obj.seller, "my", 1, this.d03, this, oo)
+            Tool.uploadShopeeVideo.a01(ExplanationVideo, this.obj.seller, "my", 1, this.d03, this, oo)
         }
     },
     d03: function (t, oo) {
@@ -82,7 +83,7 @@ var fun =
             let data = [{
                 action: "sqlite",
                 database: "shopee/商品/全球商品/" + Tool.pronum(oo.proid, 100),
-                sql: "update @.table set @.video=" + Tool.rpsql(JSON.stringify(t)) + " where @.proid='" + oo.proid + "'"
+                sql: "update @.table set @.ExplanationVideo=" + Tool.rpsql(JSON.stringify(t)) + " where @.proid='" + oo.proid + "'"
             }]
             Tool.ajax.a01(data, this.d04, this)
         }
@@ -90,14 +91,14 @@ var fun =
     d04: function (t) {
         this.obj.A1++;
         $("#state").html("下一条。。。")
-        $("#B2,#ManualReview_1688_fromid,#videoUrlA,#videoUrlB,#proid").html("");
+        $("#ManualReview_1688_fromid,#ExplanationVideoA,#ExplanationVideoB,#proid").html("");
         this.a04();
     },
-    d05: function (ManualReview_1688_video_status, ManualReview_1688_fromid) {
+    d05: function (ManualReview_1688_ExplanationVideo_status, ManualReview_1688_fromid) {
         let data = [{
             action: "sqlite",
             database: "shopee/商品/全球商品",
-            sql: "update @.table set @.ManualReview_1688_video_status=" + ManualReview_1688_video_status + " where @.ManualReview_1688_fromid=" + ManualReview_1688_fromid
+            sql: "update @.table set @.ManualReview_1688_ExplanationVideo_status=" + ManualReview_1688_ExplanationVideo_status + " where @.ManualReview_1688_fromid=" + ManualReview_1688_fromid
         }]
         Tool.ajax.a01(data, this.d04, this)
     },

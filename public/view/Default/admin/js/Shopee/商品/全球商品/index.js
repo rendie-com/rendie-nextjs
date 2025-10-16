@@ -18,7 +18,7 @@
             path + '更多/发布到【店铺商品】中去/index.js'
         ])); break;
         case "03": Tool.scriptArr([path + '更多/把【Shopee广告】中的关键词同步过来.js']); break;
-        case "04": Tool.scriptArr([path + '更多/把速卖通的【折扣】同步过来.js']); break;
+        case "04": Tool.scriptArr([path + '更多/修复异常的【折扣】.js']); break;
         case "05": Tool.scriptArr([path + '更多/把1688的【手动审核1688状态】同步过来.js']); break;
         case "06": Tool.scriptArr([path + '更多/去掉【标题】和【详情】中的违禁词.js']); break;
         case "07": Tool.scriptArr(loginPath.concat([
@@ -33,15 +33,17 @@
         ])); break;
         case "08": Tool.scriptArr(loginPath.concat([
             'admin/js/common_img/index.js',
-            'admin/js/common_img/uploadFile.js',
+            //'admin/js/common_img/uploadFile.js',
             path + 'common_self_ArrayBuffer.js',
+            path + '手动审核1688状态/上传讲解视频到shopee/1.上传视频到shopee.js',
             path + '手动审核1688状态/上传主视频到shopee.js'
         ])); break;
         case "09": Tool.scriptArr(loginPath.concat([
             'admin/js/common_img/index.js',
-            'admin/js/common_img/uploadFile.js',
+            //'admin/js/common_img/uploadFile.js',
             path + 'common_self_ArrayBuffer.js',
-            path + '手动审核1688状态/上传讲解视频到shopee.js'
+            path + '手动审核1688状态/上传讲解视频到shopee/1.上传视频到shopee.js',
+             path + '手动审核1688状态/上传讲解视频到shopee/index.js'
         ])); break;
         case "10": Tool.scriptArr([path + '手动审核1688状态/重新采集1688商品状态.js']); break;
         case "11": Tool.scriptArr([

@@ -35,16 +35,16 @@ var fun =
     },
     a02: function () {
         //ManualReview=9    手动审核状态：图片且详情审核通过
-        let where = " where @.ManualReview_1688>0"
+        let where = " where @.ManualReview_1688_status>0"
         //let where = " where @.proid='R368542'"
         let data = [{
             action: "sqlite",
-            database: "1688",
-            sql: "select " + Tool.fieldAs("ManualReview_1688,manualreview_1688_fromid,ManualReview_video_status,ManualReview_ExplanationVideo_status,proid,ManualReview_1688_fromid") + " FROM @.product" + where + Tool.limit(30, this.obj.A1),
+            database: "1688/采集箱/平台关联",
+            sql: "select " + Tool.fieldAs("ManualReview_1688_status,manualreview_1688_fromid,ManualReview_video_status,ManualReview_ExplanationVideo_status,proid,ManualReview_1688_fromid") + " FROM @.table" + where + Tool.limit(30, this.obj.A1),
             list: [{
                 action: "sqlite",
-                database: "1688",
-                sql: "select " + Tool.fieldAs("categoryId,categoryId1,state,unitWeight,subject") + " FROM @.proList where @.fromid=${manualreview_1688_fromid} limit 1",
+                database: "1688/采集箱/商品列表/${id_100:manualreview_1688_fromid}",
+                sql: "select " + Tool.fieldAs("categoryId,categoryId1,state,unitWeight,subject") + " FROM @.table where @.fromid=${manualreview_1688_fromid} limit 1",
                 list: [{
                     action: "sqlite",
                     database: "1688/类目/现货类目",
@@ -59,19 +59,18 @@ var fun =
         if (this.obj.A2 == 0) {
             data.push({
                 action: "sqlite",
-                database: "1688",
-                sql: "select count(1) as total FROM @.product" + where,
+                database: "1688/采集箱/平台关联",
+                sql: "select count(1) as count FROM @.table" + where,
             })
         }
         $("#state").html("正在获取敦煌商品...");
         Tool.ajax.a01(data, this.a03, this);
     },
     a03: function (t) {
-        if (this.obj.A2 == 0) { this.obj.A2 = Math.ceil(t[1][0].total / 30); }
+        if (this.obj.A2 == 0) { this.obj.A2 = Math.ceil(t[1][0].count / 30); }
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a04, this, null, t[0]);
     },
     a04: function (arr) {
-
         let data = [];
         for (let i = 0; i < arr.length; i++) {
             let bindShopee = 0;
@@ -81,7 +80,7 @@ var fun =
             let updateArr = [
                 "@.ManualReview_1688_ExplanationVideo_status=" + arr[i].ManualReview_ExplanationVideo_status,
                 "@.ManualReview_1688_video_status=" + arr[i].ManualReview_video_status,
-                "@.ManualReview_1688_status=" + arr[i].ManualReview_1688,
+                "@.ManualReview_1688_status=" + arr[i].ManualReview_1688_status,
                 "@.manualreview_1688_fromid=" + arr[i].manualreview_1688_fromid,
                 "@.ManualReview_1688_state=" + (arr[i].list[0][0].state ? arr[i].list[0][0].state : 0),
                 "@.ManualReview_1688_categoryId=" + (arr[i].list[0][0].categoryId ? arr[i].list[0][0].categoryId : 0),

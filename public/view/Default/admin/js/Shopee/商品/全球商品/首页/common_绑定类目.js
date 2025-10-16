@@ -38,7 +38,7 @@ Object.assign(Tool, {
             //对类目路径中的名称，都在【shopee】中搜索一下
             let data = [{
                 action: "sqlite",
-                database: "shopee/类目/类目",
+                database: "shopee/类目/index",
                 sql: "select @.fromid as fromid FROM @.table where " + nArr.join(" or "),
                 //翻译成中文
                 list: this.b04("${fromid}")
@@ -46,7 +46,7 @@ Object.assign(Tool, {
             if (this.obj._1688.bindshopee == 0) {
                 data.push({
                     action: "sqlite",
-                    database: "shopee/类目/类目",
+                    database: "shopee/类目/index",
                     sql: "select " + Tool.fieldAs("name,fromid,isleaf") + " FROM @.table where @.upid=0 order by @.sort asc",
                 })
             }
@@ -114,57 +114,57 @@ Object.assign(Tool, {
         b02: function (fromid) {
             let data = [{
                 action: "sqlite",
-                database: "shopee/类目/类目",
+                database: "shopee/类目/index",
                 sql: "select " + Tool.fieldAs("upid,fromid") + " FROM @.table where @.fromid=" + fromid + " limit 1",
                 list: [{
                     action: "sqlite",
-                    database: "shopee/类目/类目",
+                    database: "shopee/类目/index",
                     sql: "select " + Tool.fieldAs("upid,fromid") + " FROM @.table where @.fromid=${upid} limit 1",
                     list: [{
                         action: "sqlite",
-                        database: "shopee/类目/类目",
+                        database: "shopee/类目/index",
                         sql: "select " + Tool.fieldAs("upid,fromid") + " FROM @.table where @.fromid=${upid} limit 1",
                         list: [{
                             action: "sqlite",
-                            database: "shopee/类目/类目",
+                            database: "shopee/类目/index",
                             sql: "select " + Tool.fieldAs("upid,fromid") + " FROM @.table where @.fromid=${upid} limit 1",
                             list: [{
                                 action: "sqlite",
-                                database: "shopee/类目/类目",
+                                database: "shopee/类目/index",
                                 sql: "select " + Tool.fieldAs("upid,fromid") + " FROM @.table where @.fromid=${upid} limit 1",
                                 list: [{
                                     action: "sqlite",
-                                    database: "shopee/类目/类目",
+                                    database: "shopee/类目/index",
                                     sql: "select " + Tool.fieldAs("upid,fromid") + " FROM @.table where @.fromid=${upid} limit 1",
                                     list: []
                                 },
                                 {
                                     action: "sqlite",
-                                    database: "shopee/类目/类目",
+                                    database: "shopee/类目/index",
                                     sql: "select " + Tool.fieldAs("name,fromid,isleaf") + " FROM @.table where @.upid=${upid} order by @.sort asc"
                                 }]
                             },
                             {
                                 action: "sqlite",
-                                database: "shopee/类目/类目",
+                                database: "shopee/类目/index",
                                 sql: "select " + Tool.fieldAs("name,fromid,isleaf") + " FROM @.table where @.upid=${upid} order by @.sort asc"
                             }]
                         },
                         {
                             action: "sqlite",
-                            database: "shopee/类目/类目",
+                            database: "shopee/类目/index",
                             sql: "select " + Tool.fieldAs("name,fromid,isleaf") + " FROM @.table where @.upid=${upid} order by @.sort asc"
                         }]
                     },
                     {
                         action: "sqlite",
-                        database: "shopee/类目/类目",
+                        database: "shopee/类目/index",
                         sql: "select " + Tool.fieldAs("name,fromid,isleaf") + " FROM @.table where @.upid=${upid} order by @.sort asc"
                     }]
                 },
                 {
                     action: "sqlite",
-                    database: "shopee/类目/类目",
+                    database: "shopee/类目/index",
                     sql: "select " + Tool.fieldAs("name,fromid,isleaf") + " FROM @.table where @.upid=${upid} order by @.sort asc"
                 }]
             }]
@@ -181,23 +181,23 @@ Object.assign(Tool, {
         b04: function (fromid) {
             return [{
                 action: "sqlite",
-                database: "shopee/类目/类目",
+                database: "shopee/类目/index",
                 sql: "select " + Tool.fieldAs("name,upid") + " FROM @.table where @.fromid=" + fromid + " limit 1",
                 list: [{
                     action: "sqlite",
-                    database: "shopee/类目/类目",
+                    database: "shopee/类目/index",
                     sql: "select " + Tool.fieldAs("name,upid") + " FROM @.table where @.fromid=${upid} limit 1",
                     list: [{
                         action: "sqlite",
-                        database: "shopee/类目/类目",
+                        database: "shopee/类目/index",
                         sql: "select " + Tool.fieldAs("name,upid") + " FROM @.table where @.fromid=${upid} limit 1",
                         list: [{
                             action: "sqlite",
-                            database: "shopee/类目/类目",
+                            database: "shopee/类目/index",
                             sql: "select " + Tool.fieldAs("name,upid") + " FROM @.table where @.fromid=${upid} limit 1",
                             list: [{
                                 action: "sqlite",
-                                database: "shopee/类目/类目",
+                                database: "shopee/类目/index",
                                 sql: "select " + Tool.fieldAs("name,upid") + " FROM @.table where @.fromid=${upid} limit 1"
                             }]
                         }]
@@ -250,7 +250,7 @@ Object.assign(Tool, {
                 this.obj.searchword = val
                 let data = [{
                     action: "sqlite",
-                    database: "shopee/类目/类目",
+                    database: "shopee/类目/index",
                     sql: "select @.fromid as fromid FROM @.table where @.name like '%" + val.replace(/'/g, "''") + "%'",
                     //翻译成中文
                     list: this.b04("${fromid}")
@@ -270,7 +270,7 @@ Object.assign(Tool, {
             This.html('<option>加载中。。。</option>');
             let data = [{
                 action: "sqlite",
-                database: "shopee/类目/类目",
+                database: "shopee/类目/index",
                 sql: "select " + Tool.fieldAs("name,fromid,isleaf") + " FROM @.table where @.upid=" + val + " order by @.sort asc",
             }]
             Tool.ajax.a01(data, this.c05, this, This)

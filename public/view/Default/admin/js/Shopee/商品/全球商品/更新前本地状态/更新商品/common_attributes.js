@@ -14,7 +14,7 @@ Object.assign(Tool, {
         a02: function (fromid, oo) {
             let data = [{
                 action: "sqlite",
-                database: "shopee/类目/类目",
+                database: "shopee/类目/index",
                 sql: "select @.upid as upid FROM @.table where @.fromid=" + fromid,
             }, {
                 action: "sqlite",
@@ -33,7 +33,7 @@ Object.assign(Tool, {
         a04: function (oo) {
             let data = [{
                 action: "sqlite",
-                database: "shopee/类目/类目",
+                database: "shopee/类目/index",
                 sql: "select @.upid as upid FROM @.table where @.fromid=" + oo.category_path[0],
             }]
             Tool.ajax.a01(data, this.a05, this, oo)

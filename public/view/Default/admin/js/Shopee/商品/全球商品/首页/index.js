@@ -97,7 +97,7 @@ var fun =
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=06\');"><a class="dropdown-item pointer">去掉【标题】和【详情】中的违禁词</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=02\');"><a class="dropdown-item pointer">*发布到【店铺商品】中去</a></li>\
             <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=03\');" title="字段有：主推关键词、启用的关键词\n为什么要同步？答：方便删除后，再发布商品。"><a class="dropdown-item pointer">把【Shopee广告】中的关键词同步过来</a></li>\
-            <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=04\');"><a class="dropdown-item pointer">把速卖通的【折扣】同步过来</a></li>\
+            <li onClick="Tool.openR(\'jsFile='+ o.params.jsFile + '&jsFile2=04\');"><a class="dropdown-item pointer">修复异常的【折扣】</a></li>\
     	</ul>'
     },
     b03: function () {

@@ -74,7 +74,7 @@ Object.assign(Tool, {
         //////////////////////////////////////
         d01: function (publish_result, oo) {
             if (publish_result.published_count == 1) {
-                this.d02("update @.table set @.is" + Tool.siteNum(oo.site, oo.num + 1) + "=1 where @.proid='" + oo.proid + "'", oo);
+                this.d02("update @.table set @.is" + oo.site + "=1 where @.proid='" + oo.proid + "'", oo);
             }
             else if (publish_result.failed_count == 1) {//||publish_result.unpublished_count == 1
                 // @.penalty_type=8         更新后违规类型【8.发布商品失败】

@@ -5,7 +5,7 @@ Object.assign(Tool, {
         a01: function () {
             let data = [{
                 action: "sqlite",
-                database: "shopee/类目/类目",
+                database: "shopee/类目/index",
                 sql: "select " + Tool.fieldAs("isleaf,name,fromid") + " FROM @.table where @.upid=0 order by @.sort asc",
             }]
             Tool.ajax.a01(data, this.a02, this)
@@ -47,7 +47,7 @@ Object.assign(Tool, {
             This.html('<option>加载中。。。</option>');
             let data = [{
                 action: "sqlite",
-                database: "shopee/类目/类目",
+                database: "shopee/类目/index",
                 sql: "select " + Tool.fieldAs("name,fromid,isleaf") + " FROM @.table where @.upid=" + val + " order by @.sort asc",
             }]
             Tool.ajax.a01(data, this.c03, this, This)

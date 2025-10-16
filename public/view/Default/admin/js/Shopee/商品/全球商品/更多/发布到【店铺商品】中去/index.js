@@ -20,7 +20,7 @@ var fun =
             database: "1688/类目/现货类目",
             sql: "select " + Tool.fieldAs("fromid,name") + " FROM @.table where @.upid=0 order by @.sort asc",
         }, {
-            action: "sqlite",
+            action: o.DEFAULT_DB,
             database: "shopee/卖家账户",
             sql: "select @.config as config FROM @.table where @.isdefault=1 limit 1",
         }]

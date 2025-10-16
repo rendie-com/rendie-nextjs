@@ -10,19 +10,7 @@ Object.assign(Tool, {
                 This: This,
                 t: t
             }
-            let data = [{
-                action: "fs",
-                fun: "access_sqlite",
-                database: "shopee/物流方式",
-                mode: 0,
-                elselist: [{
-                    action: "fs",
-                    fun: "download_sqlite",
-                    urlArr: ["https://raw.githubusercontent.com/rendie-com/rendie-com/refs/heads/main/sqlite3/shopee/物流方式.db"],
-                    database: "shopee/物流方式",
-                }]
-            }]
-            Tool.ajax.a01(data, this.a02, this, oo);
+            Tool.download_sqlite.a01(["shopee/物流方式"], this.a02, this,oo)           
         },
         a02: function (t, oo) {
             let data = [{
