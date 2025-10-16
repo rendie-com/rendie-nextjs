@@ -55,13 +55,11 @@
             path + '更多_all/下架/index.js'
         ])); break;
         case "10": Tool.scriptArr(loginPath.concat([
-            '../../plugins/clipboard.min.js',
             path + '../全球商品/common_self_ArrayBuffer.js',
             'admin/js/common_img/index.js',
-            'admin/js/hid.js',
             path + '更多_all/生成视频/1.获取信息.js',
             path + '更多_all/生成视频/2.生成视频.js',
-            path + '更多_all/生成视频/3.上传视频.js',
+            'admin/js/Shopee/商品/全球商品/手动审核1688状态/上传讲解视频到shopee/1.上传视频到shopee.js',
             path + '更多_all/生成视频/index.js'
         ])); break;
         case "11":

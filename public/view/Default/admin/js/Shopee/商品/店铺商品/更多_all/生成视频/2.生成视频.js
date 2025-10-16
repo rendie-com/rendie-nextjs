@@ -16,6 +16,7 @@ Object.assign(Tool, {
             let o1 = oo.product.list[0][0], o2 = oo.product.list[2][0]
             if (o1.ManualReview_1688_video_status == 7) {
                 if (o2.video) {
+                    //有现成的视频，可以直接用。
                     Tool.apply(JSON.parse(o2.video), oo.next, oo.This, oo.t);
                 }
                 else {
@@ -24,6 +25,7 @@ Object.assign(Tool, {
             }
             else if (o1.ManualReview_1688_ExplanationVideo_status == 7) {
                 if (o2.ExplanationVideo) {
+                    //有现成的视频，可以直接用。
                     Tool.apply(JSON.parse(o2.ExplanationVideo), oo.next, oo.This, oo.t);
                 }
                 else {
@@ -31,15 +33,17 @@ Object.assign(Tool, {
                 }
             }
             else if (oo.product.list[1][0] && oo.product.list[1][0].video) {
+                //以前有生成过视频，可以直接用。
                 Tool.apply(JSON.parse(oo.product.list[1][0].video), oo.next, oo.This, oo.t);
             }
             else {
+                //要生成视频
                 this.a03(o2, o1.proid, oo)
             }
         },
         a03: function (o2, proid, oo) {
-            //能到这里，就说明，都没有审核通过，说明：不应该有上传到shopee的视频。所以要清空【@.video】和【@.ExplanationVideo】字段内容
             if (o2.video || o2.ExplanationVideo) {
+                //能到这里，就说明，都没有审核通过，说明：不应该有上传到shopee的视频。所以要清空【@.video】和【@.ExplanationVideo】字段内容
                 let data = [{
                     action: "sqlite",
                     database: "shopee/商品/全球商品/" + Tool.pronum(proid, 100),
@@ -106,7 +110,7 @@ Object.assign(Tool, {
         a07: function (t, oo) {
             let videoUrl = location.origin + t[0].substring(6)
             $("#videoUrlA").html('<video height="400" controls=""><source src="' + videoUrl + '" type="video/mp4">您的浏览器不支持 HTML5 video 标签。</video>')
-            Tool.apply(t[0], oo.next, oo.This, oo.t);
+            Tool.apply(videoUrl, oo.next, oo.This, oo.t);
         },
     }
 })

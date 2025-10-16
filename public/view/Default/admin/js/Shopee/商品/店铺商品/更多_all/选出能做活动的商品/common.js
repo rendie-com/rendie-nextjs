@@ -41,10 +41,10 @@ Object.assign(Tool, {
             let o2 = o1.list[0][0], o3 = { iserr: false, note: "非异常", ExceptionType: 0 };
             if (o1.minimumorder != o1.min_purchase_limit) {
                 o3 = { iserr: true, note: "最低购买量_不匹配", ExceptionType: 1 }
-            } else if (o1.newdiscount >= 80) {
-                o3 = { iserr: true, note: "最终折扣>=80", ExceptionType: 2 }
-            } else if (o1.newdiscount <= 8) {
-                o3 = { iserr: true, note: "最终折扣<=8", ExceptionType: 3 }
+            } else if (o1.newdiscount >= 56) {
+                o3 = { iserr: true, note: "最终折扣>=56", ExceptionType: 2 }
+            } else if (o1.newdiscount < 8) {
+                o3 = { iserr: true, note: "最终折扣<8", ExceptionType: 3 }
             } else if (o2.ManualReview != 9) {
                 //9         表示【图片且详情审核通过】
                 o3 = { iserr: true, note: "敦煌手动审核状态_不匹配", ExceptionType: 4 }

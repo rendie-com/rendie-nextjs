@@ -42,20 +42,25 @@ Object.assign(Tool, {
             Tool.x1x2(oo.progress, oo.A1, oo.A2, this.a04, this, this.d01, oo)
         },
         a04: function (oo) {
-            let data = [{
-                action: "sqlite",
-                database: "1688/采集箱/商品列表/" + Tool.remainder(oo.product[0].list[0][0].manualreview_1688_fromid, 100),
-                sql: "select " + Tool.fieldAs("freight,salenum,fromid") + " FROM @.table where @.fromid=" + oo.product[0].list[0][0].manualreview_1688_fromid,
-            }, {
-                action: "sqlite",
-                database: "1688/采集箱/商品列表/详情/" + Tool.remainder(oo.product[0].list[0][0].manualreview_1688_fromid, 1000),
-                sql: "select @.sku as sku FROM @.table where @.fromid=" + oo.product[0].list[0][0].manualreview_1688_fromid,
-            }]
-            Tool.ajax.a01(data, this.a05, this, oo);
+            $("#proid").html(oo.product[0].proid)
+            if (oo.product[0].proid == "【proid】丢失") {
+                $("#state").html("程序已终止。。。");
+            }
+            else {
+                let data = [{
+                    action: "sqlite",
+                    database: "1688/采集箱/商品列表/" + Tool.remainder(oo.product[0].list[0][0].manualreview_1688_fromid, 100),
+                    sql: "select " + Tool.fieldAs("freight,salenum,fromid") + " FROM @.table where @.fromid=" + oo.product[0].list[0][0].manualreview_1688_fromid,
+                }, {
+                    action: "sqlite",
+                    database: "1688/采集箱/商品列表/详情/" + Tool.remainder(oo.product[0].list[0][0].manualreview_1688_fromid, 1000),
+                    sql: "select @.sku as sku FROM @.table where @.fromid=" + oo.product[0].list[0][0].manualreview_1688_fromid,
+                }]
+                Tool.ajax.a01(data, this.a05, this, oo);
+            }
         },
         a05: function (t, oo) {
             let url = "https://detail.1688.com/offer/" + t[0][0].fromid + ".html"
-            $("#proid").html(oo.product[0].list[0][0].proid)
             $("#url").html('<a href="' + url + '" target="_blank">' + url + '</a>')
             let o1 = Tool.maxPrice.a01(JSON.parse(t[1][0].sku))
             let updateArr = [

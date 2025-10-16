@@ -44,15 +44,15 @@ Object.assign(Tool, {
         b01: function (where1) {
             let where2 = "@.status<>-5 and @.saleNum=0 and @." + where1
             if (where1 == "status=0") { where2 = "@.status<>-5 and @." + where1 }
-            //@.newDiscount>=80 or @.newDiscount<=8 or @.isSeckill=0
-            //@.newDiscount>=80     表示【最终折扣<=80】<br/>\
+            //@.newDiscount>=56 or @.newDiscount<8 or @.isSeckill=0
+            //@.newDiscount>=56     表示【最终折扣<=56】<br/>\
             //@.isSeckill=0         表示【不能做秒杀】<br/>\
             $("#where").html(where2 + "<hr/>\
             @.status<>-5          表示不要【删除失败】<br/>\
             @.saleNum=0           表示要【无销量】<br/>\
             @.status=0            表示【状态 &rArr; 0.未知】<br/>\
-            @.ExceptionType=2     表示【商品异常类型 &rArr; 2.最终折扣>=80】<br/>\
-            @.ExceptionType=3     表示【商品异常类型 &rArr; 3.最终折扣<=8】<br/>\
+            @.ExceptionType=2     表示【商品异常类型 &rArr; 2.最终折扣>=56】<br/>\
+            @.ExceptionType=3     表示【商品异常类型 &rArr; 3.最终折扣<8】<br/>\
             @.ExceptionType=6     表示【商品异常类型 &rArr; 6.更新后违规类型_不匹配】<br/>\
             @.ExceptionType=8     表示【商品异常类型 &rArr; 8.手动审核后1688商品状态_不匹配】<br/>\
             @.ExceptionType=9     表示【商品异常类型 &rArr; 9.修改状态_不匹配】");

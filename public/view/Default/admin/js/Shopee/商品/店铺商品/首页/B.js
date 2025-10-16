@@ -422,7 +422,7 @@ Object.assign(fun,
         <table class="table mb-0 table-bordered left">\
             <tr><td title="'+ str1 + '"><s style="color:#929292">' + siteObj.currency_symbol + " " + input_normal_price + '</s></td></tr>\
             <tr><td title="'+ str2 + '">' + siteObj.currency_symbol + ' ' + price1 + '<sup>-' + discount + '%</sup></td></tr>\
-            <tr'+ (newDiscount <= 8 || newDiscount >= 80 ? ' style="background-color:#ffc63d;"' : '') + '>\
+            <tr'+ (newDiscount < 8 || newDiscount >= 56 ? ' style="background-color:#ffc63d;"' : '') + '>\
                 <td class="nowrap" data-bs-toggle="tooltip" data-bs-placement="right"data-bs-title="'+ str3 + oo.str + '" ' + (input_normal_price == oo.price ? '' : 'style="color:red;" ') + '>\
                    ' + siteObj.currency_symbol + ' ' + price3 + '<sup>-' + newDiscount + '%</sup>\
                </td>\

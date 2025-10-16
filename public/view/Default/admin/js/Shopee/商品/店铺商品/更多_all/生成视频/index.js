@@ -14,16 +14,12 @@ var fun =
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
-            <tr>\
-            <td class="right w170" style="padding-left: 30px;position: relative; height: 55px;">RenDie-HID硬件：</td>\
-            <td colspan="2" id="RenDie-HID"></td>\
-            </tr>\
 		    <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">站点：</td><td colspan="2" id="site"></td></tr>\
 		    <tr><td class="right">站点进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		    <tr><td class="right">第几个店铺：</td><td colspan="2" id="num"></td></tr>\
 		    <tr><td class="right">店铺进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
-		    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
+		    <tr><td class="right">商品条进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
             <tr><td class="right">说明：</td>\
             <td colspan="2">\
             如果【人工审核1688主视频状态】不是【审核通过】将用这个视频（会清空非【审核通过】的@.video字段内容）。<br/>\
@@ -66,7 +62,7 @@ var fun =
             this.obj.Aarr = arr;
             this.obj.A2 = arr.length;
         }
-        hid.init.a01(this.a04, this);
+        this.a04()
     },
     a04: function () {
         Tool.x1x2("A", this.obj.A1, this.obj.A2, this.a05, this, this.e02)
@@ -77,24 +73,21 @@ var fun =
         this.obj.B2 = oo.B2;
         this.d01()
     },
-    //////////////////////////////////////////////////////////////
-    c01: function (videoUrl, proid, site, num, siteNum) {
-        $("#state").html("正在上传视频。")
-        Tool.common3.a01(videoUrl, this.obj.seller[site][num - 1].shopId, siteNum, proid, this.d01, this)
-    },
     /////////////////////////////////////////////////////
     d01: function () {
         Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d02, this, this.e01)
     },
     d02: function () {
         $("#num").html(this.obj.B1)//第几个店铺
-        Tool.common1.a01(this.obj.Aarr[this.obj.A1 - 1].site, this.obj.B1, "C", this.d03, this)
+        let site = this.obj.Aarr[this.obj.A1 - 1].site;
+        if (site == "tw") { site = "my"; }//台湾站点上传不了，换成其它站点去。
+        Tool.common1.a01(this.obj.seller, site, this.obj.B1, "C", this.d03, this)
     },
     d03: function () {
         this.obj.B1++;
         this.d01();
     },
-    //////////////////////////////////////////
+    //////////////////////////////////////////////////////////////   
     e01: function () {
         $("#B1").css("width", "0%");
         $("#B1,#B2").html("");

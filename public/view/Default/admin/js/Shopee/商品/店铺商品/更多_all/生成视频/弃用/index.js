@@ -6,29 +6,35 @@ var fun =
         A1: 1, A2: 0, Aarr: [],
         B1: 1, B2: 0,
         seller: {},
-        where: "",//删除条件
     },
     a01: function () {
-        //o.params.site       站点
-        //o.params.num
-        let html = Tool.header(o.params.return, "Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 更多_all &gt; 删除") + '\
+        //o.params.return        返回URL
+        //o.params.site          站点
+        let html = Tool.header(o.params.return, "Shopee &gt; 商品列表 &gt; 店铺商品 &gt; 更多_all &gt; 生成视频") + '\
         <div class="p-2">\
           <table class="table table-hover align-middle mb-0">\
           <tbody>\
- 		    <tr><td class="right w150">删除条件：</td><td colspan="2">'+ this.b01() + '</td></tr>\
-		    <tr><td class="right w150">账号：</td><td id="username" colspan="2"></td></tr>\
+		    <tr><td class="w150 right">账号：</td><td id="username" colspan="2"></td></tr>\
 		    <tr><td class="right">站点：</td><td colspan="2" id="site"></td></tr>\
 		    <tr><td class="right">站点进度：</td>'+ Tool.htmlProgress('A') + '</tr>\
 		    <tr><td class="right">第几个店铺：</td><td colspan="2" id="num"></td></tr>\
 		    <tr><td class="right">店铺进度：</td>'+ Tool.htmlProgress('B') + '</tr>\
-		    <tr><td class="right">where语句：</td><td colspan="2" id="where"></td></tr>\
 		    <tr><td class="right">商品页进度：</td>'+ Tool.htmlProgress('C') + '</tr>\
-		    <tr><td class="right">地址：</td><td id="url" colspan="2"></td></tr>\
+            <tr><td class="right">说明：</td>\
+            <td colspan="2">\
+            如果【人工审核1688主视频状态】不是【审核通过】将用这个视频（会清空非【审核通过】的@.video字段内容）。<br/>\
+            如果【人工审核1688讲解视频状态】不是【审核通过】将用这个视频（会清空非【审核通过】的@.ExplanationVideo字段内容）。<br/>\
+            如果还是没有视频，那就用图片生成视频，上传用shopee平台。<br/>\
+            </td></tr>\
+            <tr><td class="right">商品编码：</td><td id="proid" colspan="2"></td></tr>\
+            <tr><td class="right">准备的图片：</td><td id="pic" colspan="2"></td></tr>\
+            <tr><td class="right">生成后的视频：</td><td id="videoUrlA" colspan="2"></td></tr>\
+            <tr><td class="right">上传后的视频：</td><td id="videoUrlB" colspan="2"></td></tr>\
 		    <tr><td class="right">状态：</td><td id="state" colspan="2"></td></tr>\
           </tbody>\
           </table>\
         </div>'
-        Tool.html(null, null, html)
+        Tool.html(this.a02, this, html);
     },
     a02: function () {
         Tool.login.a01(this.a03, this)
@@ -67,38 +73,24 @@ var fun =
         this.obj.B2 = oo.B2;
         this.d01()
     },
-    /////////////////////////////////////////////////////
-    b01: function () {
-        let str = '\
-        <select onChange="fun.c01($(this),this.options[this.selectedIndex].value)" class="form-select">\
-            <option value="">请选择删除条件</option>\
-            <option value="status=0">*状态 &rArr; 0.未知</option>\
-            <option value="ExceptionType=2">*商品异常类型 &rArr; 2.最终折扣>=56</option>\
-            <option value="ExceptionType=3">*商品异常类型 &rArr; 3.最终折扣<8</option>\
-            <option value="ExceptionType=6">*商品异常类型 &rArr; 6.更新后违规类型_不匹配</option>\
-            <option value="ExceptionType=8">*商品异常类型 &rArr; 8.手动审核后1688商品状态_不匹配</option>\
-            <option value="ExceptionType=9">*商品异常类型 &rArr; 9.修改状态_不匹配</option>\
-        </select>';
-        return str;
+    //////////////////////////////////////////////////////////////
+    c01: function (videoUrl, proid, site, num, siteNum) {
+        $("#state").html("正在上传视频。")
+        Tool.pre(videoUrl)
+        //Tool.common3.a01(videoUrl, this.obj.seller[site][num - 1].shopId, siteNum, proid, this.d01, this)
     },
     /////////////////////////////////////////////////////
-    c01: function (This, val) {
-        This.attr("disabled", true);
-        this.obj.where = val;
-        this.a02()
-    },
-    /////////////////////////////////////////////////////
-    d01: function () {
-        Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d02, this, this.e01)
-    },
-    d02: function () {
-        $("#num").html(this.obj.B1)//第几个店铺
-        Tool.delete_product.a01(this.obj.seller, this.obj.Aarr[this.obj.A1 - 1].site, this.obj.B1, "C", this.obj.where, this.d03, this)
-    },
-    d03: function () {
-        this.obj.B1++;
-        this.d01();
-    },
+    // d01: function () {
+    //     Tool.x1x2("B", this.obj.B1, this.obj.B2, this.d02, this, this.e01)
+    // },
+    // d02: function () {
+    //     $("#num").html(this.obj.B1)//第几个店铺
+    //     Tool.common1.a01(this.obj.Aarr[this.obj.A1 - 1].site, this.obj.B1, "C", this.d03, this)
+    // },
+    // d03: function () {
+    //     this.obj.B1++;
+    //     this.d01();
+    // },
     //////////////////////////////////////////
     e01: function () {
         $("#B1").css("width", "0%");
