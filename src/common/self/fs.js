@@ -122,16 +122,18 @@ export const self_fs = {
     return new Promise((resolve) => {
       // 确保目录为空
       fs.readdir(dirPath, (err, files) => {
-        if (err) resolve("删除目录时获取目录失败:" + err);;
-        for (const file of files) {
-          const curPath = path.join(dirPath, file);
-          fs.unlinkSync(curPath); // 删除文件
+        if (err) { resolve("删除目录时获取目录失败:" + err); }
+        else {
+          for (const file of files) {
+            const curPath = path.join(dirPath, file);
+            fs.unlinkSync(curPath); // 删除文件
+          }
+          // 现在目录应该为空，尝试删除它
+          fs.rmdir(dirPath, (err) => {
+            if (err) resolve("删除目录失败:" + err);
+            resolve('目录删除成功');
+          });
         }
-        // 现在目录应该为空，尝试删除它
-        fs.rmdir(dirPath, (err) => {
-          if (err) resolve("删除目录失败:" + err);
-          resolve('目录删除成功');
-        });
       });
     });
   },
