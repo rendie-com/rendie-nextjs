@@ -247,7 +247,7 @@ var fun =
             alert("【商品ID】或【商品ID】必须是数字。")
         }
         else if (searchword) {
-            if (field == "1") { o.params.dbname = Tool.remainder3(Tool.int(searchword), 100); }
+            if (field == "1") { o.params.dbname = Tool.remainder(Tool.int(searchword), 100); }
             Tool.main("jsFile=" + o.params.jsFile + "&site=" + o.params.site + "&page=1&field=" + field + "&dbname=" + o.params.dbname + "&num=" + o.params.num + "&searchword=" + searchword);
         } else { alert("请输入搜索内容"); }
     },

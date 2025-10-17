@@ -81,7 +81,7 @@ var fun =
 		<ul class="dropdown-menu">\
             <li onClick="Tool.openR(\'jsFile=js01&site='+ o.params.site + '&num=' + o.params.num + '\');"><a class="dropdown-item pointer">采集商品</a></li>\
             <li onClick="Tool.openR(\'jsFile=js10&table=pro_'+ o.params.site + '&database=shopee_gather&newdatabase=shopee/采集箱/商品/' + o.params.site + '\');"><a class="dropdown-item pointer">把一个db文件拆分成多个db文件</a></li>\
-            <li onClick="Tool.openR(\'jsFile=js11&table=table&database=shopee/采集箱/商品/'+ o.params.site + '&toaction=dynamodb\');"><a class="dropdown-item pointer">*把【sqlite】数据库该表同步到【DynamoDB】数据库</a></li>\
+            <li onClick="Tool.openR(\'jsFile=js11&table=table&database=shopee/采集箱/商品/'+ o.params.site + '&toaction=dynamodb\');"><a class="dropdown-item pointer">*把当前数据库该表同步到【DynamoDB】数据库</a></li>\
 		</ul>'
     },
     b03: function () {
